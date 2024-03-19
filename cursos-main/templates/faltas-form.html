@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Faltas</title>
+</head>
+<body>
+    <h1>Registrar Falta</h1>
+    <form action="/faltas" method="POST">
+        <label for="falta">Falta:</label>
+        <select id="falta" name="falta">
+            <option value="1" selected>Sim</option>
+            <option value="0">Não</option>
+        </select><br><br>
+        <label for="justificativa">Justificativa:</label>
+        <input type="text" id="justificativa" name="justificativa"><br><br>
+        <label for="id_plano">Plano de Aula:</label>
+        <select id="id_plano" name="id_plano">
+        {% for plano in planos %}
+        <option value="{{ plano.id }}">{{ plano.id }}</option>
+        {% endfor %}
+        </select><br><br>
+        <label for="id_matricula">Matrícula:</label>
+        <select id="id_matricula" name="id_matricula">
+            {% for matricula in matriculas %}
+                <option value="{{ matricula.id }}">{{ matricula.nome }}</option>
+            {% endfor %}
+        </select><br><br>
+        <input type="submit" value="Registrar Falta">
+    </form>
+</body>
+</html>

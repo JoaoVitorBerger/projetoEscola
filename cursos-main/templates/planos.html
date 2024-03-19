@@ -1,0 +1,22 @@
+<!-- planos.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planos de Aula</title>
+</head>
+<body>
+    <h1>Planos de Aula</h1>
+    <ul>
+        {% for plano in planos %}
+        <li>
+            <strong>ID:</strong> {{ plano.id }}<br>
+            <strong>Data:</strong> {{ plano.data }}<br>
+            <strong>Conteúdo:</strong> {{ plano.conteudo }}<br>
+            <strong>ID Turma:</strong> {{ plano.id_turma }}<br>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

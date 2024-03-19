@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Adição de Turma para Professor</title>
+</head>
+<body>
+    <h1>Adicionar Nova Turma para Professor</h1>
+    <form action="/turmas-professores" method="POST">
+        <label for="data_inicio">Data de Início:</label>
+        <input type="date" id="data_inicio" name="data_inicio"><br><br>
+        <label for="data_fim">Data de Fim:</label>
+        <input type="date" id="data_fim" name="data_fim"><br><br>
+        <label for="id_professor">Professor:</label>
+        <select id="id_professor" name="id_professor">
+            {% for professor in professores %}
+                <option value="{{ professor.id_professor }}">{{ professor.nome_professor }}</option>
+            {% endfor %}
+        </select><br><br>
+        <label for="id_turma">Turma:</label>
+        <select id="id_turma" name="id_turma">
+            {% for turma in turmas %}
+                <option value="{{ turma.id }}">{{ turma.nome }}</option>
+            {% endfor %}
+        </select><br><br>
+        <input type="submit" value="Adicionar Turma para Professor">
+    </form>
+</body>
+</html>

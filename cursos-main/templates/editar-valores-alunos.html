@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Aluno</title>
+</head>
+<body>
+    <h1>Editar Aluno</h1>
+
+    <form action="" method="POST">
+        
+        <label for="nome">Nome:</label><br>
+        <input type="text" id="new_nome" name="new_nome" ><br><br>
+        
+        <label for="ra">RA:</label><br>
+        <input type="text" id="new_ra" name="new_ra" maxlength="6" > <br><br>
+        
+        <label for="cpf">CPF:</label><br>
+        <input type="text" id="new_cpf" name="new_cpf" maxlength="11" > <br><br>
+        
+        <label for="data_nasc">Data de Nascimento:</label><br>
+        <input type="date" id="new_data_nasc" name="new_data_nasc"><br><br>
+        
+        <input type="submit" value="Salvar Alterações">
+        
+    </form>
+
+
+
+
+
+    <script>
+          let input = document.getElementById('ra')
+    input.addEventListener('input', (event)=>{
+        let input = event.target.value   
+        if(isNaN(input)){
+            event.target.value = input.slice(0,0)
+        }
+    })
+    let cpf = document.getElementById('cpf')
+    cpf.addEventListener('input', (event)=>{
+        let input = event.target.value   
+        if(isNaN(input)){
+            event.target.value = input.slice(0,0)
+        }
+    })
+    </script>
+  
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faltas</title>
+</head>
+<body>
+    <h1>Faltas</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Falta</th>
+                <th>Justificativa</th>
+                <th>ID do Plano</th>
+                <th>ID da Matrícula</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for falta in faltas %}
+                <tr>
+                    <td>{{ falta.id }}</td>
+                    <td>{{ "Sim" if falta.falta else "Não" }}</td>
+                    <td>{{ falta.justificativa }}</td>
+                    <td>{{ falta.id_plano }}</td>
+                    <td>{{ falta.id_matricula }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="/faltas-form">Adicionar Falta</a>
+</body>
+</html>

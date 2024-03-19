@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Adição de Professor</title>
+</head>
+<body>
+    <h1>Adicionar Novo Professor</h1>
+    <form action="/professores" method="POST">
+        <label for="status">Status:</label>
+        <select id="status" name="status">
+            <option value="1" selected>Ativo</option>
+            <option value="0">Inativo</option>
+        </select><br><br>
+        <label for="id_pessoa">Pessoa:</label>
+        <select id="id_pessoa" name="id_pessoa">
+            {% for pessoa in pessoas %}
+                <option value="{{ pessoa.id }}">{{ pessoa.nome }}</option>
+            {% endfor %}
+        </select><br><br>
+        <label for="id_secretaria">Secretaria:</label>
+        <select id="id_secretaria" name="id_secretaria">
+            {% for secretaria in secretarias %}
+                <option value="{{ secretaria.id }}">{{ secretaria.nome }}</option>
+            {% endfor %}
+        </select><br><br>
+        <input type="submit" value="Adicionar Professor">
+    </form>
+</body>
+</html>

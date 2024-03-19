@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Escolar</title>
+    <style>
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            width: 48%; /* Ajuste aqui para definir a largura dos botões */
+            height: 40px;
+            background-color: #007bff; /* Azul */
+            color: white;
+            text-align: center;
+            line-height: 40px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .button.light-blue {
+            background-color: #17a2b8; /* Azul Claro */
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Gestão de Cursos</h1>
+    <div class="button-container">
+        <a href="/secretarias" class="button">Visualizar Secretarias</a>
+        <a href="/secretarias-form" class="button light-blue">Adicionar Secretaria</a>
+        <a href="/pessoas" class="button">Visualizar Pessoas</a>
+        <a href="/pessoas-form" class="button light-blue">Adicionar Pessoa</a>
+        <a href="/alunos-pesquisa" class="button">Visualizar Alunos</a>
+        <a href="/alunos-form" class="button light-blue">Adicionar Aluno</a>
+        <a href="/professores" class="button">Visualizar Professores</a>
+        <a href="/professores-form" class="button light-blue">Adicionar Professor</a>
+        <a href="/cursos" class="button">Visualizar Cursos</a>
+        <a href="/cursos-form" class="button light-blue">Adicionar Curso</a>
+        <a href="/turmas" class="button">Visualizar Turmas</a>
+        <a href="/turmas-form" class="button light-blue">Criar Turma</a>
+        <a href="/turmas-professores" class="button">Visualizar Turmas dos Professores</a>
+        <a href="/turmas-professores-form" class="button light-blue">Adicionar Professor a Turma</a>
+        <a href="/inscricoes" class="button">Visualizar Inscrições</a>
+        <a href="/inscricoes-form" class="button light-blue">Adicionar Inscrição</a>
+        <a href="/matriculas" class="button">Visualizar Matrículas</a>
+        <a href="/matriculas-form" class="button light-blue">Fazer Matrícula</a>
+        <a href="/planos" class="button">Visualizar Planos de Aula</a>
+        <a href="/planos-form" class="button light-blue">Criar Plano de Aula</a>
+        <a href="/faltas" class="button">Visualizar Faltas</a>
+        <a href="/faltas-form" class="button light-blue">Registrar Falta</a>
+    </div>
+</body>
+</html>

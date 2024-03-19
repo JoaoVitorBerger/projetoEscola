@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrículas</title>
+</head>
+<body>
+    <h1>Matrículas</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Data de Início</th>
+                <th>Data de Fim</th>
+                <th>ID do Aluno</th>
+                <th>RA do Aluno</th>
+                <th>ID da Turma</th>
+                <th>Nome da Turma</th>
+                <th>ID da Inscrição</th>
+                <th>Status da Inscrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for matricula in matriculas %}
+            <tr>
+                <td>{{ matricula.id }}</td>
+                <td>{{ matricula.data_inicio }}</td>
+                <td>{{ matricula.data_fim }}</td>
+                <td>{{ matricula.id_aluno }}</td>
+                <td>{{ matricula.ra_aluno }}</td>
+                <td>{{ matricula.id_turma }}</td>
+                <td>{{ matricula.nome_turma }}</td>
+                <td>{{ matricula.id_inscricao }}</td>
+                <td>{{ matricula.status_inscricao }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

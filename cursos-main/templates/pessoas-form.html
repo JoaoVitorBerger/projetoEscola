@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Pessoa</title>
+</head>
+<body>
+    <h1>Adicionar Nova Pessoa</h1>
+    <form action="/pessoas" method="post">
+        <label for="nome">Nome:</label><br>
+        <input type="text" id="nome" name="nome"><br>
+        <label for="cpf">CPF:</label><br>
+        <input type="text" id="cpf" name="cpf" maxlength="11"><br>
+        <label for="data_nasc">Data de Nascimento:</label><br>
+        <input type="date" id="data_nasc" name="data_nasc"><br>
+        <label for="endereco">Endereço:</label><br>
+        <input type="text" id="endereco" name="endereco"><br>
+        <label for="sexo">Sexo:</label><br>
+        <select id="sexo" name="sexo">
+            <option value="Masculino">Masculino</option>
+            <option value="Feminino">Feminino</option>
+        </select><br>
+        <label for="nome_social">Nome Social:</label><br>
+        <input type="text" id="nome_social" name="nome_social"><br><br>
+        <input type="submit" value="Adicionar Pessoa">
+    </form>
+    <script>
+          let input = document.getElementById('cpf')
+            input.addEventListener('input', (event)=>{
+        let input = event.target.value   
+        if(isNaN(input)){
+            event.target.value = input.slice(0,0)
+        }
+    })
+    </script>
+  
+</body>
+</html>

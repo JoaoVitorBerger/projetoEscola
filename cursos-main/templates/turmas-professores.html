@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turmas dos Professores</title>
+</head>
+<body>
+    <h1>Turmas dos Professores</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Data de Início</th>
+                <th>Data de Fim</th>
+                <th>ID Professor</th>
+                <th>Nome do Professor</th>
+                <th>ID Turma</th>
+                <th>Nome da Turma</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for turma_professor in turmas_professores %}
+            <tr>
+                <td>{{ turma_professor.id }}</td>
+                <td>{{ turma_professor.data_inicio }}</td>
+                <td>{{ turma_professor.data_fim }}</td>
+                <td>{{ turma_professor.id_professor }}</td>
+                <td>{{ turma_professor.nome_professor }}</td>
+                <td>{{ turma_professor.id_turma }}</td>
+                <td>{{ turma_professor.nome_turma }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

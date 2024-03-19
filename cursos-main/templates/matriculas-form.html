@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Adição de Matrícula</title>
+</head>
+<body>
+    <h1>Adicionar Nova Matrícula</h1>
+    <form action="/matriculas" method="POST">
+        <label for="data_inicio">Data de Início:</label>
+        <input type="date" id="data_inicio" name="data_inicio"><br><br>
+        <label for="data_fim">Data de Fim:</label>
+        <input type="date" id="data_fim" name="data_fim"><br><br>
+        <label for="id_turma">ID da Turma:</label>
+        <select id="id_turma" name="id_turma">
+            {% for turma in turmas %}
+                <option value="{{ turma.id }}">{{ turma.id }} - {{ turma.nome }}</option>
+            {% endfor %}
+        </select><br><br>
+        <label for="id_inscricao">Inscrição:</label>
+        <select id="id_inscricao" name="id_inscricao">
+            {% for inscricao in inscricoes %}
+                <option value="{{ inscricao.id }}">{{ inscricao.id }} - {{ inscricao.nome }}</option>
+            {% endfor %}
+        </select><br><br>
+        <input type="submit" value="Adicionar Matrícula">
+    </form>
+</body>
+</html>
