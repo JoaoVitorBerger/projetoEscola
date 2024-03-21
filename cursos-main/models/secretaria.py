@@ -7,12 +7,22 @@ from datetime import datetime
 def secretarias(conn):
     try:
       cursor = conn.cursor(dictionary=True)
-      cursor.execute('''SELECT id, nome, criado_em, modificado_em, criado_por, modificado_por,ativo_flag,
-                            CASE
-                                WHEN ativo_flag = 1 THEN 'Ativo'
-                                ELSE 'Desativado'
-                            END AS ativo_flag
-                            FROM secretarias''')
+      cursor.execute('''SELECT 
+                            id, 
+                            nome, 
+                            criado_em, 
+                            modificado_em, 
+                            criado_por, 
+                            modificado_por,
+                            ativo_flag,
+                        CASE
+                        WHEN ativo_flag = 1 THEN 'Ativo'
+                        ELSE 'Desativado'
+                        END AS ativo_flag
+                        FROM 
+                            secretarias
+                        WHERE 
+                        deletado_em IS NULL''')
       secretarias = cursor.fetchall()
       return secretarias
     except mysql.connector.Error as err:

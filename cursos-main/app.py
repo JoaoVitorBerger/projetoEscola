@@ -74,15 +74,15 @@ def excluir_secretarias():
         conn = conectar()
         cursor = conn.cursor()
         data_exclusao = datetime.now()  # Obtém a data e hora atuais
-        cursor.execute('''UPDATE secretarias SET deletado_em = %s WHERE id = %s;
+        cursor.execute('''UPDATE secretarias SET deletado_em = %s, ativo_flag = 0, WHERE id = %s;
                        ''', (data_exclusao, secretaria_id))
         conn.commit()
         return jsonify({"message": "Secretaria excluída com sucesso"})
     except mysql.connector.Error as err:
         return jsonify({"error": f'Erro ao excluir secretaria: {err}'})
+        
 
-
-
+    
 
 # Rota para visualizar todas as pessoas
 @app.route('/pessoas')
