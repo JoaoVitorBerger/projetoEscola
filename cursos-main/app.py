@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for,jsonify
 import mysql.connector
 from models.secretaria import *
+from models.pessoa import *
 
 app = Flask(__name__)
 
@@ -86,39 +87,27 @@ def excluir_secretarias():
 
 # Rota para visualizar todas as pessoas
 @app.route('/pessoas')
-def pessoas():
-    try:
-        conn = conectar()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM pessoas')
-        pessoas = cursor.fetchall()
-        return render_template('pessoas.html', pessoas=pessoas)
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao buscar pessoas: {err}')
+def exibindo_pessoas():
+    conn=conectar()
+    result = exibir_pessoas(conn)
+    if isinstance(result, str):  # Verifica se houve erro
+        return render_template('erro.html', mensagem=result)
+    return render_template('Pessoas/pessoas.html', pessoas=result)
+
 # Rota para exibir o formulário de adicionar pessoa
 @app.route('/pessoas-form')
 def pessoa_form():
-    return render_template('pessoas-form.html')
+    return render_template('Pessoas/pessoas-form.html')
 # Rota para adicionar uma nova pessoa
 @app.route('/pessoas', methods=['POST'])
-def add_pessoa():
-    try:
-        conn = conectar()
-        cursor = conn.cursor()
-        nome = request.form['nome'].upper()
-        cpf = request.form['cpf']
-        data_nasc = request.form['data_nasc']
-        endereco = request.form['endereco'].upper()
-        sexo = request.form['sexo']
-        nome_social = request.form['nome_social'].upper()
-        if nome_social is None:
-            nome_social = 'None'
-        cursor.execute('INSERT INTO pessoas (nome, cpf, data_nasc, endereco, sexo, nome_social) VALUES (%s, %s, %s, %s, %s,%s )', 
-                       (nome, cpf, data_nasc, endereco, sexo, nome_social))
-        conn.commit()
-        return redirect(url_for('pessoas'))
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao adicionar pessoa: {err}')
+def cadastrar_pessoa():
+    conn = conectar()
+    result = add_pessoa(conn)
+    if isinstance(result, str):  # Verifica se houve erro
+        return render_template('erro.html', mensagem=result)
+    return redirect('/')
+
+
     
 # Rota para visualizar todos os alunos
 @app.route('/alunos')

@@ -15,7 +15,7 @@ CREATE TABLE pessoas (
 	data_nasc DATE,
 	endereco VARCHAR(255),
 	sexo VARCHAR(50),
-	nome_social VARCHAR(255),
+	nome_social VARCHAR(255) DEFAULT 'NONE',
 	criado_em DATETIME,
 	modificado_em DATETIME,
 	deletado_em DATETIME,
@@ -24,6 +24,8 @@ CREATE TABLE pessoas (
 	deletado_por INT,
 	ativo_flag BOOLEAN DEFAULT TRUE
 );
+
+
 
 CREATE TABLE alunos (
 	id INT PRIMARY KEY AUTO_INCREMENT,
