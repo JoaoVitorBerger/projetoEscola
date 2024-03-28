@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado da Pesquisa</title>
+</head>
+<body>
+    <h1>Resultado da Pesquisa</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Data de Nascimento</th>
+                <th>Endereço</th>
+                <th>Sexo</th>
+                <th>Nome Social</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pessoa in pessoas %}
+            <tr>
+                
+                <td>{{ pessoa.nome }}</td>
+                <td>{{ pessoa.cpf }}</td>
+                <td>{{ pessoa.data_nasc }}</td>
+                <td>{{ pessoa.endereco }}</td>
+                <td>{{ pessoa.sexo }}</td>
+                <td>{{ pessoa.nome_social }}</td>
+                <td><a href="/editar-valores-pessoas/{{pessoa.id}}">Editar</a></td>
+                <td><a class="deleteButton" data-pessoa-id="{{ pessoa.id }}" href="#">Excluir</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    
+    <script>
+        // Captura todos os elementos com a classe deleteButton
+        let deleteButtons = document.querySelectorAll('.deleteButton');
+        
+        
+        // Itera sobre todos os botões
+        deleteButtons.forEach(function(button) {
+          // Adiciona um evento de clique a cada botão
+          button.addEventListener('click', function(event) {
+            // Impede o comportamento padrão do link
+            event.preventDefault();
+
+            let confirmarExclusao = confirm('Deseja relamente excluir esse valor')
+            if(confirmarExclusao){
+               // Pega o ID da pessoa do atributo 'data-pessoa-id' do botão clicado
+            let pessoaId = this.getAttribute('data-pessoa-id');
+            // Envia o ID da secretaria para o servidor Flask
+            fetch('/excluir-pessoa', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({pessoa_id: pessoaId})
+            }).then(response => {
+                // Lida com a resposta do servidor, se necessário
+                console.log(response)
+                alert('Pessoa excluida com sucesso')
+                // Voltando para o início
+                window.location.href = '/';
+            }).catch(error => {
+                console.error('Erro ao excluir pessoa', error);
+            });
+            }else{
+              console.log('exclusão cancelada')
+            }
+           
+          });
+        });
+   
+ 
+   
+    </script>
+
+
+
+</body>
+</html>

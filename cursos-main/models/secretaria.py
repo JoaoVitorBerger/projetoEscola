@@ -15,14 +15,15 @@ def secretarias(conn):
                             criado_por, 
                             modificado_por,
                             ativo_flag,
+                            deletado_em,
                         CASE
-                        WHEN ativo_flag = 1 THEN 'Ativo'
-                        ELSE 'Desativado'
+                            WHEN ativo_flag = 1 THEN 'Ativo'
+                            ELSE 'Desativado'
                         END AS ativo_flag
                         FROM 
                             secretarias
                         WHERE 
-                        deletado_em IS NULL''')
+                            deletado_em IS NULL''')
       secretarias = cursor.fetchall()
       return secretarias
     except mysql.connector.Error as err:

@@ -31,3 +31,8 @@ O banco de dados MySQL possui as seguintes tabelas:
 - secretarias
 - turmas
 - turmas_professores
+
+
+DIA 28/03/2024
+Feitos até agora
+criação das páginas de inserção de secretarias, pessoas e trabalhando na inserção de alunos, a parte de visualização de alunos. modularizei pessoas e secretarias, logo logo irei modularizar alunos e fechar essa parte também

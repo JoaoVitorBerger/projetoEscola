@@ -5,6 +5,7 @@ CREATE TABLE secretarias (
 	modificado_em DATETIME,
 	criado_por INT,
 	modificado_por INT,
+	deletado_em DATETIME,
 	ativo_flag BOOLEAN DEFAULT TRUE
 );
 

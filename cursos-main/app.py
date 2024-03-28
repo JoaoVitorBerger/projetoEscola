@@ -74,9 +74,9 @@ def excluir_secretarias():
         secretaria_id = data.get('secretaria_id')
         conn = conectar()
         cursor = conn.cursor()
-        data_exclusao = datetime.now()  # Obtém a data e hora atuais
-        cursor.execute('''UPDATE secretarias SET deletado_em = %s, ativo_flag = 0, WHERE id = %s;
-                       ''', (data_exclusao, secretaria_id))
+         # Obtém a data e hora atuais
+        cursor.execute('''UPDATE secretarias SET deletado_em = %s, ativo_flag = 0 WHERE id = %s;
+                       ''', (datetime.now(), secretaria_id))
         conn.commit()
         return jsonify({"message": "Secretaria excluída com sucesso"})
     except mysql.connector.Error as err:
@@ -85,19 +85,12 @@ def excluir_secretarias():
 
     
 
-# Rota para visualizar todas as pessoas
-@app.route('/pessoas')
-def exibindo_pessoas():
-    conn=conectar()
-    result = exibir_pessoas(conn)
-    if isinstance(result, str):  # Verifica se houve erro
-        return render_template('erro.html', mensagem=result)
-    return render_template('Pessoas/pessoas.html', pessoas=result)
 
 # Rota para exibir o formulário de adicionar pessoa
 @app.route('/pessoas-form')
 def pessoa_form():
     return render_template('Pessoas/pessoas-form.html')
+
 # Rota para adicionar uma nova pessoa
 @app.route('/pessoas', methods=['POST'])
 def cadastrar_pessoa():
@@ -107,10 +100,54 @@ def cadastrar_pessoa():
         return render_template('erro.html', mensagem=result)
     return redirect('/')
 
+# Rota para pesquisar pessoas
+@app.route('/pesquisar-pessoas')
+def exibindo_pessoas():
+    return render_template('Pessoas/pesquisar-pessoas.html')
 
+#Exibe uma página com a resposta da pesquisa e coloca as opções edtar e excluir
+@app.route('/resultado-pesquisa-pessoas', methods=['POST'])
+def exibir_resultados_pesquisa_pessoas():
+    conn = conectar()
+    if request.method == 'POST':
+        result = resultado_pesquisa(conn)
+        print(result)
+        if isinstance(result, str):  # Verifica se houve erro
+            return render_template('erro.html', mensagem=result)
+    return render_template('Pessoas/resultado-pesquisa-pessoas.html',pessoas=result)
+
+#Opção editar valores pessoa
+@app.route('/editar-valores-pessoas/<int:pessoa_id>', methods=['GET', 'POST'])
+def edit_valores_pessoas(pessoa_id):
+    conn = conectar()
+    result = edit_pessoa(conn,pessoa_id)
+    if isinstance(result, str):  # Verifica se houve erro
+        return render_template('erro.html', mensagem=result)
+    if request.method == 'POST':
+        # Redireciona para a rota '/resultados
+        return redirect('/')
+    return render_template('Pessoas/editar-valores-pessoas.html')
+
+#Opção para excluir pessoa
+@app.route('/excluir-pessoa', methods=['POST'])
+def excluir_pessoa():
+    try:
+        data = request.json
+        print('dados recebidos', data)
+        pessoa_id = data.get('pessoa_id')
+        conn = conectar()
+        cursor = conn.cursor()
+         # Obtém a data e hora atuais
+        cursor.execute('''UPDATE pessoas SET deletado_em = %s, ativo_flag = 0 WHERE id = %s;
+                       ''', (datetime.now(), pessoa_id))
+        conn.commit()
+        return jsonify({"message": "Secretaria excluída com sucesso"})
+    except mysql.connector.Error as err:
+        return jsonify({"error": f'Erro ao excluir secretaria: {err}'})
+     
     
 # Rota para visualizar todos os alunos
-@app.route('/alunos')
+@app.route('/alunos', methods=['POST'])
 def alunos():
     try:
         conn = conectar()
@@ -120,17 +157,31 @@ def alunos():
         return render_template('alunos.html', alunos=alunos)
     except mysql.connector.Error as err:
         return render_template('erro.html', mensagem=f'Erro ao buscar alunos: {err}')
+    
+@app.route('/nomes-proximos', methods=['GET','POST'])
+def pesquisar_nomes():
+    try:
+        conn = conectar()
+        cursor = conn.cursor(dictionary=True)
+        dados = request.json  # Acesse os dados enviados no corpo da solicitação
+        print(dados)
+        if dados['nome'].strip():  # Verifica se o valor não está vazio após remover espaços em branco
+            nome_inserido = dados['nome'].strip().upper()
+            cursor.execute('SELECT id , nome FROM pessoas WHERE nome LIKE %s', ('%' + nome_inserido + '%',))
+            nomes_encontrados = cursor.fetchall()
+            nomes_semelhantes = [nome['nome'] for nome in nomes_encontrados]
+            return jsonify(nomes_semelhantes)  # Certifique-se de que está retornando JSON
+    except mysql.connector.Error as err:
+        return render_template('erro.html', mensagem=f'Erro ao buscar dados: {err}') 
 # Rota para exibir o formulário de adicionar aluno
 @app.route('/alunos-form')
 def aluno_form():
     try:
         conn = conectar()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT id, nome FROM pessoas')
-        pessoas = cursor.fetchall()
+        cursor = conn.cursor(dictionary=True)      
         cursor.execute('SELECT id, nome FROM secretarias')
         secretarias = cursor.fetchall()
-        return render_template('alunos-form.html', pessoas=pessoas, secretarias=secretarias)
+        return render_template('alunos-form.html',  secretarias=secretarias)
     except mysql.connector.Error as err:
         return render_template('erro.html', mensagem=f'Erro ao buscar dados: {err}')
 # Rota para adicionar um novo aluno
@@ -141,10 +192,10 @@ def add_aluno():
         cursor = conn.cursor()
         ra = request.form['ra']
         status = request.form['status']
-        id_pessoa = request.form['id_pessoa']
+       
         id_secretaria = request.form['id_secretaria']
         cursor.execute('INSERT INTO alunos (ra, status, id_pessoa, id_secretaria) VALUES (%s, %s, %s, %s)', 
-                       (ra, status, id_pessoa, id_secretaria))
+                       (ra, status, id_secretaria))
         conn.commit()
         return redirect(url_for('alunos'))
     except mysql.connector.Error as err:

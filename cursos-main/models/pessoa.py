@@ -28,6 +28,69 @@ def add_pessoa(conn):
         cursor.execute('INSERT INTO pessoas (nome, cpf, data_nasc, endereco, sexo, nome_social, criado_em) VALUES (%s, %s, %s, %s, %s,%s,%s )', 
                        (nome, cpf, data_nasc, endereco, sexo, nome_social, datetime.now()))
         conn.commit()
-        return
     except mysql.connector.Error as err:
         return f'Erro ao adicionar pessoa: {err}'
+
+
+def edit_pessoa(conn,pessoa_id):
+    cursor = conn.cursor(dictionary=True)
+    if request.method =='POST':
+      try:
+        new_nome = request.form['new_nome'].upper()
+        new_cpf = request.form['new_cpf']
+        new_data_nasc = request.form['new_data_nasc']
+        new_endereco = request.form['new_endereco']
+        new_nome_social = request.form['new_nome_social']
+        new_nome_social = new_nome_social or None
+        if new_nome_social is None:
+            new_nome_social = 'None'
+
+        query='''UPDATE pessoas
+                SET nome = %s,
+                    cpf = %s,
+                    data_nasc = %s,
+                    endereco = %s,
+                    nome_social = %s,
+                    modificado_em = %s
+                WHERE id = %s'''
+        cursor.execute(query,(new_nome, new_cpf, new_data_nasc, new_endereco, new_nome_social, datetime.now(), pessoa_id ))
+        conn.commit()
+        print('Estou enviando')
+
+      except mysql.connector.Error as err:
+            print ('Erro ao editar pessoa: {err}')
+            conn.rollback()
+      finally:
+            cursor.close()
+            conn.close()
+
+
+def resultado_pesquisa(conn): 
+    nome = request.form['nome']
+    cpf = request.form['cpf']
+    try:
+      
+        cursor = conn.cursor(dictionary=True)
+        query = '''SELECT
+                    id,
+                    nome,
+                    cpf,
+                    data_nasc,
+                    endereco,
+                    sexo,
+                    nome_social
+                    FROM pessoas 
+                 WHERE 
+                    deletado_em IS NULL '''
+        if nome:
+            query += ' AND pessoas.nome LIKE  %s'
+            cursor.execute(query,(f'%{nome.upper()}%',))
+        if cpf:
+            query += ' AND pessoas.cpf LIKE %s'
+            cursor.execute(query,(f'%{cpf}%',))
+
+        pessoa = cursor.fetchall()
+        return pessoa
+    except mysql.connector.Error as err:
+        return f'Erro ao buscar alunos: {err}'
+    

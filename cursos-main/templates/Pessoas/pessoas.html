@@ -45,6 +45,7 @@
                 <td>{{ pessoa.sexo }}</td>
                 <td>{{ pessoa.nome_social }}</td>
                 <td><a href="/editar-valores-pessoas/{{ pessoa.id }}">Editar</a></td>
+                <td><a href="/excluir-pessoa/{{ pessoa.id }}">Excluir</a></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -53,7 +54,7 @@
     <a href="/pessoas-form">Adicionar Pessoa</a>
 </body>
     <script>
-        
+
     </script>
 
 </html>
