@@ -22,7 +22,7 @@
         <label for="id_pessoa">Pessoa:</label>
         <input list="nomes-datalist" id="nomes" name="">
         <datalist id="nomes-datalist">
-            <option value="" style="display: none;">1</option>
+            <option id="valor-id-pessoa" value="" style="display: none;" ></option>
         </datalist>
         <label for="id_secretaria">Secretaria:</label>
         <select id="id_secretaria" name="id_secretaria">
@@ -43,13 +43,17 @@
             }
         })
 
+        let id_pessoa_input = document.getElementById("valor-id-pessoa")
+
         //Lógica para mostrar uma lista com sugestões de nomes próximos ao valor que está sendo inserido no input
         document.getElementById("nomes").addEventListener("input", function () {
             let nome = this.value.trim();
-            let sugestoesDatalist = document.getElementById("nomes-datalist");
-            console.log(sugestoesDatalist)
+            
             console.log(nome);
-            if (nome.length === 4) {
+            if (nome.length >= 4) {
+                let sugestoesDatalist = document.getElementById("nomes-datalist");
+               
+                console.log(id_pessoa_input)
                 fetch("/nomes-proximos?nome=" + nome, { // Correção da URL
                     method: "POST", // Correção do método de solicitação
                     headers: {
@@ -60,29 +64,37 @@
                     .then(response => response.json())
                     .then(sugestoes => {
                         console.log(sugestoes)
-                        
-                        sugestoesDatalist.innerHTML = ""; // Limpar sugestões anteriores
 
+                        sugestoesDatalist.innerHTML = ""; // Limpar sugestões anteriores
+                        
                         sugestoes.forEach(function (sugestao) {
                             let sugestaoElemento = document.createElement("option");
+                            sugestaoElemento.style.color = 'green'
                             sugestaoElemento.id = sugestao[0]
-                            sugestaoElemento.value = sugestao[1];
+                            sugestaoElemento.value = sugestao[1];                            
                             sugestoesDatalist.appendChild(sugestaoElemento);
+                            console.log(sugestaoElemento)
+                            if(nome === sugestaoElemento.value){
+                                console.log('Encontrei')
+                                id_pessoa_input.id =  sugestaoElemento.id
+                                id_pessoa_input.value = sugestaoElemento.value
+                                console.log(id_pessoa_input)
+                            }
                         });
 
+                       
                     })
                     .catch(error => {
                         console.error("Erro ao obter sugestões de pessoas:", error);
                     });
-                    sugestoesDatalist.addEventListener('click', (ev)=>{
-                        console.log(ev)
-                    })
-
+                    
+    
             } else {
                 console.log('Valor não encontrado')
             }
 
         });
+
     </script>
 
 

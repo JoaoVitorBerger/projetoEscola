@@ -36,3 +36,6 @@ O banco de dados MySQL possui as seguintes tabelas:
 DIA 28/03/2024
 Feitos até agora
 criação das páginas de inserção de secretarias, pessoas e trabalhando na inserção de alunos, a parte de visualização de alunos. modularizei pessoas e secretarias, logo logo irei modularizar alunos e fechar essa parte também
+
+DIA 01/04/2024
+Feitos até agora. Estou trabalhando em uma ferramenta em alunos que pesquisa os valores em um campo input e retorna um datalist(lista) com os nomes próximos ao pesquisado, está na aba alunos-form a criação da lógica e na rota nomes-proximos no arquivo app.py
