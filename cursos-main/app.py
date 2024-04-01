@@ -147,6 +147,7 @@ def excluir_pessoa():
      
     
 # Rota para visualizar todos os alunos
+    #LEMBRAR DE TRAZER O ID DO NOME DO DATALIST QUE SERÁ INSERIDO
 @app.route('/alunos', methods=['POST'])
 def alunos():
     try:
@@ -169,7 +170,7 @@ def pesquisar_nomes():
             nome_inserido = dados['nome'].strip().upper()
             cursor.execute('SELECT id , nome FROM pessoas WHERE nome LIKE %s', ('%' + nome_inserido + '%',))
             nomes_encontrados = cursor.fetchall()
-            nomes_semelhantes = [nome['nome'] for nome in nomes_encontrados]
+            nomes_semelhantes = [(nome['id'], nome['nome']) for nome in nomes_encontrados]
             return jsonify(nomes_semelhantes)  # Certifique-se de que está retornando JSON
     except mysql.connector.Error as err:
         return render_template('erro.html', mensagem=f'Erro ao buscar dados: {err}') 
@@ -192,7 +193,9 @@ def add_aluno():
         cursor = conn.cursor()
         ra = request.form['ra']
         status = request.form['status']
-       
+        valor_nome_pessoa = request.form['nomes'].upper()
+        id_pessoa = request.form.get('nomes')
+        print(id_pessoa, valor_nome_pessoa)
         id_secretaria = request.form['id_secretaria']
         cursor.execute('INSERT INTO alunos (ra, status, id_pessoa, id_secretaria) VALUES (%s, %s, %s, %s)', 
                        (ra, status, id_secretaria))

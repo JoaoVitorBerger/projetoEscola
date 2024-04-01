@@ -20,9 +20,9 @@
             <option value="0">Inativo</option>
         </select><br><br>
         <label for="id_pessoa">Pessoa:</label>
-        <input list="nomes-datalist" id="nomes">
+        <input list="nomes-datalist" id="nomes" name="">
         <datalist id="nomes-datalist">
-
+            <option value="" style="display: none;">1</option>
         </datalist>
         <label for="id_secretaria">Secretaria:</label>
         <select id="id_secretaria" name="id_secretaria">
@@ -45,38 +45,47 @@
 
         //Lógica para mostrar uma lista com sugestões de nomes próximos ao valor que está sendo inserido no input
         document.getElementById("nomes").addEventListener("input", function () {
-           
             let nome = this.value.trim();
-            console.log(nome.length);
-            if(nome.length === 4){
+            let sugestoesDatalist = document.getElementById("nomes-datalist");
+            console.log(sugestoesDatalist)
+            console.log(nome);
+            if (nome.length === 4) {
                 fetch("/nomes-proximos?nome=" + nome, { // Correção da URL
-                method: "POST", // Correção do método de solicitação
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ nome: nome })
-            })
-                .then(response => response.json())
-                .then(sugestoes => {
-                    let sugestoesDatalist = document.getElementById("nomes-datalist");
-                    sugestoesDatalist.innerHTML = ""; // Limpar sugestões anteriores
-
-                    sugestoes.forEach(function (sugestao) {
-                        let sugestaoElemento = document.createElement("option");
-                        sugestaoElemento.value = sugestao;
-                        sugestoesDatalist.appendChild(sugestaoElemento);
-                    });
+                    method: "POST", // Correção do método de solicitação
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ nome: nome })
                 })
-                .catch(error => {
-                    console.error("Erro ao obter sugestões de pessoas:", error);
-                });
-            }else{
+                    .then(response => response.json())
+                    .then(sugestoes => {
+                        console.log(sugestoes)
+                        
+                        sugestoesDatalist.innerHTML = ""; // Limpar sugestões anteriores
+
+                        sugestoes.forEach(function (sugestao) {
+                            let sugestaoElemento = document.createElement("option");
+                            sugestaoElemento.id = sugestao[0]
+                            sugestaoElemento.value = sugestao[1];
+                            sugestoesDatalist.appendChild(sugestaoElemento);
+                        });
+
+                    })
+                    .catch(error => {
+                        console.error("Erro ao obter sugestões de pessoas:", error);
+                    });
+                    sugestoesDatalist.addEventListener('click', (ev)=>{
+                        console.log(ev)
+                    })
+
+            } else {
                 console.log('Valor não encontrado')
             }
-            
+
         });
-</script>
-    
+    </script>
+
 
 </body>
+
 </html>
