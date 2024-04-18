@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+
+  <h1>Pesquisar Turmas</h1>
+  <form action="/resultado-pesquisa-turma" method="POST">
+      <label for="nome">Nome da turma:</label>
+      <input type="text" id="nome_turma" name="nome_turma"><br><br>
+      <label for="data_inicio">Data de Inicio:</label>
+      <input type="date" name="data_inicio" id="data_inicio">
+      <br>
+      <br>
+      <label for="data_fim">Data de Término:</label>
+      <input type="date" name="data_fim" id="data_fim"> 
+      <br>
+      <br>
+      <label for="nome">Nome do curso:</label>
+      <input type="text" id="nome_curso" name="nome_curso"><br><br>
+      <input type="submit" value="Pesquisar">
+  </form>
+  
+  <a href="/turmas-form">Adicionar Turma</a> <br>
+  <a href="/">Menu</a> <br>
+  <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+<script>
+
+  
+  
+  document.querySelector('form').addEventListener('submit', (ev)=>{
+    let nome_turma = document.getElementById('nome_turma').value;
+    let data_fim = document.getElementById('data_fim').value;
+    let data_inicio = document.getElementById('data_inicio').value;
+    let nome_curso = document.getElementById('nome_curso').value;
+
+    if(nome_turma || data_fim || data_inicio || nome_curso !== ""){
+     
+    } else {
+        alert('Os campos de pesquisa necessitam conter algum valor para que ocorra a pesquisa');
+        ev.preventDefault();
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Adição de Professor</title>
+</head>
+<body>
+    <h1>Adicionar Novo Professor</h1>
+    <form action="/professores" method="POST">
+        <label for="status">Status:</label>
+        <select id="status" name="status">
+            <option value="1" selected>Ativo</option>
+            <option value="0">Inativo</option>
+        </select><br><br>
+        <label for="id_pessoa">Pessoa:</label>
+        <input list="nomes-datalist" id="nomes" >
+        <input list="nomes-datalist" type="hidden" id="valor-id-pessoa" name="id_pessoa_hidden" value="">
+        <datalist id="nomes-datalist"></datalist>
+        </select><br><br>
+        <label for="id_secretaria">Secretaria:</label>
+        <select id="id_secretaria" name="id_secretaria">
+            {% for secretaria in secretarias %}
+                <option value="{{ secretaria.id }}">{{ secretaria.nome }}</option>
+            {% endfor %}
+        </select><br><br>
+        <input type="submit" value="Adicionar Professor">
+    </form>
+    <a href="/professores">Pesquisar Professores</a> <br>
+    <a href="/">Menu</a> <br>
+    <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+    <script>
+        let id_professor = document.getElementById("valor-id-pessoa")
+
+        document.querySelector('form').addEventListener('submit', (ev)=>{
+            console.log('click')
+            let nomes = document.getElementById('nomes').value
+            console.log( nomes)
+            if(nomes != ''){
+                alert('Valores enviados com sucesso')
+            }
+            else{
+                ev.preventDefault()
+                alert('Os campos precisam ser preenchidos')
+            }})
+
+
+        document.getElementById("nomes").addEventListener("input", function () {
+            let nome = this.value.trim();
+            
+            console.log(nome);
+            if (nome.length >= 4) {
+                let sugestoesDatalist = document.getElementById("nomes-datalist");
+               
+                fetch("/nomes-proximos?nome=\"" + nome + "\"", { // Correção da URL
+                    method: "POST", // Correção do método de solicitação
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ nome: nome })
+                })
+                    .then(response => response.json())
+                    .then(sugestoes => {
+                        console.log(sugestoes)
+
+                        sugestoesDatalist.innerHTML = ""; // Limpar sugestões anteriores
+                        
+                        sugestoes.forEach(function (sugestao) {
+                            let sugestaoElemento = document.createElement("option");
+                            sugestaoElemento.id = sugestao[0]
+                            sugestaoElemento.value = sugestao[1];                            
+                            sugestoesDatalist.appendChild(sugestaoElemento);
+                            console.log(sugestaoElemento.id)
+                            if(nome === sugestaoElemento.value){
+                                console.log('Encontrei')
+                                id_professor.value = sugestaoElemento.id
+                                console.log(id_professor)
+                            }
+                            
+                        });
+                        
+                       
+                    })
+                    .catch(error => {
+                        console.error("Erro ao obter sugestões de pessoas:", error);
+                    });
+                    
+    
+            } else {
+                console.log('Valor não encontrado')
+            }
+
+        });    
+    </script>
+
+ 
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Adição de Aluno</title>
+</head>
+
+<body>
+
+    <h1>Adicionar Novo Aluno</h1>
+    <form action="/alunos-envio" method="POST">
+        <label for="ra">RA:</label>
+        <input type="text" id="ra" name="ra" maxlength="6"><br><br>
+        <label for="status">Status:</label>
+        <select id="status" name="status">
+            <option value="1" selected>Ativo</option>
+            <option value="0">Inativo</option>
+        </select><br><br>
+        <label for="id_pessoa">Pessoa:</label>
+        <input list="nomes-datalist" id="nomes" >
+        <input list="nomes-datalist" type="hidden" id="valor-id-pessoa" name="id_pessoa_hidden" value="">
+        <datalist id="nomes-datalist">
+            
+        </datalist>
+        <label for="id_secretaria">Secretaria:</label>
+        <select id="id_secretaria" name="id_secretaria">
+            {% for secretaria in secretarias %}
+            <option value="{{ secretaria.id }}">{{ secretaria.nome }}</option>
+            {% endfor %}
+        </select><br><br>
+        <input type="submit" value="Adicionar Aluno">
+    </form>
+
+    <a href="/alunos-pesquisa">Pesquisar alunos</a> <br>
+    <a href="/">Menu</a> <br>
+    <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+
+    <script>
+
+        let input = document.getElementById('ra')
+        input.addEventListener('input', (event) => {
+            let input = event.target.value
+            if (isNaN(input)) {
+                event.target.value = input.slice(0, 0)
+            }
+        })
+
+        let id_pessoa_input = document.getElementById("valor-id-pessoa")
+
+        document.querySelector('form').addEventListener('submit', (ev)=>{
+            console.log('click')
+            let nome = document.getElementById('nomes').value
+            let ra = document.getElementById('ra').value
+            console.log(typeof nome)
+            console.log(ra)
+
+            if(nome && ra != ''){
+                alert('Valores enviados com sucesso')
+            }
+            else{
+                ev.preventDefault()
+                alert('Os campos precisam ser preenchidos')
+            }
+        })
+
+        //Lógica para mostrar uma lista com sugestões de nomes próximos ao valor que está sendo inserido no input
+        document.getElementById("nomes").addEventListener("input", function () {
+            let nome = this.value.trim();
+            
+            console.log(nome);
+            if (nome.length >= 5) {
+                let sugestoesDatalist = document.getElementById("nomes-datalist");
+               
+                console.log(id_pessoa_input)
+                fetch("/nomes-proximos?nome=\"" + nome + "\"", { // Correção da URL
+                    method: "POST", // Correção do método de solicitação
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ nome: nome })
+                })
+                    .then(response => response.json())
+                    .then(sugestoes => {
+                        console.log(sugestoes)
+
+                        sugestoesDatalist.innerHTML = ""; // Limpar sugestões anteriores
+                        
+                        sugestoes.forEach(function (sugestao) {
+                            let sugestaoElemento = document.createElement("option");
+                            sugestaoElemento.id = sugestao[0]
+                            sugestaoElemento.value = sugestao[1];                            
+                            sugestoesDatalist.appendChild(sugestaoElemento);
+                            console.log(sugestaoElemento.id)
+                            if(nome === sugestaoElemento.value){
+                                console.log('Encontrei')
+                                id_pessoa_input.value = sugestaoElemento.id
+                                console.log(id_pessoa_input)
+                            }
+                            
+                        });
+                        
+                       
+                    })
+                    .catch(error => {
+                        console.error("Erro ao obter sugestões de pessoas:", error);
+                    });
+                    
+    
+            } else {
+                console.log('Valor não encontrado')
+            }
+
+        });
+
+    </script>
+
+
+</body>
+
+</html>

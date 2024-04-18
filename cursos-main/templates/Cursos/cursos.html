@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Cursos</title>
+</head>
+<body>
+    <h1>Lista de Cursos</h1>
+    <form action="/resultado-pesquisa-cursos" method="POST">
+        <label for="nome_curso">Nome do Curso:</label>
+        <input type="text" id="nome_curso" name="nome_curso"><br><br>
+        
+        <label for="id_secretaria">Secretaria:</label>
+        <select id="id_secretaria" name="id_secretaria">
+            <option value="" style="text-align: center;"> ----- </option>
+            {% for secretaria in secretarias %}
+            <option value="{{ secretaria.id }}">{{ secretaria.nome }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <input type="submit" value="Pesquisar">
+    </form>
+    <a href="/cursos-form">Adicionar Cursos</a> <br>
+  <a href="/">Menu</a> <br>
+  <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+
+
+    
+</body>
+</html>

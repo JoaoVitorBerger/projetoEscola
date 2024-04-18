@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado da Pesquisa</title>
+</head>
+<body>
+    <h1>Resultado da Pesquisa</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                
+                <th>Nome</th>
+            
+                <th>CPF</th>
+                <th>Data de Nascimento</th>
+                <th>Secretaria</th>
+                <th>Ajustar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for professor in professores %}
+            
+            <tr>
+                <td style="display: none;">{{ professor.id }}</td>
+                <td>{{ professor.nome }}</td>
+                <td>{{ professor.cpf }}</td>
+                <td>{{ professor.data_nasc }}</td>
+                <td>{{ professor.secretaria_nome }}</td>
+                <td><a href="/editar-valores-professores/{{ professor.id }}/{{professor.id_professor}}">Editar</a></td>
+                <td><a class="deleteButton"  data-id-professor ="{{professor.id_professor}}" href="#">Excluir</a></td>
+            </tr>
+            
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <a href="/professores-form">Adicionar Professores</a> <br>
+    <a href="/">Menu</a> <br>
+    <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+    
+
+    <script>
+        let deleteButtons = document.querySelectorAll('.deleteButton');
+        
+        
+        // Itera sobre todos os botões
+        deleteButtons.forEach(function(button) {
+          // Adiciona um evento de clique a cada botão
+          button.addEventListener('click', function(event) {
+            // Impede o comportamento padrão do link
+            event.preventDefault();
+
+            let confirmarExclusao = confirm('Deseja relamente excluir esse professor')
+            if(confirmarExclusao){
+               // Pega o ID da secretaria do atributo 'data-secretaria-id' do botão clicado
+            
+            let professorId  = this.getAttribute('data-id-professor');
+            
+            // Envia o ID da secretaria para o servidor Flask
+            fetch('/excluir-professores', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({professor_id: professorId})
+            }).then(response => {
+                // Lida com a resposta do servidor, se necessário
+                console.log(response)
+                alert('Professor excluido com sucesso')
+                // Voltando para o início
+                window.location.href = '/';
+            }).catch(error => {
+                console.error('Erro ao excluir professor:', error);
+            });
+            }else{
+              console.log('exclusão cancelada')
+            }
+           
+          });
+        });
+    </script>
+</body>
+</html>

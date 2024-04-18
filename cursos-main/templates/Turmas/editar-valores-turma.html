@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Editar valores Turma</h1>
+  <form action="" method="POST">
+      <label for="nome">Nome:</label>
+      <input type="text" id="novo_nome" name="novo_nome"><br><br>
+      <label for="descricao">Descrição:</label>
+      <textarea id="nova_descricao" name="nova_descricao"></textarea><br><br>
+      <label for="capacidade">Capacidade:</label>
+      <input type="number" id="nova_capacidade" name="nova_capacidade"><br><br>
+      <label for="data_inicio">Data de Início:</label>
+      <input type="date" id="nova_data_inicio" name="nova_data_inicio"><br><br>
+      <label for="data_fim">Data de Término:</label>
+      <input type="date" id="nova_data_fim" name="nova_data_fim"><br><br>
+      <label for="id_curso">Curso:</label>
+      <select id="id_curso" name="id_curso">
+          {% for curso in cursos %}
+              <option value="{{ curso.id }}">{{ curso.nome }}</option>
+          {% endfor %}
+      </select><br><br>
+      <input type="submit" value="Adicionar Turma">
+  </form>
+
+  <a href="/turmas-pesquisa">Pesquisar Turmas</a> <br>
+  <a href="/">Menu</a> <br>
+  <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+
+  <script>
+     document.querySelector('form').addEventListener('submit', (ev)=>{
+            console.log('click')
+            let novo_nome = document.getElementById('novo_nome').value
+            let nova_descricao = document.getElementById('nova_descricao').value
+            let nova_capacidade = document.getElementById('nova_capacidade').value
+            let nova_data_inicio = document.getElementById('nova_data_inicio').value
+            let nova_data_fim = document.getElementById('nova_data_fim').value
+            console.log(typeof data)
+           
+            if(novo_nome && nova_descricao && nova_capacidade && nova_data_inicio && nova_data_fim  != ''){
+                alert('Valores enviados com sucesso')
+            }
+            else{
+                ev.preventDefault()
+                alert('Todos os campos precisam ser preenchidos')
+            }
+        })
+  </script>
+</body>
+</html>

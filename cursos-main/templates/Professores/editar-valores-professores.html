@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+</head>
+<body>
+  <h1>Editar Valores Professor</h1>
+  <form action="" method="post">
+      <label for="nome">Nome:</label><br>
+      <input type="text" id="new_nome_professor" name="new_nome_professor" placeholder="Campo obrigatorio"><br>
+      <label for="cpf">CPF:</label><br>
+      <input type="text" id="new_cpf_professor" name="new_cpf_professor" maxlength="11" minlength="11"  placeholder="Campo obrigatorio"><br>
+      <label for="data_nasc">Data de Nascimento:</label><br>
+      <input type="date" id="new_data_nasc_professor" name="new_data_nasc_professor" placeholder="Campo obrigatorio"><br>
+      <select id="id_secretaria" name="id_secretaria">
+        {% for secretaria in secretarias_valores %}
+            <option value="{{ secretaria.id }}">{{ secretaria.nome }}</option>
+        {% endfor %}
+    </select>
+      
+      <input type="submit" value="Alterar valores" id="new_btn-adicionar">
+  </form>
+
+  <a href="/professores-form">Adicionar Professor</a> <br>
+    <a href="/">Menu</a> <br>
+    <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+
+  <script>
+        let input = document.getElementById('new_cpf_professor')
+        input.addEventListener('input', (event)=>{   
+        let valoresFiltrados= event.target.value.replace(/[\sa-zA-Z]/g,"")
+        event.target.value = valoresFiltrados
+    })
+
+    let name = document.getElementById('new_nome_professor')
+        name.addEventListener('input', (event)=>{
+        let valoresFiltrados= event.target.value.replace(/[\s0-9]/g, "")
+        event.target.value = valoresFiltrados
+    })
+
+
+    let camposObrigatorios = document.querySelectorAll('input')
+    let botaoEnviar = document.getElementById('new_btn-adicionar')
+    let array = []
+    botaoEnviar.addEventListener('click',(ev)=>{
+        camposObrigatorios.forEach((el=>{
+            console.log(el.value)
+            if(el.value !== '' && el.id !== 'new_btn-adicionar' && el.id !=='new_nome_social'){
+                console.log(el)
+                array.push(el)
+            }
+        }))
+        if(array.length == 3){
+            alert('Dados enviados com sucesso')
+           
+        }else{
+            alert('Verifique se todos os campos estão preenchidos') 
+            ev.preventDefault()
+        }
+        array = []
+    })
+  </script>

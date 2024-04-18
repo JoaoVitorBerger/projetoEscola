@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Aluno</title>
+</head>
+<body>
+    <h1>Editar Cursos</h1>
+
+    <form action="" method="POST">
+      <label for="nome">Nome do Curso:</label>
+      <input type="text" id="nome" name="nome_curso"><br><br>
+      <label for="descricao">Descrição:</label><br>
+      <textarea id="descricao" name="descricao" rows="4" cols="50"></textarea><br><br>
+      <label for="id_secretaria">Secretaria:</label>
+      <select id="id_secretaria" name="id_secretaria">
+          {% for secretaria in secretarias %}
+              <option value="{{ secretaria.id }}">{{ secretaria.nome }}</option>
+          {% endfor %}
+      </select><br><br>
+      <input type="submit" value="Adicionar Curso">
+  </form>
+
+  
+  <a href="/cursos-form">Adicionar Curso</a> <br>
+  <a href="/">Menu</a> <br>
+  <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+  
+  <script>
+        document.querySelector('form').addEventListener('submit', (ev)=>{
+          console.log('click')
+          let nome_curso = document.getElementById('nome').value
+          let descricao_curso = document.getElementById('descricao').value
+          if(nome_curso && descricao_curso != ''){
+              alert('Valores enviados com sucesso')
+          }
+          else{
+              ev.preventDefault()
+              alert('Os campos precisam ser preenchidos')
+          }})
+  </script>
+  
+</body>
+</html>

@@ -1,49 +1,45 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<html>
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário de Adição de Aluno</title>
+    <title>Formulário de Adição de Inscrição</title>
 </head>
-
 <body>
-
-    <h1>Adicionar Novo Aluno</h1>
-    <form action="/alunos" method="POST">
-        <label for="ra">RA:</label>
-        <input type="text" id="ra" name="ra" maxlength="6"><br><br>
+    <h1>Adicionar Nova Inscrição</h1>
+    <form action="/inscricoes" method="POST">
         <label for="status">Status:</label>
         <select id="status" name="status">
             <option value="1" selected>Ativo</option>
             <option value="0">Inativo</option>
         </select><br><br>
         <label for="id_pessoa">Pessoa:</label>
-        <input list="nomes-datalist" id="nomes" name="">
-        <datalist id="nomes-datalist">
-            <option id="valor-id-pessoa" value="" style="display: none;" ></option>
-        </datalist>
+        <input list="nomes-datalist" id="nomes" >
+        <input list="nomes-datalist" type="hidden" id="valor-id-pessoa" name="id_pessoa_hidden" value="">
+        <datalist id="nomes-datalist"></datalist>
         <label for="id_secretaria">Secretaria:</label>
         <select id="id_secretaria" name="id_secretaria">
             {% for secretaria in secretarias %}
-            <option value="{{ secretaria.id }}">{{ secretaria.nome }}</option>
+                <option value="{{ secretaria.id }}">{{ secretaria.nome }}</option>
             {% endfor %}
         </select><br><br>
-        <input type="submit" value="Adicionar Aluno">
+        <input type="submit" value="Adicionar Inscrição">
     </form>
 
     <script>
 
-        let input = document.getElementById('ra')
-        input.addEventListener('input', (event) => {
-            let input = event.target.value
-            if (isNaN(input)) {
-                event.target.value = input.slice(0, 0)
+        let id_pessoa_input = document.getElementById("valor-id-pessoa")
+
+         document.querySelector('form').addEventListener('submit', (ev)=>{
+            let nome = document.getElementById('nomes').value
+            if(nome!= ''){
+                alert('Valores enviados com sucesso')
+            }
+            else{
+                ev.preventDefault()
+                alert('Os campos precisam ser preenchidos')
             }
         })
-
-        let id_pessoa_input = document.getElementById("valor-id-pessoa")
 
         //Lógica para mostrar uma lista com sugestões de nomes próximos ao valor que está sendo inserido no input
         document.getElementById("nomes").addEventListener("input", function () {
@@ -53,8 +49,8 @@
             if (nome.length >= 4) {
                 let sugestoesDatalist = document.getElementById("nomes-datalist");
                
-                console.log(id_pessoa_input)
-                fetch("/nomes-proximos?nome=" + nome, { // Correção da URL
+            
+                fetch("/nomes-proximos-pessoas?nome=\"" + nome + "\"", { // Correção da URL
                     method: "POST", // Correção do método de solicitação
                     headers: {
                         "Content-Type": "application/json"
@@ -69,19 +65,18 @@
                         
                         sugestoes.forEach(function (sugestao) {
                             let sugestaoElemento = document.createElement("option");
-                            sugestaoElemento.style.color = 'green'
-                            sugestaoElemento.id = sugestao[0]
+                            sugestaoElemento.id = sugestao[2]
                             sugestaoElemento.value = sugestao[1];                            
                             sugestoesDatalist.appendChild(sugestaoElemento);
-                            console.log(sugestaoElemento)
+                            console.log(sugestaoElemento.id)
                             if(nome === sugestaoElemento.value){
                                 console.log('Encontrei')
-                                id_pessoa_input.id =  sugestaoElemento.id
-                                id_pessoa_input.value = sugestaoElemento.value
+                                id_pessoa_input.value = sugestaoElemento.id
                                 console.log(id_pessoa_input)
                             }
+                            
                         });
-
+                        
                        
                     })
                     .catch(error => {
@@ -94,10 +89,6 @@
             }
 
         });
-
     </script>
-
-
 </body>
-
 </html>

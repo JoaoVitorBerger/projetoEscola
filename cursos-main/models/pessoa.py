@@ -1,6 +1,7 @@
 import mysql.connector
 from flask import request
 from datetime import datetime
+from unidecode import unidecode
 
 
 
@@ -16,7 +17,7 @@ def exibir_pessoas(conn):
 def add_pessoa(conn):
     try:
         cursor = conn.cursor()
-        nome = request.form['nome'].upper()
+        nome = unidecode(request.form['nome'].upper())
         cpf = request.form['cpf']
         data_nasc = request.form['data_nasc']
         endereco = request.form['endereco'].upper()
@@ -50,10 +51,9 @@ def edit_pessoa(conn,pessoa_id):
                     cpf = %s,
                     data_nasc = %s,
                     endereco = %s,
-                    nome_social = %s,
-                    modificado_em = %s
+                    nome_social = %s
                 WHERE id = %s'''
-        cursor.execute(query,(new_nome, new_cpf, new_data_nasc, new_endereco, new_nome_social, datetime.now(), pessoa_id ))
+        cursor.execute(query,(new_nome, new_cpf, new_data_nasc, new_endereco, new_nome_social, pessoa_id ))
         conn.commit()
         print('Estou enviando')
 
@@ -82,12 +82,14 @@ def resultado_pesquisa(conn):
                     FROM pessoas 
                  WHERE 
                     deletado_em IS NULL '''
+        params = ()
         if nome:
             query += ' AND pessoas.nome LIKE  %s'
-            cursor.execute(query,(f'%{nome.upper()}%',))
+            params+= (f'%{nome.upper()}%',)
         if cpf:
             query += ' AND pessoas.cpf LIKE %s'
-            cursor.execute(query,(f'%{cpf}%',))
+            params+=(f'%{cpf}%',)
+        cursor.execute(query, params) 
 
         pessoa = cursor.fetchall()
         return pessoa

@@ -27,24 +27,41 @@
     </form>
 
 
-
+    
+    <a href="/">Menu</a> <br>
+    <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
 
 
     <script>
-          let input = document.getElementById('ra')
-    input.addEventListener('input', (event)=>{
+        document.getElementById('new_ra').addEventListener('input', (event)=>{
         let input = event.target.value   
         if(isNaN(input)){
             event.target.value = input.slice(0,0)
         }
     })
-    let cpf = document.getElementById('cpf')
-    cpf.addEventListener('input', (event)=>{
+     document.getElementById('new_cpf').addEventListener('input', (event)=>{
         let input = event.target.value   
         if(isNaN(input)){
             event.target.value = input.slice(0,0)
         }
     })
+
+    document.querySelector('form').addEventListener('submit', (ev)=>{
+            console.log('click')
+            let nome = document.getElementById('new_nome').value
+            let cpf = document.getElementById('new_cpf').value
+            let ra = document.getElementById('new_ra').value
+            let data = document.getElementById('new_data_nasc').value
+            console.log(typeof data)
+           
+            if(nome && ra && cpf && data  != ''){
+                alert('Valores enviados com sucesso')
+            }
+            else{
+                ev.preventDefault()
+                alert('Os campos precisam ser preenchidos')
+            }
+        })
     </script>
   
 </body>
