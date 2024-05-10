@@ -20,7 +20,7 @@ def pesquisar_nomes_proximos(conn,dados):
 def formulario_adicionar_alunos(conn):
     try:
         cursor = conn.cursor(dictionary=True)      
-        cursor.execute('SELECT id, nome FROM secretarias')
+        cursor.execute('SELECT id, nome FROM secretarias WHERE deletado_em IS NULL')
         secretarias = cursor.fetchall()
         return secretarias
     except mysql.connector.Error as err:

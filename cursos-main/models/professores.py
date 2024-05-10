@@ -5,6 +5,7 @@ from datetime import datetime
 def resultados_professores_pesquisados(conn):
     
     nome = request.form['nome']
+    print(nome)
     cpf = request.form['cpf']
     try:
         
@@ -22,15 +23,16 @@ def resultados_professores_pesquisados(conn):
                     JOIN secretarias on secretarias.id = professores.id_secretaria
                 WHERE 
                     professores.deletado_em IS NULL '''
+        params = ()
         if nome:
-            query += ' AND pessoas.nome LIKE  %s'
-            cursor.execute(query,(f'%{nome.upper()}%',))
+            query += '  AND pessoas.nome LIKE %s'
+            params += (f'%{nome}%',)
         if cpf:
-            query += ' AND pessoas.cpf LIKE %s'
-            cursor.execute(query,(f'%{cpf}%',))
-      
+            query += '  AND pessoas.cpf = %s'
+            params += (cpf,)
 
-   
+        cursor.execute(query, params) 
+          
         professores = cursor.fetchall()
         return professores
     except mysql.connector.Error as err:
@@ -93,7 +95,7 @@ def enviar_valores_professores(conn):
     try:
         cursor = conn.cursor()
         status = request.form['status']
-        id_pessoa = request.form['id_pessoa_hidden']
+        id_pessoa = request.form['id_professor_hidden']
         id_secretaria = request.form['id_secretaria']
         cursor.execute('INSERT INTO professores (status, id_pessoa, id_secretaria,criado_em) VALUES ( %s, %s, %s, %s)', 
                        ( status,id_pessoa,id_secretaria, datetime.now()))
@@ -105,8 +107,18 @@ def enviar_valores_professores(conn):
 def selecionar_secretaria(conn):
     try:
         cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT id, nome FROM secretarias')
+        cursor.execute('SELECT id, nome FROM secretarias WHERE deletado_em IS NULL')
         secretarias = cursor.fetchall()
         return secretarias
     except mysql.connector.Error as err:
         return f'Erro ao buscar dados: {err}'
+    
+
+def exibir_formulario_professores(conn):
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute('SELECT id, nome FROM secretarias WHERE deletado_em IS NULL')
+        secretarias = cursor.fetchall()
+        return secretarias 
+    except mysql.connector.Error as err:
+        return 'Erro ao buscar dados: {err}'

@@ -2,6 +2,7 @@
 import mysql.connector
 from flask import redirect, request, url_for,jsonify
 from datetime import datetime
+from unidecode import unidecode
 
 # Rota para exibir secretarias
 def secretarias(conn):
@@ -30,14 +31,13 @@ def secretarias(conn):
       return f'Erro ao buscar secretarias: {err}'
     
 # Rota para exibir o formulário de adicionar secretaria
-def secretaria_form(conn):
-    return
+
 
 # Rota para adicionar uma nova secretaria
 def add_secretaria(conn):
     try:
         cursor = conn.cursor()
-        nome = request.form['nome'].upper()
+        nome = unidecode(request.form['nome'].upper())
         data_criacao = datetime.now()  # Obtém a data e hora atuais
         cursor.execute('INSERT INTO secretarias (nome, criado_em) VALUES (%s, %s)', (nome, data_criacao))
         conn.commit()

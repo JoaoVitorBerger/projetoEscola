@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+    <h1>Resultado pesquisas matriculas</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nome aluno</th>
+                <th>CPF</th>
+                <th>RA</th>
+                <th>Curso</th>
+                <th>Descrição do Curso</th>
+                <th>Nome da Turma</th>
+                <th>Descrição da Turma</th>
+                <th>Início</th>
+                <th>Fim</th>
+                <th>Status</th>
+               
+            </tr>
+        </thead>
+        <tbody>
+            {% for matricula in matriculas %}
+            
+            <tr>
+        
+                
+                <td>{{ matricula.nome_pessoa }}</td>
+                <td>{{ matricula.cpf }}</td>
+                <td>{{ matricula.ra }}</td>
+                <td>{{ matricula.nome_curso }}</td> 
+                <td>{{ matricula.descricao_curso }}</td>  
+                <td>{{ matricula.nome_turma }}</td>  
+                <td>{{ matricula.descricao_turma }}</td>
+                <td>{{ matricula.data_inicio }}</td>
+                <td>{{ matricula.data_fim }}</td>
+                <td>{{ matricula.status_matricula }}</td>  
+                <td><a href="/editar-valores-matriculas/{{ matricula.id_matricula}}">Editar</a></td>
+                <td><a class="deleteButton" data-matricula-id="{{ matricula.id_matricula }}" href="#">Excluir</a></td>
+                
+            </tr>
+            
+            {% endfor %}
+        </tbody>
+    </table>
+    
+</table>
+
+  <a href="/matriculas-form">Adicionar matriculas</a> <br>
+  <a href="/">Menu</a> <br>
+  <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+  
+<script>
+    let deleteButtons = document.querySelectorAll('.deleteButton');
+        
+        
+        // Itera sobre todos os botões
+        deleteButtons.forEach(function(button) {
+          // Adiciona um evento de clique a cada botão
+          button.addEventListener('click', function(event) {
+            // Impede o comportamento padrão do link
+            event.preventDefault();
+
+            let confirmarExclusao = confirm('Deseja relamente excluir essa matricula')
+            if(confirmarExclusao){
+               // Pega o ID da secretaria do atributo 'data-secretaria-id' do botão clicado
+            
+            let matriculaId  = this.getAttribute('data-matricula-id');
+            
+            // Envia o ID da secretaria para o servidor Flask
+            fetch('/excluir-inscricoes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({matricula_id: matriculaId})
+            }).then(response => {
+                // Lida com a resposta do servidor, se necessário
+                console.log(response)
+                alert('Matrícula excluida com sucesso')
+                // Voltando para o início
+                window.location.href = '/';
+            }).catch(error => {
+                console.error('Erro ao excluir matrícula:', error);
+            });
+            }else{
+              console.log('exclusão cancelada')
+            }
+           
+          });
+        });
+</script>
+</body>
+
+
+</html>

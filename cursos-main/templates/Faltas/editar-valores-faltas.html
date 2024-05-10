@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Editar Falta</h1>
+  <form action="" method="POST">
+      <label for="falta">Falta:</label>
+      <select id="falta" name="falta">
+          <option value="1" selected>Sim</option>
+          <option value="0">Não</option>
+      </select><br><br>
+      <label for="justificativa">Justificativa:</label>
+      <input type="text" id="justificativa" name="justificativa"><br><br>
+
+      <label for="id_turma">Conteudo do plano de aula:</label>
+      <input list="nomes-datalist-conteudo" id="nome_conteudo" name="nome_conteudo">
+      <input list="nomes-datalist-conteudo" type="hidden" id="valor-id-conteudo" name="id_conteudo_hidden" value="">
+      <datalist id="nomes-datalist-conteudo"></datalist><br><br>
+     
+      <label for="id_turma">Nome do Inscrito:</label>
+      <input list="nomes-datalist-inscrito" id="nome_inscrito" name="nome_inscrito">
+      <input list="nomes-datalist-inscrito" type="hidden" id="valor-id-inscrito" name="id_inscrito_hidden" value="">
+      <datalist id="nomes-datalist-inscrito"></datalist><br><br>
+      
+      <input type="submit" value="Registrar Falta">
+  </form>
+
+  <script>
+      let id_inscrito = document.getElementById("valor-id-inscrito")
+      document.getElementById("nome_inscrito").addEventListener("input", function () {
+          let nome = this.value.trim();
+
+          console.log(nome);
+          if (nome.length >= 4) {
+              fetch("/pesquisando-nomes-inscrito?nome=\"" + nome + "\"", { // Correção da URL
+                  method: "POST", // Correção do método de solicitação
+                  headers: {
+                      "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({ nome: nome })
+              })
+                  .then(response => response.json())
+                  .then(sugestoes => {
+                      let sugestoesProfessores = document.getElementById("nomes-datalist-inscrito");
+                      sugestoesProfessores.innerHTML = ""; // Limpar sugestões anteriores
+                      let valoresUnicos = new Set();
+                      console.log(sugestoes)
+
+
+                      sugestoes.forEach(function (sugestao) {
+                          valoresUnicos.add([sugestao[0],sugestao[1]]); // Adicionar apenas o primeiro elemento da tupla (nome)
+                           // Adicionar apenas o primeiro elemento da tupla (nome)
+                      });
+                   
+
+                      valoresUnicos.forEach(function (valor) {
+                          let sugestaoElemento = document.createElement("option");
+                          sugestaoElemento.value = valor[1];
+                          sugestoesProfessores.appendChild(sugestaoElemento);
+                          id_inscrito.value = valor[0]
+                      });;
+
+
+                  })
+                  .catch(error => {
+                      console.error("Erro ao obter sugestões de pessoas:", error);
+                  });
+
+
+          } else {
+              console.log('Valor não encontrado')
+          }
+      });
+
+
+      let id_conteudo = document.getElementById("valor-id-conteudo")
+      document.getElementById("nome_conteudo").addEventListener("input", function () {
+          let nome = this.value.trim();
+
+          console.log(nome);
+          if (nome.length >= 4) {
+              fetch("/pesquisar-nome-conteudo?nome=\"" + nome + "\"", { // Correção da URL
+                  method: "POST", // Correção do método de solicitação
+                  headers: {
+                      "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({ nome: nome })
+              })
+                  .then(response => response.json())
+                  .then(sugestoes => {
+                      let sugestoesConteudo = document.getElementById("nomes-datalist-conteudo");
+                      sugestoesConteudo.innerHTML = ""; // Limpar sugestões anteriores
+                      let valoresUnicos = new Set();
+                      console.log(sugestoes)
+
+
+                      sugestoes.forEach(function (sugestao) {
+                          valoresUnicos.add([sugestao[0],sugestao[1]]); // Adicionar apenas o primeiro elemento da tupla (nome)
+                           // Adicionar apenas o primeiro elemento da tupla (nome)
+                      });
+                   
+
+                      valoresUnicos.forEach(function (valor) {
+                          let sugestaoElemento = document.createElement("option");
+                          sugestaoElemento.value = valor[0];
+                          sugestoesConteudo.appendChild(sugestaoElemento);
+                          id_conteudo.value = valor[1]
+                      });;
+
+
+                  })
+                  .catch(error => {
+                      console.error("Erro ao obter sugestões de pessoas:", error);
+                  });
+
+
+          } else {
+              console.log('Valor não encontrado')
+          }
+      });
+  </script>
+</body>
+</html>

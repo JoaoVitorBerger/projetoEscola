@@ -16,6 +16,7 @@
               <th>Data de Início</th>
               <th>Data de Término</th>
               <th>Nome do Curso</th>
+              <th>Descrição do Curso</th>
           </tr>
       </thead>
       <tbody>
@@ -27,6 +28,7 @@
               <td>{{ turma.data_inicio }}</td>
               <td>{{ turma.data_fim }}</td>
               <td>{{ turma.nome_curso}}</td>
+              <td>{{ turma.descricao}}</td>
               <td><a href="/editar_valores_turma/{{turma.id}}">Editar</a></td>
               <td><a class="deleteButton" data-turma-id="{{ turma.id }}" href="#">Excluir</a></td>
           </tr>

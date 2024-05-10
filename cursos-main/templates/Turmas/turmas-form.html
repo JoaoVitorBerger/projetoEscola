@@ -30,5 +30,26 @@
     <a href="/turmas-pesquisa">Pesquisar Turmas</a> <br>
     <a href="/">Menu</a> <br>
     <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+
+    <script>
+    document.querySelector('form').addEventListener('submit', (ev)=>{
+            console.log('click')
+            let nome = document.getElementById('nome').value
+            let descricao = document.getElementById('descricao').value
+            let capacidade = document.getElementById('capacidade').value
+            let data_inicio = document.getElementById('data_inicio').value
+            let data_fim = document.getElementById('data_fim').value
+            console.log(typeof data)
+           
+            if(nome && descricao && capacidade && data_inicio && data_fim  !== ''){
+                alert('Valores enviados com sucesso')
+            }
+            else{
+                ev.preventDefault()
+                alert('Todos os campos necessitam estar preenchidos.')
+            }
+        })
+    </script>
+
 </body>
 </html>

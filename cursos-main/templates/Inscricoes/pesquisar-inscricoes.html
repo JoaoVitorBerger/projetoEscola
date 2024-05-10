@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Pesquisar alunos inscrito</h1>
+  <form action="/resultado-pesquisa-inscricoes" method="POST">
+      <label for="nome">Nome:</label>
+      <input type="text" id="nome_pessoa" name="nome_pessoa"><br><br>
+  
+      <select id="id_secretaria" name="id_secretaria">
+        {% for secretaria in secretarias %}
+            <option value="{{ secretaria.id }}">{{ secretaria.nome }}</option>
+        {% endfor %}
+      </select><br><br>
+      
+      <input type="submit" value="Pesquisar">
+  </form>
+
+  <a href="/inscricoes-form">Adicionar Inscrições</a> <br>
+  <a href="/">Menu</a> <br>
+  <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+</body>
+</html>

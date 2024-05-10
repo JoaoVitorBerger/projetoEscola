@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Editar Plano de Aula</h1>
+    <form action="" method="POST">
+        <label for="data">Data:</label>
+        <input type="date" id="data" name="data"><br><br>
+
+        <label for="conteudo">Conteúdo:</label><br>
+        <textarea id="conteudo" name="conteudo" rows="4" cols="50"></textarea><br><br>
+
+        <label for="id_turma">Nome da Turma:</label>
+        <input list="nomes-datalist-turma" id="nome_turma" name="nome_turma">
+        <input list="nomes-datalist-turma" type="hidden" id="valor-id-turma" name="id_turma_hidden" value="">
+        <datalist id="nomes-datalist-turma"></datalist><br><br>
+
+        <input type="submit" value="Adicionar Plano">
+    </form>
+    <a href="/planos-aula-pesquisa">Pesquisar Planos de Aulas</a> <br>
+    <a href="/">Menu</a> <br>
+    <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+
+
+    <script>
+         document.querySelector('form').addEventListener('submit', (ev) => {
+            let data = document.getElementById('data').value;
+            let conteudo = document.getElementById('conteudo').value;
+            let nome_turma = document.getElementById('valor-id-turma').value;
+            if (conteudo && data && nome_turma !== "") {
+                alert('Valores adicionados com sucesso!')
+            } else {
+                alert('Todos os campos necessitam estarem preenchidos!');
+                ev.preventDefault();
+            }
+        })
+
+
+        let id_turma = document.getElementById("valor-id-turma")
+        document.getElementById("nome_turma").addEventListener("input", function () {
+            let nome = this.value.trim();
+
+            console.log(nome);
+            if (nome.length >= 4) {
+                fetch("/pesquisando-nome-turma-matricula?nome=\"" + nome + "\"", { // Correção da URL
+                    method: "POST", // Correção do método de solicitação
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ nome: nome })
+                })
+                    .then(response => response.json())
+                    .then(sugestoes => {
+                        let sugestoesProfessores = document.getElementById("nomes-datalist-turma");
+                        sugestoesProfessores.innerHTML = ""; // Limpar sugestões anteriores
+                        let valoresUnicos = new Set();
+                        console.log(sugestoes)
+
+
+                        sugestoes.forEach(function (sugestao) {
+                            valoresUnicos.add(sugestao[0]); // Adicionar apenas o primeiro elemento da tupla (nome)
+                            valoresUnicos.add(sugestao[1]); // Adicionar apenas o primeiro elemento da tupla (nome)
+                        });
+                        console.log(valoresUnicos)
+
+                        valoresUnicos.forEach(function (valor) {
+                            let sugestaoElemento = document.createElement("option");
+                            sugestaoElemento.value = valor;
+                            sugestoesProfessores.appendChild(sugestaoElemento);
+                            id_turma.value = valor
+                        });;
+
+
+                    })
+                    .catch(error => {
+                        console.error("Erro ao obter sugestões de pessoas:", error);
+                    });
+
+
+            } else {
+                console.log('Valor não encontrado')
+            }
+        });
+    </script>
+</body>
+</html>

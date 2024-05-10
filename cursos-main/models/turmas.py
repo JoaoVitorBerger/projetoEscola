@@ -15,7 +15,8 @@ def resultados_turmas_pesquisados(conn):
         query = '''
                 SELECT 
                     turmas.id,
-		                turmas.nome,
+		            turmas.nome,
+                    turmas.descricao,
                     turmas.capacidade,
                     turmas.data_inicio,
                     turmas.data_fim,
@@ -50,8 +51,6 @@ def resultados_turmas_pesquisados(conn):
     except mysql.connector.Error as err:
         return f'Erro ao buscar alunos: {err}'
     
-
-
 def editar_valores_turma(conn, id_turma):
   cursor = conn.cursor(dictionary=True)
 
@@ -79,7 +78,6 @@ def editar_valores_turma(conn, id_turma):
   except mysql.connector.Error as err:
     print("Erro ao atualizar dados:", err)
     
-
 def excluir_turmas(conn, id_turma): 
     try:
         cursor = conn.cursor()
@@ -89,3 +87,30 @@ def excluir_turmas(conn, id_turma):
         return
     except mysql.connector.Error as err:
         return ({"error": f'Erro ao excluir secretaria: {err}'})
+    
+def adicionar_turma(conn):
+    try:
+        cursor = conn.cursor()
+        nome = unidecode(request.form['nome'].upper())
+        descricao = unidecode(request.form['descricao'].upper())
+        capacidade = request.form['capacidade']
+        data_inicio = request.form['data_inicio']
+        data_fim = request.form['data_fim']
+        id_curso = request.form['id_curso']
+        cursor.execute('''
+            INSERT INTO turmas (nome, descricao, capacidade, data_inicio, data_fim, id_curso,criado_em)
+            VALUES (%s, %s, %s, %s, %s, %s,%s)
+        ''', (nome, descricao, capacidade, data_inicio, data_fim, id_curso,datetime.now()))
+        conn.commit()
+        return
+    except mysql.connector.Error as err:
+        return f'Erro ao adicionar turma: {err}'
+    
+def exibir_formulario_turmas(conn):
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute('SELECT id, nome FROM cursos')
+        cursos = cursor.fetchall()
+        return cursos
+    except mysql.connector.Error as err:
+        return f'Erro ao buscar cursos: {err}'

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <h1>Resultado pesquisas matriculas</h1>
+  <table border="1">
+      <thead>
+          <tr>
+              <th>Data do plano de aula</th>
+              <th>Conteúdo do plano de aula</th>
+              <th>Nome da turma</th>
+              <th>Descrição da turma</th>
+              <th>Capacidade da turma</th>
+              <th>Data de inicio da turma</th>
+              <th>Data de termino da turma</th>
+              <th>Nome do curso</th>
+         
+             
+          </tr>
+      </thead>
+      <tbody>
+          {% for plano in planos %}
+          
+          <tr>
+      
+              
+              <td>{{ plano.data_plano_de_aula }}</td>
+              <td>{{ plano.conteudo_plano_de_aula }}</td>
+              <td>{{ plano.nome_turma }}</td>
+              <td>{{ plano.descricao_turma }}</td> 
+              <td>{{ plano.capacidade_turma }}</td>  
+              <td>{{ plano.data_inicio_turma }}</td>  
+              <td>{{ plano.data_termino_turma }}</td>  
+              <td>{{ plano.nome_curso }}</td>
+              <td><a href="/editar-valores-planos/{{ plano.id}}">Editar</a></td>
+              <td><a class="deleteButton" data-plano-id="{{ plano.id}}" href="#">Excluir</a></td>
+              
+          </tr>
+          
+          {% endfor %}
+      </tbody>
+  </table>
+  
+</table>
+
+<a href="/pesquisar-inscricoes">Pesquisar Inscrições</a> <br>
+<a href="/">Menu</a> <br>
+<a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+
+<script>
+  let deleteButtons = document.querySelectorAll('.deleteButton');
+      
+      
+      // Itera sobre todos os botões
+      deleteButtons.forEach(function(button) {
+        // Adiciona um evento de clique a cada botão
+        button.addEventListener('click', function(event) {
+          // Impede o comportamento padrão do link
+          event.preventDefault();
+
+          let confirmarExclusao = confirm('Deseja relamente excluir essa matricula')
+          if(confirmarExclusao){
+             // Pega o ID da secretaria do atributo 'data-secretaria-id' do botão clicado
+          
+          let planosId  = this.getAttribute('data-plano-id');
+          
+          // Envia o ID da secretaria para o servidor Flask
+          fetch('/excluir-planos-aula', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({planos_id: planosId})
+          }).then(response => {
+              // Lida com a resposta do servidor, se necessário
+              console.log(response)
+              alert('Plano de aula excluido com sucesso')
+              // Voltando para o início
+              window.location.href = '/';
+          }).catch(error => {
+              console.error('Erro ao excluir plano de aula', error);
+          });
+          }else{
+            console.log('exclusão cancelada')
+          }
+         
+        });
+      });
+</script>
+</body>
+</html>

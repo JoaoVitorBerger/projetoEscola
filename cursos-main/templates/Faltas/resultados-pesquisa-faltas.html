@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <table border="1">
+    <thead>
+        <tr>
+            <th>Presença</th>
+            <th>Data do plano de aula</th>
+            <th>Conteúdo do plano de aula</th>
+            <th>Nome da turma</th>
+            <th>Descrição sobre o turma</th>
+            <th>Nome do curso</th>
+            <th>Nome da secretaria</th>
+            <th>Nome do aluno</th>     
+        </tr>
+    </thead>
+    <tbody>
+        {% for falta in faltas %}
+        
+        <tr>
+    
+            
+            <td>{{ falta.status_presenca }}</td>
+            <td>{{ falta.data_do_plano_de_aula }}</td>
+            <td>{{ falta.conteudo_plano_de_aula }}</td>
+            <td>{{ falta.nome_turma }}</td>
+            <td>{{ falta.descricao_turma }}</td> 
+            <td>{{ falta.nome_curso }}</td>  
+            <td>{{ falta.nome_secretaria }}</td>  
+            <td>{{ falta.nome_aluno }}</td> 
+            <td><a href="/editar-valores-faltas/{{ falta.id}}">Editar</a></td>
+            <td><a class="deleteButton" data-falta-id="{{ falta.id }}" href="#">Excluir</a></td>
+            
+        </tr>
+        
+        {% endfor %}
+    </tbody>
+</table>
+
+</table>
+  
+<script>
+    let deleteButtons = document.querySelectorAll('.deleteButton');
+    
+    
+    // Itera sobre todos os botões
+    deleteButtons.forEach(function(button) {
+      // Adiciona um evento de clique a cada botão
+      button.addEventListener('click', function(event) {
+        // Impede o comportamento padrão do link
+        event.preventDefault();
+
+        let confirmarExclusao = confirm('Deseja relamente excluir essa falta')
+        if(confirmarExclusao){
+           // Pega o ID da secretaria do atributo 'data-secretaria-id' do botão clicado
+        let faltasId = this.getAttribute('data-falta-id');
+        // Envia o ID da secretaria para o servidor Flask
+        fetch('/excluir-faltas', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({faltas_id: faltasId})
+        }).then(response => {
+            // Lida com a resposta do servidor, se necessário
+            console.log(response)
+            alert('Falta excluida com sucesso')
+            // Voltando para o início
+            window.location.href = '/';
+        }).catch(error => {
+            console.error('Erro ao excluir falta:', error);
+        });
+        }else{
+          console.log('exclusão cancelada')
+        }
+       
+      });
+    });
+</script>
+</body>
+</html>

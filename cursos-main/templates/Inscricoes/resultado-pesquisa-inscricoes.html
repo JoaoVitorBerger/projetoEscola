@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Resultado da Pesquisa</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                
+
+                <th>Nome Secretaria</th>
+                <th>RA</th>
+                <th>Nome</th>
+                <th>Data da nascimento</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inscrito in inscricoes %}
+            
+            <tr>
+        
+                <td>{{ inscrito.secretaria_nome }}</td>
+                <td>{{ inscrito.ra }}</td>
+                <td>{{ inscrito.nome }}</td>
+                <td>{{ inscrito.data_nasc }}</td>
+                <td>{{ inscrito.status_inscricao }}</td>
+                <td><a href="/editar-valores-inscricoes/{{inscrito.id}}">Editar</a></td>
+                <td><a class="deleteButton" data-inscricoes-id="{{ inscrito.id }}" href="#">Excluir</a></td>
+            </tr>
+            
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="/pesquisar-inscricoes">Pesquisar Inscrições</a> <br>
+    <a href="/">Menu</a> <br>
+    <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+
+    <script>
+         let deleteButtons = document.querySelectorAll('.deleteButton');
+        
+        
+        // Itera sobre todos os botões
+        deleteButtons.forEach(function(button) {
+          // Adiciona um evento de clique a cada botão
+          button.addEventListener('click', function(event) {
+            // Impede o comportamento padrão do link
+            event.preventDefault();
+
+            let confirmarExclusao = confirm('Deseja relamente excluir essa inscrição')
+            if(confirmarExclusao){
+               // Pega o ID da secretaria do atributo 'data-secretaria-id' do botão clicado
+            
+            let inscricaoId  = this.getAttribute('data-inscricoes-id');
+            
+            // Envia o ID da secretaria para o servidor Flask
+            fetch('/excluir-inscricoes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({inscricao_id: inscricaoId})
+            }).then(response => {
+                // Lida com a resposta do servidor, se necessário
+                console.log(response)
+                alert('Inscrição excluida com sucesso')
+                // Voltando para o início
+                window.location.href = '/';
+            }).catch(error => {
+                console.error('Erro ao excluir inscrição:', error);
+            });
+            }else{
+              console.log('exclusão cancelada')
+            }
+           
+          });
+        });
+    </script>
+</body>
+</html>

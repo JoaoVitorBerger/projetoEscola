@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Adição de Turma para Professor</title>
+</head>
+
+<body>
+    <h1>Editar valores de Turma Professor</h1>
+    <form action="" method="POST">
+        <label for="data_inicio">Data de Início:</label>
+        <input type="date" id="nova_data_inicio" name="nova_data_inicio"><br><br>
+        <label for="data_fim">Data de Fim:</label>
+        <input type="date" id="nova_data_fim" name="nova_data_fim"><br><br>
+        <label for="id_professor">Professor:</label>
+        <input list="novo_nomes-datalist-professor" id="novo_nome_professor" name="novo_nome_professor">
+        <input list="nomes-datalist" type="hidden" id="novo_valor_id_professor" name="novo_id_professor_hidden" value="">
+        <datalist id="novo_nomes-datalist-professor"></datalist><br><br>
+        <label for="id_turma">Turma:</label>
+        <input list="novo_nomes-datalist-turma" id="novo_nome_turma" name="novo_nome_turma">
+        <input list="nomes-datalist-turma" type="hidden" id="novo_valor_id_turma" name="novo_id_turma_hidden" value="">
+        <datalist id="novo_nomes-datalist-turma"></datalist><br><br>
+        <input type="submit" value="Adicionar Turma para Professor">
+    </form>
+
+    <a href="/turmas-professores-pesquisa">Pesquisar Turmas</a> <br>
+    <a href="/">Menu</a> <br>
+    <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+
+
+    <script>
+        let id_professor = document.getElementById("novo_valor_id_professor")
+        document.getElementById("novo_nome_professor").addEventListener("input", function () {
+            let nome = this.value.trim();
+
+            console.log(nome);
+            if (nome.length >= 4) {
+                fetch("/pesquisando-nomes-professores-para-inserir-em-turmas?nome=\"" + nome + "\"", { // Correção da URL
+                    method: "POST", // Correção do método de solicitação
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ nome: nome })
+                })
+                    .then(response => response.json())
+                    .then(sugestoes => {
+                        let sugestoesProfessores = document.getElementById("novo_nomes-datalist-professor");
+                        sugestoesProfessores.innerHTML = ""; // Limpar sugestões anteriores
+                        let valoresUnicos = new Set();
+                        console.log(sugestoes)
+
+
+                        sugestoes.forEach(function (sugestao) {
+                            valoresUnicos.add(sugestao[0]); // Adicionar apenas o primeiro elemento da tupla (nome)
+                            valoresUnicos.add(sugestao[1]); // Adicionar apenas o primeiro elemento da tupla (nome)
+                        });
+                        console.log(valoresUnicos)
+
+                        valoresUnicos.forEach(function (valor) {
+                            console.log(valor)
+                            let sugestaoElemento = document.createElement("option");
+                            sugestaoElemento.value = valor;
+                            sugestoesProfessores.appendChild(sugestaoElemento);
+                            id_professor.value = valor
+                        });;
+
+
+                    })
+                    .catch(error => {
+                        console.error("Erro ao obter sugestões de pessoas:", error);
+                    });
+
+
+            } else {
+                console.log('Valor não encontrado')
+            }
+        });
+
+
+        let id_turma = document.getElementById("novo_valor_id_turma")
+        document.getElementById("novo_nome_turma").addEventListener("input", function () {
+            let nome = this.value.trim();
+
+            console.log(nome);
+            if (nome.length >= 4) {
+                fetch("/pesquisando-nomes-de-turmas-para-inserir-turmas?nome=\"" + nome + "\"", { // Correção da URL
+                    method: "POST", // Correção do método de solicitação
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ nome: nome })
+                })
+                    .then(response => response.json())
+                    .then(sugestoes => {
+                        let sugestoesTurmas = document.getElementById("novo_nomes-datalist-turma");
+                        let valoresUnicosTurmas = {};
+
+                        // Limpar sugestões anteriores
+                        sugestoes.forEach(function (sugestao) {
+                            let nomeTurma = sugestao[0];
+                            let idTurma = sugestao[1];
+                            valoresUnicosTurmas[nomeTurma] = idTurma;
+                        });
+
+                        // Limpar sugestões anteriores no datalist
+                        sugestoesTurmas.innerHTML = '';
+
+                        // Adicionar as opções únicas ao datalist
+                        for (let nomeTurma in valoresUnicosTurmas) {
+                            let sugestaoElemento = document.createElement("option");
+                            sugestaoElemento.value = nomeTurma;
+                            sugestoesTurmas.appendChild(sugestaoElemento);
+                            id_turma.value = valoresUnicosTurmas[nomeTurma];
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Erro ao obter sugestões de pessoas:", error);
+                    });
+
+
+            } else {
+                console.log('Valor não encontrado')
+            }
+        });
+
+
+        document.querySelector('form').addEventListener('submit', (ev) => {
+            let data_inicio = document.getElementById('nova_data_inicio').value;
+            let data_fim = document.getElementById('nova_data_fim').value;
+            let nome_professor = document.getElementById('novo_valor_id_professor').value;
+            let nome_turma = document.getElementById('novo_valor_id_turma').value;
+            if (data_fim && data_inicio && nome_professor && nome_turma !== "") {
+                alert('Valores adicionados com sucesso!')
+            } else {
+                alert('Todos os campos necessitam estarem preenchidos!');
+                ev.preventDefault();
+            }
+        })
+    </script>
+</body>
+
+</html>

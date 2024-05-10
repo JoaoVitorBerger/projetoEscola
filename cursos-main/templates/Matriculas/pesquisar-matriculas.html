@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+
+  <h1>Pesquisar Matricula</h1>
+  <form action="/resultado-pesquisa-matricula" method="POST">
+      <label for="ra_aluno">RA do Aluno</label>
+      <input type="text" id="ra_aluno" name="ra_aluno" maxlength="6"><br><br>
+
+      <label for="ra_aluno">CPF do Aluno</label>
+      <input type="text" id="cpf_aluno" name="cpf_aluno" maxlength="11"><br><br>
+
+      <label for="id_turma">Nome da Turma:</label>
+      <input list="nomes-datalist-turma" id="nome_turma" name="nome_turma">
+      <input list="nomes-datalist-turma" type="hidden" id="valor-id-turma" name="id_turma_hidden" value="">
+      <datalist id="nomes-datalist-turma"></datalist><br><br>
+
+      <input type="submit" value="Pesquisar matriculas">
+  </form>
+
+  <a href="/matriculas-form">Adicionar matriculas</a> <br>
+  <a href="/">Menu</a> <br>
+  <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+
+  <script>
+    let input = document.getElementById('ra_aluno')
+    input.addEventListener('input', (event)=>{
+        let input = event.target.value   
+        if(isNaN(input)){
+            event.target.value = input.slice(0,0)
+        }
+    })
+    let cpf = document.getElementById('cpf_aluno')
+    cpf.addEventListener('input', (event)=>{
+        let input = event.target.value   
+        if(isNaN(input)){
+            event.target.value = input.slice(0,0)
+        }
+    })
+
+    document.querySelector('form').addEventListener('submit',(ev)=>{
+        console.log('Olaaaa')
+        let ra_aluno = document.getElementById('ra_aluno').value
+        let cpf_pessoa = document.getElementById('cpf_aluno').value
+        let nome_turma = document.getElementById('nome_turma').value
+
+        if(ra_aluno || cpf_pessoa || nome_turma != ""){
+        }else{
+            alert('É preciso que ao menos um campo seja preenchido para prosseguir com a pesquisa.')
+            ev.preventDefault()
+        }
+    })
+
+
+    let id_turma = document.getElementById("valor-id-turma")
+        document.getElementById("nome_turma").addEventListener("input", function () {
+            let nome = this.value.trim();
+
+            console.log(nome);
+            if (nome.length >= 4) {
+                fetch("/pesquisando-nome-turma-matricula?nome=\"" + nome + "\"", { // Correção da URL
+                    method: "POST", // Correção do método de solicitação
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ nome: nome })
+                })
+                    .then(response => response.json())
+                    .then(sugestoes => {
+                        let sugestoesProfessores = document.getElementById("nomes-datalist-turma");
+                        sugestoesProfessores.innerHTML = ""; // Limpar sugestões anteriores
+                        let valoresUnicos = new Set();
+                        console.log(sugestoes)
+
+
+                        sugestoes.forEach(function (sugestao) {
+                            valoresUnicos.add(sugestao[0]); // Adicionar apenas o primeiro elemento da tupla (nome)
+                            valoresUnicos.add(sugestao[1]); // Adicionar apenas o primeiro elemento da tupla (nome)
+                        });
+                        console.log(valoresUnicos)
+
+                        valoresUnicos.forEach(function (valor) {
+                            let sugestaoElemento = document.createElement("option");
+                            sugestaoElemento.value = valor;
+                            sugestoesProfessores.appendChild(sugestaoElemento);
+                            id_turma.value = valor
+                        });;
+
+
+                    })
+                    .catch(error => {
+                        console.error("Erro ao obter sugestões de pessoas:", error);
+                    });
+
+
+            } else {
+                console.log('Valor não encontrado')
+            }
+        });
+  </script>
+</body>
+
+
+</html>

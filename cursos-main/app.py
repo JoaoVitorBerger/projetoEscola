@@ -7,6 +7,10 @@ from models.professores import *
 from models.inscricoes import *
 from models.cursos import *
 from models.turmas import *
+from models.turmas_professores import *
+from models.matriculas import *
+from models.planosAula import *
+from models.faltas import *
 
 app = Flask(__name__)
 
@@ -29,6 +33,8 @@ def index():
 #Rota para exibir todas as secretarias
 #O nome no href do index tem que ser o mesmo do app.route
 # As chamadas de arquivos e redirecionamento de urls`s tem que ser feito no app.py
+
+################################################    SECRETARIAS   ###################################################################################
 @app.route('/secretarias')
 def exibir_secretarias():
     conn = conectar()
@@ -41,10 +47,6 @@ def exibir_secretarias():
 #Rota para exibir formulário secretarias
 @app.route('/secretarias-form')
 def adicionar_secretaria():
-    conn = conectar()
-    result = secretaria_form(conn)
-    if isinstance(result, str):  # Verifica se houve erro
-        return render_template('erro.html', mensagem=result)
     return render_template('Secretarias/secretarias-form.html')
 
 
@@ -86,7 +88,7 @@ def excluir_secretarias():
     except mysql.connector.Error as err:
         return jsonify({"error": f'Erro ao excluir secretaria: {err}'})
         
-
+################################################    PESSOAS  ###################################################################################
 # Rota para exibir o formulário de adicionar pessoa
 @app.route('/pessoas-form')
 def pessoa_form():
@@ -154,6 +156,7 @@ def pesquisar_nomes():
     result = pesquisar_nomes_proximos(conn,dados)
     return jsonify(result)
 
+################################################    ALUNOS   ###################################################################################
 # Rota para exibir o formulário de adicionar aluno
 @app.route('/alunos-form')
 def aluno_form():
@@ -208,6 +211,8 @@ def deletar_alunos():
             return render_template('erro.html', mensagem=result)
         redirect('/')
         
+
+################################################    PROFESSORES   ###################################################################################
 # Rota para visualizar todos os professores
 @app.route('/professores')
 def professores():
@@ -251,16 +256,12 @@ def deletar_professor():
 # Rota para exibir o formulário de adicionar professor
 @app.route('/professores-form')
 def professor_form():
-    try:
-        conn = conectar()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT id, nome FROM pessoas')
-        pessoas = cursor.fetchall()
-        cursor.execute('SELECT id, nome FROM secretarias')
-        secretarias = cursor.fetchall()
-        return render_template('Professores/professores-form.html', pessoas=pessoas, secretarias=secretarias)
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao buscar dados: {err}')
+    conn = conectar()
+    result = exibir_formulario_professores(conn)
+    if isinstance(result, str):  # Verifica se houve erro
+        return render_template('erro.html', mensagem=result)
+    return render_template('Professores/professores-form.html', secretarias=result)
+
 # Rota para adicionar um novo professor
     
 #Rota para pesquisar um nome  
@@ -281,6 +282,9 @@ def add_professor():
             return render_template('erro.html', mensagem=result)
         return redirect('/')
 
+
+
+################################################    INSCRICOES  ###################################################################################
 # Rota para visualizar todas as inscrições
 @app.route('/inscricoes')
 def inscricoes():
@@ -318,8 +322,61 @@ def add_inscricao_pessoa():
     if isinstance(result, str):  # Verifica se houve erro
             return render_template('erro.html', mensagem=result)
     return redirect('/')
- 
+
+#Rota para pesquisar inscrições pelo nome ou secretaria
+@app.route('/pesquisar-inscricoes') 
+def pesquisar_inscricoes():
+    conn = conectar ()
+    result = secretarias(conn)
+    if isinstance(result, str):  # Verifica se houve erro
+            return render_template('erro.html', mensagem=result)
+    return render_template('Inscricoes/pesquisar-inscricoes.html', secretarias=result)
+
+@app.route('/resultado-pesquisa-inscricoes', methods=['POST'])
+def resultado_pesquisa_inscricoes(): 
+    conn = conectar ()
+    result = pesquisar_incricoes(conn)
+    print(result)
+    if isinstance(result, str):  # Verifica se houve erro
+            return render_template('erro.html', mensagem=result)
+    return render_template('Inscricoes/resultado-pesquisa-inscricoes.html', inscricoes=result)
 # Rota para visualizar todos os cursos
+
+@app.route('/pesquisar-nomes-inscritos', methods=['POST'])
+def pesquisar_nomes_incritos():
+    conn = conectar()
+    dados = request.json  # Acesse os dados enviados no corpo da solicitação
+    print(dados)
+    result = pesquisar_nomes_proximos_inscritos(conn,dados)
+    return jsonify(result)
+
+@app.route('/editar-valores-inscricoes/<int:inscrito_id>',  methods=['GET', 'POST'])
+def editar_valores_incricoes(inscrito_id):
+    conn = conectar()
+    if request.method == 'POST':
+        result = editar_inscricoes(conn,inscrito_id)
+        if isinstance(result, str):  # Verifica se houve erro
+            return render_template('erro.html', mensagem=result)
+        # Redireciona para a rota '/resultados
+        return redirect('/')
+    result = selecionar_secretaria(conn)    
+    return render_template('Inscricoes/editar-valores-inscricoes.html',secretarias = result)
+     
+@app.route('/excluir-inscricoes', methods=['POST'])
+def excluir_inscrito():
+        data = request.json
+        print('dados recebidos', data)
+        inscricao_id = data.get('inscricao_id')
+        print(inscricao_id)
+        conn = conectar()
+        result = excluir_inscricao(conn, inscricao_id)
+        if isinstance(result, str):  # Verifica se houve erro
+            return render_template('erro.html', mensagem=result)
+        return redirect('/')
+
+
+
+################################################    CURSOS  ###################################################################################
 @app.route('/cursos')
 def cursos():
     conn = conectar()
@@ -379,54 +436,26 @@ def excl_curso():
     return redirect('/')
 
 
-# Rota para visualizar todas as turmas
-@app.route('/turmas')
-def turmas():
-    try:
-        conn = conectar()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('''
-            SELECT turmas.*, cursos.nome AS curso_nome
-            FROM turmas
-            JOIN cursos ON turmas.id_curso = cursos.id
-        ''')
-        turmas = cursor.fetchall()
-        print(turmas)
-        return render_template('Turmas/turmas.html', turmas=turmas)
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao buscar turmas: {err}')
+
+
+################################################    TURMAS  ###################################################################################
 # Rota para exibir o formulário de adicionar turma
 @app.route('/turmas-form')
 def turma_form():
-    try:
-        conn = conectar()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT id, nome FROM cursos')
-        cursos = cursor.fetchall()
-        return render_template('Turmas/turmas-form.html', cursos=cursos)
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao buscar cursos: {err}')
+    conn = conectar()
+    result= exibir_formulario_turmas(conn)
+    if isinstance(result, str):  # Verifica se houve erro
+            return render_template('erro.html', mensagem=result)
+    return render_template('Turmas/turmas-form.html', cursos=result)
+    
 # Rota para adicionar uma nova turma
 @app.route('/turmas', methods=['POST'])
 def add_turma():
-    try:
-        conn = conectar()
-        cursor = conn.cursor()
-        nome = request.form['nome']
-        descricao = request.form['descricao']
-        capacidade = request.form['capacidade']
-        data_inicio = request.form['data_inicio']
-        data_fim = request.form['data_fim']
-        id_curso = request.form['id_curso']
-        cursor.execute('''
-            INSERT INTO turmas (nome, descricao, capacidade, data_inicio, data_fim, id_curso)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        ''', (nome, descricao, capacidade, data_inicio, data_fim, id_curso))
-        conn.commit()
-        return redirect(url_for('turmas'))
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao adicionar turma: {err}')
-    
+    conn = conectar()
+    result = adicionar_turma(conn)
+    if isinstance(result, str):  # Verifica se houve erro
+        return render_template('erro.html', mensagem=result)
+    return redirect('/')
 
 @app.route('/turmas-pesquisa', methods=['GET','POST'])
 def pesquisar_turma():
@@ -463,83 +492,120 @@ def excl_turma():
     if isinstance(result, str):  # Verifica se houve erro
             return render_template('erro.html', mensagem= result)
     return redirect('/')
+
+
+
+
+################################################    TURMAS-PROFESSORES   ###################################################################################
 # Rota para visualizar todas as turmas dos professores
-@app.route('/turmas-professores')
+@app.route('/turmas-professores-pesquisa')
 def turmas_professores():
-    try:
-        conn = conectar()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('''
-            SELECT turmas_professores.id, turmas_professores.data_inicio, turmas_professores.data_fim,
-                   professores.id AS id_professor, pessoas.nome AS nome_professor,
-                   turmas.id AS id_turma, turmas.nome AS nome_turma
-            FROM turmas_professores
-            JOIN professores ON turmas_professores.id_professor = professores.id
-            JOIN turmas ON turmas_professores.id_turma = turmas.id
-            JOIN pessoas ON professores.id_pessoa = pessoas.id
-        ''')
-        turmas_professores = cursor.fetchall()
-        return render_template('turmas-professores.html', turmas_professores=turmas_professores)
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao buscar turmas dos professores: {err}')
+    return render_template('Turmas_professores/turmas-professores-pesquisa.html')
+
 # Rota para exibir o formulário de adicionar turma dos professores
 @app.route('/turmas-professores-form')
 def turmas_professores_form():
-    try:
-        conn = conectar()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('''
-            SELECT 
-                professores.id AS id_professor,
-                pessoas.nome AS nome_professor
-            FROM professores
-            JOIN pessoas ON professores.id_pessoa = pessoas.id
-        ''')
-        professores = cursor.fetchall()
-        cursor.execute('SELECT id, nome FROM turmas')
-        turmas = cursor.fetchall()
-        return render_template('turmas-professores-form.html', professores=professores, turmas=turmas)
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao buscar dados: {err}')
+   return  render_template('Turmas_professores/turmas-professores-form.html', )
 # Rota para adicionar uma nova turma para professor
 @app.route('/turmas-professores', methods=['POST'])
 def add_turma_professor():
-    try:
-        conn = conectar()
-        cursor = conn.cursor()
-        data_inicio = request.form['data_inicio']
-        data_fim = request.form['data_fim']
-        id_professor = request.form['id_professor']
-        id_turma = request.form['id_turma']
-        cursor.execute('''
-            INSERT INTO turmas_professores (data_inicio, data_fim, id_professor, id_turma) 
-            VALUES (%s, %s, %s, %s)''', (data_inicio, data_fim, id_professor, id_turma))
-        conn.commit()
-        return redirect(url_for('turmas_professores'))
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao adicionar turma para professor: {err}')
+    conn = conectar()
+    result = enviar_valores_turmas_professores(conn)
+    if isinstance(result, str):  # Verifica se houve erro
+        return render_template('erro.html', mensagem=result)
+    return redirect('/')
+
+@app.route('/nomes-proximos-professores-turma', methods=['GET','POST'])
+def pesquisar_nomes_professor_turma():
+    conn = conectar()
+    dados = request.json  # Acesse os dados enviados no corpo da solicitação
+    print(dados)
+    result = pesquisar_nomes_proximos_professores_turma(conn,dados)
+    print(result)
+    return jsonify(result)
+
+@app.route('/resultado-pesquisa-turmas-professores', methods = ['POST'])
+def pesquisar_valores_professor_turma():
+     conn = conectar()
+     result = resultados_turmas_professores_pesquisados(conn)
+     print(result)
+     if isinstance(result, str):  
+        return render_template('erro.html', mensagem=result)
+     return render_template('Turmas_professores/resultado-pesquisa-turmas-professores.html', turmas_professores = result)
+
+@app.route('/pesquisando-nomes-professores-para-inserir-em-turmas', methods=['GET','POST'])
+def pesquisar_nomes_professores_turmas():
+    conn = conectar()
+    dados = request.json  # Acesse os dados enviados no corpo da solicitação
+    print(dados)
+    result = pesquisar_nomes_professores(conn,dados)
+    print(result)
+    return jsonify(result)
+
+@app.route('/pesquisando-nomes-de-turmas-para-inserir-turmas', methods=['GET','POST'])
+def pesquisar_nomes_turmas():
+    conn = conectar()
+    dados = request.json  # Acesse os dados enviados no corpo da solicitação
+    print(dados)
+    result = pesquisar_nomes_proximos_turma(conn,dados)
+    print(result)
+    return jsonify(result)
+
+@app.route('/editar_valores_turma_professores/<int:id_turma_professor>', methods=['GET','POST'])
+def editar_turmas_professores(id_turma_professor):
+            conn = conectar()
+            if request.method == 'POST':
+                result =editar_valores_turmas_professores(conn, id_turma_professor)
+                if isinstance(result, str):  # Verifica se houve erro
+                    return render_template('erro.html', mensagem= result)
+                return redirect('/')     
+            return render_template('Turmas_professores/editar-valores-professores-turma.html') 
+
+@app.route('/excluir-turmas-professores',methods=['POST'])
+def excl_turma_professor():
+    data = request.json
+    print('dados recebidos', data)
+    turmas_professores_id = data.get('turma_id')
+    print(turmas_professores_id)
+    conn = conectar()
+    result = excluir_turmas_professores(conn,turmas_professores_id)
+    if isinstance(result, str):  # Verifica se houve erro
+            return render_template('erro.html', mensagem=result)
+    return redirect('/')
+
+
+
+
+################################################    MATRICULAS   ###################################################################################
+@app.route('/pesquisando-nome-turma-matricula', methods=['GET','POST'])
+def pesquisando_turmas_matricula():
+    conn = conectar()
+    dados = request.json  # Acesse os dados enviados no corpo da solicitação
+    print(dados)
+    result = pesquisar_nomes_proximos_turma(conn,dados)
+    print(result)
+    return jsonify(result)
+
+@app.route('/pesquisando-nomes-inscrito', methods=['GET','POST'])
+def pesquisando_inscrito_matricula():
+    conn = conectar()
+    dados = request.json  # Acesse os dados enviados no corpo da solicitação
+    print(dados)
+    result = pesquisar_nomes_proximos_inscrito(conn,dados)
+    print(result)
+    return jsonify(result)
 
 # Rota para visualizar todas as matrículas
 @app.route('/matriculas')
 def matriculas():
-    try:
-        conn = conectar()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('''
-                        SELECT matriculas.id, matriculas.data_inicio, matriculas.data_fim,
-                        alunos.id AS id_aluno, alunos.ra AS ra_aluno,
-                        turmas.id AS id_turma, turmas.nome AS nome_turma,
-                        inscricoes.id AS id_inscricao, inscricoes.status AS status_inscricao
-                        FROM matriculas
-                        JOIN alunos ON matriculas.id = alunos.id
-                        JOIN turmas ON matriculas.id = turmas.id
-                        JOIN inscricoes ON matriculas.id = inscricoes.id
-                        ORDER BY matriculas.id
-                        ''')
-        matriculas = cursor.fetchall()
-        return render_template('matriculas.html', matriculas=matriculas)
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao buscar matrículas: {err}')
+        return render_template('Matriculas/pesquisar-matriculas.html', matriculas=matriculas)
+@app.route('/resultado-pesquisa-matricula',methods = ['POST'])
+def pesquisar_matriculas():
+     conn = conectar()
+     result = pesquisar_valores_matriculas(conn)
+     if isinstance(result, str):  # Verifica se houve erro
+            return render_template('erro.html', mensagem=result)
+     return render_template('Matriculas/resultado-pesquisa-matriculas.html', matriculas=result)
 # Rota para exibir o formulário de adicionar matrícula
 @app.route('/matriculas-form')
 def matricula_form():
@@ -557,138 +623,161 @@ def matricula_form():
                         WHERE matriculas.id IS NULL
                         ''')
         inscricoes = cursor.fetchall()
-        return render_template('matriculas-form.html', turmas=turmas, inscricoes=inscricoes)
+        return render_template('Matriculas/matriculas-form.html', turmas=turmas, inscricoes=inscricoes)
     except mysql.connector.Error as err:
         return render_template('erro.html', mensagem=f'Erro ao buscar dados: {err}')
 # Rota para adicionar uma nova matrícula
 @app.route('/matriculas', methods=['POST'])
 def add_matricula():
-    try:
         conn = conectar()
-        cursor = conn.cursor()
-        data_inicio = request.form['data_inicio']
-        data_fim = request.form['data_fim']
-        id_turma = request.form['id_turma']
-        id_inscricao = request.form['id_inscricao']
-        cursor.execute('''
-            INSERT INTO matriculas (data_inicio, data_fim, id_turma, id_inscricao) 
-            VALUES (%s, %s, %s, %s)''', (data_inicio, data_fim, id_turma, id_inscricao))
-        conn.commit()
-        return redirect(url_for('matriculas'))
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao adicionar matrícula: {err}')
+        result = enviar_valores_matricula(conn)
+        if isinstance(result, str):  # Verifica se houve erro
+            return render_template('erro.html', mensagem=result)
+        return redirect('/')
+
+@app.route('/editar-valores-matriculas/<int:matriculas_id>',methods = ['GET', 'POST'])
+def edit_matriculas(matriculas_id):
+    conn = conectar()
+    if request.method == 'POST':
+                result =editar_matriculas(conn, matriculas_id)
+                if isinstance(result, str):  # Verifica se houve erro
+                    return render_template('erro.html', mensagem= result)
+                return redirect('/')     
+    return render_template('Matriculas/editar-valores-matriculas.html') 
     
+
+@app.route('/excluir-matriculas',methods = ['POST'])
+def excl_matric():
+     conn=conectar()
+     data = request.json
+     print('dados recebidos', data)
+     matriculas_id= data.get('matricula_id')
+     print(matriculas_id)
+     result= excluir_matriculas(conn,matriculas_id)
+     if isinstance(result, str):  # Verifica se houve erro
+                    return render_template('erro.html', mensagem= result)
+     return redirect('/')   
+
+
+     
+
+###########################################################   PLANOS DE AULA   ########################################################################
 # Rota para exibir todos os planos de aula
-@app.route('/planos')
+@app.route('/planos-aula-pesquisa')
+def pesquisar_planos():
+     return render_template('PlanosAula/pesquisar-planos-aula.html')
+
+
+@app.route('/resultados-pesquisa-plano-aula',methods=['POST'])
 def planos():
-    try:
-        conn = conectar()  # Substitua conectar() pela função que conecta ao banco de dados
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM planos')
-        planos = cursor.fetchall()
-        return render_template('planos.html', planos=planos)
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao buscar planos de aula: {err}')
-# Rota para exibir o formulário de planos de aula
+    conn = conectar()
+    result = pesquisar_plano_aula(conn)
+    print(result)
+    if isinstance(result, str):  # Verifica se houve erro
+            return render_template('erro.html', mensagem= result)
+    return render_template('PlanosAula/resultados-pesquisa-planos-aula.html',planos=result)
+  
+
+
 @app.route('/planos-form')
 def planos_form():
-    try:
-        conn = conectar()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT id, nome FROM turmas')
-        turmas = cursor.fetchall()
-        return render_template('planos-form.html', turmas=turmas)
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao buscar turmas: {err}')
+    return render_template('PlanosAula/planos-form.html')
+
+
 # Rota para adicionar um novo plano de aula
 @app.route('/planos', methods=['POST'])
 def add_plano():
-    try:
         conn = conectar()
-        cursor = conn.cursor()
-        data = request.form['data']
-        conteudo = request.form['conteudo']
-        id_turma = request.form['id_turma']
-        cursor.execute('''
-            INSERT INTO planos (data, conteudo, id_turma) 
-            VALUES (%s, %s, %s)''', (data, conteudo, id_turma))
-        conn.commit()
-        return redirect(url_for('planos'))
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao adicionar plano de aula: {err}')
+        result = adicionar_plano_aula(conn)
+        if isinstance(result, str):  # Verifica se houve erro
+                    return render_template('erro.html', mensagem= result)
+        return redirect('/')
 
-# Rota para exibir todas as faltas
-@app.route('/faltas')
+@app.route('/editar-valores-planos/<int:planos_id>', methods=['POST','GET'])
+def edit_planos_aula(planos_id):
+    conn = conectar()
+    if request.method == 'POST':
+                result =editar_planos(conn, planos_id)
+                if isinstance(result, str):  # Verifica se houve erro
+                    return render_template('erro.html', mensagem= result)
+                return redirect('/')     
+    return render_template('PlanosAula/editar-valores-planos.html') 
+
+@app.route('/excluir-planos-aula', methods=['POST'])
+def excl_planos_aula():
+     conn=conectar()
+     data = request.json
+     print('dados recebidos', data)
+     planos_id= data.get('planos_id')
+     print(planos_id)
+     result= excluir_planos_aula(conn,planos_id)
+     if isinstance(result, str):  # Verifica se houve erro
+                    return render_template('erro.html', mensagem= result)
+     return redirect('/')   
+
+
+############################################################################################################################################
+
+
+
+
+###########################################################   FALTAS      ########################################################################
+
+@app.route('/pesquisar-faltas')
 def faltas():
-    try:
-        conn = conectar()  # Substitua conectar() pela função que conecta ao banco de dados
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM faltas')
-        faltas = cursor.fetchall()
-        return render_template('faltas.html', faltas=faltas)
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao buscar faltas: {err}')
-# Rota para exibir o formulário de registro de faltas
+   return render_template('Faltas/pesquisar-faltas.html')
+
 @app.route('/faltas-form')
 def faltas_form():
-    try:
-        conn = conectar()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT id, nome FROM turmas')
-        turmas = cursor.fetchall()
-        cursor.execute('SELECT id, conteudo FROM planos')
-        planos = cursor.fetchall()
-        cursor.execute('''
-            SELECT matriculas.id, pessoas.nome
-            FROM matriculas
-            JOIN inscricoes ON matriculas.id_inscricao = inscricoes.id
-            JOIN alunos ON inscricoes.id_aluno = alunos.id
-            JOIN pessoas ON alunos.id_pessoa = pessoas.id;
-        ''')
-        matriculas = cursor.fetchall()
-        return render_template('faltas-form.html', turmas=turmas, planos=planos, matriculas=matriculas)
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao buscar dados: {err}')
-# Rota para adicionar um registro de falta
+        return render_template('Faltas/faltas-form.html')
+
 @app.route('/faltas', methods=['POST'])
 def add_falta():
-    try:
-        conn = conectar()
-        cursor = conn.cursor()
-        justificativa = request.form['justificativa']
-        id_plano = request.form['id_plano']
-        id_matricula = request.form['id_matricula']
-        cursor.execute('''
-            INSERT INTO faltas (justificativa, id_plano, id_matricula) 
-            VALUES (%s, %s, %s)''', (justificativa, id_plano, id_matricula))
-        conn.commit()
-        return redirect(url_for('faltas'))
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao registrar falta: {err}')
-    
-@app.route('/alunos-secretarias')
-def alunosSecretarias():
-    try:
-        conn = conectar()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute(''' SELECT alunos.ra AS ra_aluno, pessoas.nome AS nome_aluno, secretarias.nome AS nome_secretaria, status,
-                            CASE
-                                WHEN status = 1 THEN 'Ativo'
-                                ELSE 'Desativado'
-                            END AS status
-                            FROM alunos
-                            JOIN pessoas ON alunos.id_pessoa = pessoas.id
-                            JOIN secretarias ON secretarias.id = alunos.id_secretaria''')
-        alunos = cursor.fetchall()
-        return render_template('alunos-secretarias.html', alunos=alunos)
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao buscar alunos: {err}')
-    
+    conn = conectar()
+    result = adicionar_falta(conn)
+    if isinstance(result, str):  # Verifica se houve erro
+            return render_template('erro.html', mensagem= result)
+    return redirect('/')   
+ 
+@app.route('/pesquisar-nome-conteudo', methods=['GET','POST'])
+def pesquisar_conteudo():
+    conn = conectar()
+    dados = request.json  # Acesse os dados enviados no corpo da solicitação
+    print(dados)
+    result = pesquisar_nome_conteudo(conn,dados)
+    print(result)
+    return jsonify(result)
+     
+@app.route("/resultado-pesquisa-faltas",methods=['POST'])
+def pesquisar_faltas_alunos():
+     conn = conectar()
+     result = pesquisar_faltas(conn)
+     if isinstance(result, str):  # Verifica se houve erro
+            return render_template('erro.html', mensagem= result)
+     return render_template('Faltas/resultados-pesquisa-faltas.html',faltas=result)
 
 
-   
+@app.route('/editar-valores-faltas/<int:faltas_id>', methods=['POST','GET'])
+def edit_faltas(faltas_id):
+    conn = conectar()
+    if request.method == 'POST':
+                result =editar_faltas(conn, faltas_id)
+                if isinstance(result, str):  # Verifica se houve erro
+                    return render_template('erro.html', mensagem= result)
+                return redirect('/')     
+    return render_template('Faltas/editar-valores-faltas.html') 
 
-
+@app.route('/excluir-faltas', methods=['POST'])
+def excl_faltas():
+     conn=conectar()
+     data = request.json
+     print('dados recebidos', data)
+     faltas_id= data.get('faltas_id')
+     print(faltas_id)
+     result= excluir_falta(conn,faltas_id)
+     if isinstance(result, str):  # Verifica se houve erro
+                    return render_template('erro.html', mensagem= result)
+     return redirect('/')   
       
 
 if __name__ == '__main__':

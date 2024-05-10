@@ -167,8 +167,10 @@ CREATE TABLE faltas (
 	id_matricula INT,
 	criado_em DATETIME,
 	modificado_em DATETIME,
+  deletado_em DATETIME,
 	criado_por INT,
-	modificado_por INT,
+  deletado_por INT,
+  modificado_por INT,
 	CONSTRAINT fk_falta_plano_id FOREIGN KEY (id_plano) REFERENCES planos(id),
 	CONSTRAINT fk_falta_matricula_id FOREIGN KEY (id_matricula) REFERENCES matriculas(id)
 );

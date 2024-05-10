@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Resultado da Pesquisa</h1>
+  <table border="1">
+      <thead>
+          <tr>
+              
+              <th>Nome do professor</th>
+              <th>Nome da turma</th>
+              <th>Descricao da turma</th>
+              <th>Capacidade da turma</th>
+              <th>Data de início</th>
+              <th>Data de término</th>
+              <th>Nome do curso</th>
+              <th>Descrição do curso</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for turma in turmas_professores %}
+          
+          <tr>
+              <td>{{ turma.nome_professor }}</td>
+              <td>{{ turma.nome_turma }}</td>
+              <td>{{ turma.descricao_turma }}</td>
+              <td>{{ turma.capacidade_turma }}</td>
+              <td>{{ turma.data_inicio }}</td>
+              <td>{{ turma.data_fim }}</td>
+              <td>{{ turma.nome_curso}}</td>
+              <td>{{ turma.descricao_curso}}</td>
+              <td><a href="/editar_valores_turma_professores/{{turma.id_turma_professor}}">Editar</a></td>
+              <td><a class="deleteButton" data-turma-professores-id="{{ turma.id_turma_professor }}" href="#">Excluir</a></td>
+          </tr>
+          
+          {% endfor %}
+      </tbody>
+  </table>
+
+  <a href="/turmas-pesquisa">Pesquisar Turmas</a> <br>
+    <a href="/">Menu</a> <br>
+    <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+
+  <script>
+    let deleteButtons = document.querySelectorAll('.deleteButton');
+    
+    
+    // Itera sobre todos os botões
+    deleteButtons.forEach(function(button) {
+      // Adiciona um evento de clique a cada botão
+      button.addEventListener('click', function(event) {
+        // Impede o comportamento padrão do link
+        event.preventDefault();
+
+        let confirmarExclusao = confirm('Deseja relamente excluir essa Turma')
+        if(confirmarExclusao){
+           // Pega o ID da secretaria do atributo 'data-secretaria-id' do botão clicado
+        let turmaId = this.getAttribute('data-turma-professores-id');
+        // Envia o ID da secretaria para o servidor Flask
+        fetch('/excluir-turmas-professores', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({turma_id: turmaId})
+        }).then(response => {
+            // Lida com a resposta do servidor, se necessário
+            console.log(response)
+            alert('Turma excluida com sucesso')
+            // Voltando para o início
+            window.location.href = '/';
+        }).catch(error => {
+            console.error('Erro ao excluir turma:', error);
+        });
+        }else{
+          console.log('exclusão cancelada')
+        }
+       
+      });
+    });
+</script>
+  
+</body>
+</html>

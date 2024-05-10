@@ -33,8 +33,8 @@ def resultados_cursos_pesquisados(conn):
             params += (f'%{nome_curso}%',)  # Adiciona o parâmetro à tupla
         
         if secretaria_curso:
-            query += ' AND secretarias.id LIKE %s'
-            params += (f'%{secretaria_curso}%',)  # Adiciona o parâmetro à tupla
+            query += ' AND secretarias.id = %s'
+            params += ({secretaria_curso},)  # Adiciona o parâmetro à tupla
         
         cursor.execute(query, params) 
          
@@ -46,7 +46,7 @@ def resultados_cursos_pesquisados(conn):
 def pesquisar_secretarias(conn):
     try:   
         cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT id, nome FROM secretarias')
+        cursor.execute('SELECT id, nome FROM secretarias WHERE deletado_em IS NULL')
         cursos = cursor.fetchall()
         return cursos
     except mysql.connector.Error as err:
