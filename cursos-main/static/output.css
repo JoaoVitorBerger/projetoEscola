@@ -554,12 +554,32 @@ video {
   --tw-contain-style:  ;
 }
 
+.collapse {
+  visibility: collapse;
+}
+
+.static {
+  position: static;
+}
+
+.flex {
+  display: flex;
+}
+
 .table {
   display: table;
 }
 
 .hidden {
   display: none;
+}
+
+.border-collapse {
+  border-collapse: collapse;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
 }
 
 .rounded {
@@ -570,9 +590,19 @@ video {
   border-width: 1px;
 }
 
+.bg-adc {
+  --tw-bg-opacity: 1;
+  background-color: rgb(3 55 125 / var(--tw-bg-opacity));
+}
+
 .bg-blue-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(59 130 246 / var(--tw-bg-opacity));
+}
+
+.bg-card {
+  --tw-bg-opacity: 1;
+  background-color: rgb(206 214 250 / var(--tw-bg-opacity));
 }
 
 .px-4 {

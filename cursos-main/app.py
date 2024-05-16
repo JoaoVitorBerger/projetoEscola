@@ -12,6 +12,7 @@ from models.matriculas import *
 from models.planosAula import *
 from models.faltas import *
 
+
 app = Flask(__name__)
 
 # Configuração do MySQL

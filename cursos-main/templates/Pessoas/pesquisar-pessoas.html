@@ -34,9 +34,9 @@
     document.querySelector('form').addEventListener('submit', (ev) => {
             let nome = document.getElementById('nome').value;
             let cpf = document.getElementById('cpf').value;
-            if (nome && cpf !== "") {
+            if (nome || cpf !== "") {
             } else {
-                alert('Todos os campos necessitam estarem preenchidos!');
+                alert('Ao menos um dos campos necessita estar preenchido!');
                 ev.preventDefault();
             }
         })

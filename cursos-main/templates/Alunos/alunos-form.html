@@ -6,13 +6,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Adição de Aluno</title>
-<link rel="stylesheet" href="../../static/output.css">
+
+    <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet">
 </head>
 
-<body>
-
-    <h1  class="text-3xl font-bold underline">Adicionar Novo Aluno</h1>
-    <form action="/alunos-envio" method="POST">
+<body class=" bg-adc">
+    <h1  class="text-3xl font-bold underline ">Adicionar Novo Aluno</h1>
+    <form action="/alunos-envio" method="POST" class="bg-card">
         <label for="ra">RA:</label>
         <input type="text" id="ra" name="ra" maxlength="6"><br><br>
         <label for="status">Status:</label>
