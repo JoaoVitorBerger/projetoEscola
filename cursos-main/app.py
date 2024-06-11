@@ -46,32 +46,29 @@ def exibir_secretarias():
 
 
 #Rota para exibir formulário secretarias
-@app.route('/secretarias-form')
+@app.route('/secretarias/form', methods=['POST','GET'])
 def adicionar_secretaria():
-    return render_template('Secretarias/secretarias-form.html')
-
-
-#Rota para adicionar uma secretaria
-@app.route('/secretarias', methods=['POST'])
-def inserir_secretaria():
     conn = conectar()
-    result = add_secretaria(conn)
-    if isinstance(result, str):  # Verifica se houve erro
-        return render_template('erro.html', mensagem=result)
-    return render_template('index.html')
-
+    mensagem = False    
+    if request.method == 'POST':
+        result = add_secretaria(conn)
+        if isinstance(result, str):  # Verifica se houve erro
+            return render_template('erro.html', mensagem=result)
+        mensagem = True
+    return render_template('Secretarias/secretarias-form.html', mensagem = mensagem)
 
 #Rota para editar uma secretaria
 @app.route('/editar-valores-secretarias/<int:secretaria_id>', methods=['GET', 'POST'])
 def edit_secretaria_valores(secretaria_id):
     conn=conectar()
+    mensagem = False
     result = edit_secretaria(secretaria_id, conn)
     if isinstance(result, str):  # Verifica se houve erro
         return render_template('erro.html', mensagem=result)
     if request.method == 'POST':
         # Redireciona para a rota '/secretarias'
-        return redirect('/secretarias')
-    return render_template('Secretarias/editar-valores-secretarias.html')
+        mensagem = True
+    return render_template('Secretarias/editar-valores-secretarias.html', mensagem = mensagem)
 
 @app.route('/excluir-secretaria', methods=['POST'])
 def excluir_secretarias():
@@ -85,7 +82,8 @@ def excluir_secretarias():
         cursor.execute('''UPDATE secretarias SET deletado_em = %s, ativo_flag = 0 WHERE id = %s;
                        ''', (datetime.now(), secretaria_id))
         conn.commit()
-        return jsonify({"message": "Secretaria excluída com sucesso"})
+        mensagem = "Secretaria excluida com sucesso."
+        return mensagem
     except mysql.connector.Error as err:
         return jsonify({"error": f'Erro ao excluir secretaria: {err}'})
         
