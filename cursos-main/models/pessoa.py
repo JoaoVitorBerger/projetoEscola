@@ -92,6 +92,10 @@ def resultado_pesquisa(conn):
         cursor.execute(query, params) 
 
         pessoa = cursor.fetchall()
+
+        if not pessoa:  # Verifica se a lista está vazia
+            return 'False'
+
         return pessoa
     except mysql.connector.Error as err:
         return f'Erro ao buscar alunos: {err}'

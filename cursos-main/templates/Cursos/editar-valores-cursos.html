@@ -1,45 +1,118 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" class="h-full">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Aluno</title>
+    <title>Editar Curso</title>
+    <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet">
 </head>
-<body>
-    <h1>Editar Cursos</h1>
 
-    <form action="" method="POST">
-      <label for="nome">Nome do Curso:</label>
-      <input type="text" id="nome" name="nome_curso"><br><br>
-      <label for="descricao">Descrição:</label><br>
-      <textarea id="descricao" name="descricao" rows="4" cols="50"></textarea><br><br>
-      <label for="id_secretaria">Secretaria:</label>
-      <select id="id_secretaria" name="id_secretaria">
-          {% for secretaria in secretarias %}
-              <option value="{{ secretaria.id }}">{{ secretaria.nome }}</option>
-          {% endfor %}
-      </select><br><br>
-      <input type="submit" value="Adicionar Curso">
-  </form>
+<body class="h-full bg-pagina">
+    <div class="w-full h-full flex flex-col justify-center items-center overflow-y-auto">
+        <div class="w-full flex justify-center p-7">
+            <img src="../../static/img/logo_prefeitura.png" class="h-12 w-75 " alt="">
+        </div>
+        <form action="" method="POST"
+            class="bg-card w-full sm:w-1/2 h-auto rounded-3xl flex flex-col justify-between items-center">
+            <div class="border-b-2 border-linhaFora w-full">
+                <h1 class="text-3xl font-opens font-bold text-adc border-b-2 border-linhaForm  w-full p-7 text-center">
+                    Editar Cursos</h1>
+            </div>
+            <div class="w-full grid grid-cols-1 justify-items-center items-center">
+                <label for="nome" class="w-full sm:w-3/4 font-opens font-bold text-xl">Nome do Curso:</label>
+                <input type="text" id="nome" name="nome_curso"
+                    class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm"
+                    placeholder="Nome do curso">
 
-  
-  <a href="/cursos-form">Adicionar Curso</a> <br>
-  <a href="/">Menu</a> <br>
-  <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
-  
-  <script>
-        document.querySelector('form').addEventListener('submit', (ev)=>{
-          console.log('click')
-          let nome_curso = document.getElementById('nome').value
-          let descricao_curso = document.getElementById('descricao').value
-          if(nome_curso && descricao_curso != ''){
-              alert('Valores enviados com sucesso')
-          }
-          else{
-              ev.preventDefault()
-              alert('Os campos precisam ser preenchidos')
-          }})
-  </script>
-  
+                <label for="descricao" class="w-full sm:w-3/4 font-opens font-bold text-xl">Descrição:</label>
+                <textarea id="descricao" name="descricao"
+                    class="w-full bg-pagina sm:w-3/4 max-h-56 min-h-56  h-56 p-5 resize-none rounded-md font-opens border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm"
+                    placeholder="Descrição sobre o curso"></textarea>
+
+                <label for="id_secretaria " class="w-full sm:w-3/4 font-opens font-bold text-xl">Secretaria:</label>
+                <select id="id_secretaria" name="id_secretaria"
+                    class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm">
+                    {% for secretaria in secretarias %}
+                    <option value="{{ secretaria.id }}">{{ secretaria.nome }}</option>
+                    {% endfor %}
+                </select>
+                <div class="grid grid-cols-1 justify-items-center items-center mt-3">
+                    <input type="submit" value="Alterar valores" id="btn-adicionar"
+                        class="rounded-e-2xl text-lg rounded-s-2xl font-opens text-white bg-adc w-48 h-12 pl-5 pr-5 hover:bg-blue-700 hover:cursor-pointer">
+                </div>
+            </div>
+            <div class="grid grid-cols-3 justify-items-center items-end ">
+                <a href="/cursos/pesquisar"
+                    class="bg-adc hover:bg-blue-700 text-white font-bold p-2 m-10 rounded text-center">Visualizar
+                    pessoas</a>
+                <a href="/"
+                    class="bg-adc hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-10 text-center">Menu</a>
+                <a href="javascript:history.back()"
+                    class="bg-adc hover:bg-blue-700 text-white font-bold m-10 py-2 px-4 rounded text-center">Voltar</a>
+            </div>
+        </form>
+    </div>
+
+    <div id="customAlert"
+        class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+            <h2 class="text-2xl font-bold mb-4 font-opens">Prencha o Campo com um valor válido.</h2>
+            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+        </div>
+    </div>
+    <div id="customAlertSuccess"
+        class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+            <h2 class="text-2xl font-bold mb-4 font-opens">Curso modificado com sucesso.</h2>
+            <button id="closeDialogBtnSuccess" class="px-4 py-2 bg-green-500 text-white rounded">Fechar</button>
+        </div>
+    </div>
+
+
+    <script>
+        let form = document.querySelector('form');
+        let customAlertSucces = document.getElementById('customAlertSucces');
+        let closeDialogBtnSucces = document.getElementById('closeDialogBtnSuccess');
+        let descricaoCurso = document.getElementById('descricao');
+        let nome_curso = document.getElementById('nome');
+
+        descricaoCurso.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^a-zA-Z0-9\s]/g, "");
+            event.target.value = valoresFiltrados;
+        });
+        nome_curso.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^a-zA-Z0-9\s]/g, "");
+            event.target.value = valoresFiltrados;
+        });
+
+        form.addEventListener('submit', (ev) => {
+            let nome_curso = document.getElementById('nome')
+            let descricao = document.getElementById('descricao')
+            if (nome_curso.value == "" || descricao.value == "") {
+                document.getElementById('customAlert').classList.remove('hidden')
+                ev.preventDefault()
+            }
+            document.getElementById('closeDialogBtn').addEventListener('click', function () {
+                document.getElementById('customAlert').classList.add('hidden');
+            });
+        })
+
+
+        window.onload = function () {
+            let mensagem = "{{ mensagem }}";
+            console.log(mensagem)
+            if (mensagem == 'True') {
+                document.getElementById('customAlertSuccess').classList.remove('hidden');
+                closeDialogBtnSucces.addEventListener('click', function () {
+                    document.getElementById('customAlertSuccess').classList.add('hidden');
+                    window.location.href = '/cursos/pesquisar'
+
+                });
+            }
+        }
+    </script>
+
 </body>
+
 </html>

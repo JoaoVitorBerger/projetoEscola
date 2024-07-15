@@ -1,50 +1,96 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet">
+  <title>Pesquisar Turmas</title>
 </head>
-<body>
 
-  <h1>Pesquisar Turmas</h1>
-  <form action="/resultado-pesquisa-turma" method="POST">
-      <label for="nome">Nome da turma:</label>
-      <input type="text" id="nome_turma" name="nome_turma"><br><br>
-      <label for="data_inicio">Data de Inicio:</label>
-      <input type="date" name="data_inicio" id="data_inicio">
-      <br>
-      <br>
-      <label for="data_fim">Data de Término:</label>
-      <input type="date" name="data_fim" id="data_fim"> 
-      <br>
-      <br>
-      <label for="nome">Nome do curso:</label>
-      <input type="text" id="nome_curso" name="nome_curso"><br><br>
-      <input type="submit" value="Pesquisar">
-  </form>
-  
-  <a href="/turmas-form">Adicionar Turma</a> <br>
-  <a href="/">Menu</a> <br>
-  <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
-<script>
+<body class="h-full bg-pagina">
+  <div class="w-full h-full flex flex-col justify-center items-center">
+    <div class="w-full flex justify-center p-7">
+      <img src="../../static/img/logo_prefeitura.png" class="h-12 w-75 " alt="">
+    </div>
 
-  
-  
-  document.querySelector('form').addEventListener('submit', (ev)=>{
-    let nome_turma = document.getElementById('nome_turma').value;
-    let data_fim = document.getElementById('data_fim').value;
-    let data_inicio = document.getElementById('data_inicio').value;
-    let nome_curso = document.getElementById('nome_curso').value;
+    <form action="/turmas/pesquisar" method="POST"
+      class="bg-card w-full sm:w-1/2 h-auto rounded-3xl flex flex-col justify-between items-center">
+      <div class="border-b-2 border-linhaFora w-full">
+        <h1 class="text-3xl font-opens font-bold text-adc border-b-2 border-linhaForm  w-full p-7 text-center">
+          Pesquisar Turmas
+        </h1>
+      </div>
+      <div class="w-full grid grid-cols-1 justify-items-center items-center">
+        <label for="nome" class="w-full sm:w-3/4 font-opens font-bold text-xl">Nome da turma:</label>
+        <input type="text" id="nome_turma" name="nome_turma"
+          class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm"
+          placeholder="Nome da Turma">
+        <label for="data_inicio" class="w-full sm:w-3/4 font-opens font-bold text-xl">Data de Inicio:</label>
+        <input type="date" name="data_inicio" id="data_inicio"
+          class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm">
 
-    if(nome_turma || data_fim || data_inicio || nome_curso !== ""){
-     
-    } else {
-        alert('Os campos de pesquisa necessitam conter algum valor para que ocorra a pesquisa');
+        <label for="data_fim" class="w-full sm:w-3/4 font-opens font-bold text-xl">Data de Término:</label>
+        <input type="date" name="data_fim" id="data_fim"
+          class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm">
+
+        <label for="nome" class="w-full sm:w-3/4 font-opens font-bold text-xl">Nome do curso:</label>
+        <input type="text" id="nome_curso" name="nome_curso"
+          class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm"
+          placeholder="Nome do curso">
+        <div class="grid grid-cols-1 justify-items-center items-center mt-3">
+          <input type="submit" value="Pesquisar" id="btn-adicionar"
+            class="rounded-e-2xl text-lg rounded-s-2xl font-opens text-white bg-adc w-48 h-12 pl-5 pr-5 hover:bg-blue-700 hover:cursor-pointer">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 justify-items-center items-end ">
+        <a href="/cursos/form"
+          class="bg-adc hover:bg-blue-700 text-white font-bold p-2 m-10 rounded text-center">Adicionar
+        </a>
+        <a href="/" class="bg-adc hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-10 text-center">Menu</a>
+        <a href="javascript:history.back()"
+          class="bg-adc hover:bg-blue-700 text-white font-bold m-10 py-2 px-4 rounded text-center">Voltar</a>
+      </div>
+    </form>
+  </div>
+  <div id="customAlert"
+    class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+      <h2 class="text-2xl font-bold mb-4 font-opens">Prencha o Campo com um valor válido.</h2>
+      <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+    </div>
+  </div>
+
+  <script>
+
+    let nome_turma = document.getElementById('nome_turma');
+    nome_turma.addEventListener('input', (event) => {
+      let valoresFiltrados = event.target.value.replace(/[^a-zA-Z\s]/g, "");
+      event.target.value = valoresFiltrados;
+    });
+
+    let nome_curso = document.getElementById('nome_curso');
+    nome_curso.addEventListener('input', (event) => {
+      let valoresFiltrados = event.target.value.replace(/[^a-zA-Z\s]/g, "");
+      event.target.value = valoresFiltrados;
+    });
+
+
+    document.querySelector('form').addEventListener('submit', (ev) => {
+      let nome_turma = document.getElementById('nome_turma').value;
+      let data_fim = document.getElementById('data_fim').value;
+      let data_inicio = document.getElementById('data_inicio').value;
+      let nome_curso = document.getElementById('nome_curso').value;
+      if (nome_turma == '' && data_fim == '' && data_inicio == '' && nome_curso == '') {
+        document.getElementById('customAlert').classList.remove('hidden');
         ev.preventDefault();
-    }
-});
-</script>
+      }
+      document.getElementById('closeDialogBtn').addEventListener('click', function () {
+        document.getElementById('customAlert').classList.add('hidden');
+      });
+    });
+  </script>
 </body>
+
 </html>

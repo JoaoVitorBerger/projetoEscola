@@ -47,6 +47,10 @@ def resultados_turmas_pesquisados(conn):
         cursor.execute(query, params) 
    
         turmas = cursor.fetchall()
+
+        if not turmas:
+            return "False"
+        
         return turmas
     except mysql.connector.Error as err:
         return f'Erro ao buscar alunos: {err}'

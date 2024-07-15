@@ -6,6 +6,46 @@
 @font-face{
   font-family: "Open Sans";
   src: url(fontes/open-sans.bold.ttf);
+}
+.autocomplete-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
 
+@media (max-width: 600px) {
+  .autocomplete-suggestions {
+    width: 100%; 
+  }
+}
+.autocomplete-suggestions {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  border-top: none;
+  max-height: 150px;
+  overflow-y: auto;
+  position: absolute;
+  top: 50px;
+  width: 75%;
+  z-index: 1000;
+  background-color: white;
 
 }
+
+.autocomplete-suggestion {
+  padding: 10px;
+  cursor: pointer;
+
+}
+
+.autocomplete-suggestion:hover {
+  background-color: #e0e0e0;
+}
+
+.autocomplete-suggestions.hidden {
+  display: none;
+}
+
+

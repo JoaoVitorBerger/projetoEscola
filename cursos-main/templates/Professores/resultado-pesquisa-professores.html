@@ -1,85 +1,165 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" class="h-full">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultado da Pesquisa</title>
+    <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet">
 </head>
-<body>
-    <h1>Resultado da Pesquisa</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                
-                <th>Nome</th>
-            
-                <th>CPF</th>
-                <th>Data de Nascimento</th>
-                <th>Secretaria</th>
-                <th>Ajustar</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for professor in professores %}
-            
-            <tr>
-                <td style="display: none;">{{ professor.id }}</td>
-                <td>{{ professor.nome }}</td>
-                <td>{{ professor.cpf }}</td>
-                <td>{{ professor.data_nasc }}</td>
-                <td>{{ professor.secretaria_nome }}</td>
-                <td><a href="/editar-valores-professores/{{ professor.id }}/{{professor.id_professor}}">Editar</a></td>
-                <td><a class="deleteButton"  data-id-professor ="{{professor.id_professor}}" href="#">Excluir</a></td>
-            </tr>
-            
-            {% endfor %}
-        </tbody>
-    </table>
-    
-    <a href="/professores-form">Adicionar Professores</a> <br>
-    <a href="/">Menu</a> <br>
-    <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
-    
 
-    <script>
-        let deleteButtons = document.querySelectorAll('.deleteButton');
-        
-        
-        // Itera sobre todos os botões
-        deleteButtons.forEach(function(button) {
-          // Adiciona um evento de clique a cada botão
-          button.addEventListener('click', function(event) {
-            // Impede o comportamento padrão do link
-            event.preventDefault();
+<body class="h-full bg-pagina">
+    <div class="flex flex-col justify-center h-full items-center w-full ">
+        <div class="flex justify-center p-5">
+            <img src="../../static/img/logo_prefeitura.png" class="h-12 w-75" alt="">
+        </div>
+        <div
+            class="overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200  bg-card w-full h-auto sm:h-auto sm:w-10/12 p-5 rounded-3xl">
+            <h1 class="text-3xl p-7 font-opens font-bold text-adc">Resultado da Pesquisa</h1>
+            <div class="overflow-auto">
+                <table class=" w-full  sm:h-auto bg-fundoTabela">
+                    <thead class="hidden md:block">
+                        <tr class="sm:grid sm:grid-cols-6 gap-0 ">
+                            <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Nome</th>
+                            <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">CPF</th>
+                            <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Data de Nascimento
+                            </th>
+                            <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Secretaria</th>
+                            <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Editar</th>
+                            <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Excluir</th>
+                        </tr>
+                    </thead>
+                    <tbody class="h-auto">
+                        {% for professor in professores %}
 
-            let confirmarExclusao = confirm('Deseja relamente excluir esse professor')
-            if(confirmarExclusao){
-               // Pega o ID da secretaria do atributo 'data-secretaria-id' do botão clicado
-            
-            let professorId  = this.getAttribute('data-id-professor');
-            
-            // Envia o ID da secretaria para o servidor Flask
-            fetch('/excluir-professores', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({professor_id: professorId})
-            }).then(response => {
-                // Lida com a resposta do servidor, se necessário
-                console.log(response)
-                alert('Professor excluido com sucesso')
-                // Voltando para o início
-                window.location.href = '/';
-            }).catch(error => {
-                console.error('Erro ao excluir professor:', error);
+                        <tr class="sm:grid sm:grid-cols-6 gap-0">
+                            <td
+                                class="h-auto  border-2 font-opens text-sm p-4  border-coresLinhas text-center sm:flex  sm:justify-center sm:items-center">
+                                {{ professor.nome }}</td>
+                            <td
+                                class="h-auto  border-2 font-opens text-sm p-4  border-coresLinhas text-center sm:flex  sm:justify-center sm:items-center">
+                                {{ professor.cpf }}</td>
+                            <td
+                                class="h-auto  border-2 font-opens text-sm p-4  border-coresLinhas text-center sm:flex  sm:justify-center sm:items-center">
+                                {{ professor.data_nasc }}</td>
+                            <td
+                                class="h-auto  border-2 font-opens text-sm p-4  border-coresLinhas text-center sm:flex  sm:justify-center sm:items-center">
+                                {{ professor.secretaria_nome }}</td>
+                            <td
+                                class="h-auto  border-2 font-opens text-sm p-4  border-coresLinhas text-center sm:flex  sm:justify-center sm:items-center">
+                                <a href="/professores/editar/{{ professor.id }}/{{professor.id_professor}}"
+                                    class="p-4 sm:p-0 text-center">
+                                    <img src="../../static/img/IconeEditar.png" alt="">
+                                </a></td>
+                            <td
+                                class="h-auto  border-2 font-opens text-sm p-4  border-coresLinhas text-center sm:flex  sm:justify-center sm:items-center">
+                                <a class="deleteButton  p-4 sm:p-0" data-id-professor="{{professor.id_professor}}"
+                                    href="#">
+                                    <img src="../../static/img/IconeLixeira.png" alt="">
+                                </a></td>
+                        </tr>
+
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="customAlert"
+        class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center card-principal">
+            <h2 class="text-2xl font-bold mb-4 font-opens">Deseja excluir esse professor ?</h2>
+            <button id="closeDialogBtn" class="px-4 py-2 bg-green-500 text-white rounded sim">Sim</button>
+            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded nao">Não</button>
+        </div>
+    </div>
+
+    <div id="customAlertNotFind"
+        class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+            <h2 class="text-2xl font-bold mb-4 font-opens">Professor não cadastrado.</h2>
+            <button id="closeDialog" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+        </div>
+        <script>
+            let deleteButtons = document.querySelectorAll('.deleteButton');
+            let customAlert = document.getElementById('customAlert');
+
+
+            // Itera sobre todos os botões
+            deleteButtons.forEach(function (button) {
+                // Adiciona um evento de clique a cada botão
+                button.addEventListener('click', function (event) {
+                    // Impede o comportamento padrão do link
+                    event.preventDefault();
+                    document.getElementById('customAlert').classList.remove('hidden');
+                    document.addEventListener('click',(ev)=>{
+                        let valorResposta = ev.target
+                        if (valorResposta.classList.contains('sim')) {
+                            let professorId = this.getAttribute('data-id-professor')
+                            fetch('/professores/excluir', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ professor_id: professorId })
+                        }).then(response => {
+                            customAlert.querySelector('h2').innerText = 'Professor excluido com sucesso'
+                            let teste = document.querySelectorAll('#closeDialogBtn')
+                            teste.forEach((el) => {
+                                el.remove()
+                            })
+                            let btn = document.createElement('button')
+                            btn.innerHTML = `
+                            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+                            `
+                            customAlert.querySelector('.card-principal').append(btn)
+                            
+                            btn.addEventListener('click',()=>{
+                                window.location.reload()
+                            })
+                        }).catch(error => {
+                            console.error('Erro ao excluir professor!:', error);
+                            customAlert.querySelector('h2').innerText = 'Erro:' + error
+                            
+                            let teste =  document.querySelectorAll('#closeDialogBtn')
+                            teste.forEach((el)=>{
+                                el.remove()
+                            })
+                            let btn = document.createElement('button')
+                            btn.innerHTML = `
+                            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+                            `
+                            customAlert.querySelector('.card-principal').append(btn)
+                            
+                            btn.addEventListener('click',()=>{
+                                window.location.reload()
+                            })
+                        });
+                        }else{
+                            if (valorResposta.classList.contains('nao')) {
+                            customAlert.classList.add('hidden')
+                        }
+                        }
+                    })
+                    
+                });
             });
-            }else{
-              console.log('exclusão cancelada')
+
+            window.onload = function () {
+                let mensagem = "{{ mensagem }}";
+                console.log(mensagem)
+                if (mensagem == 'False') {
+                    document.getElementById('customAlertNotFind').classList.remove('hidden');
+                    document.getElementById('closeDialog').addEventListener('click', function () {
+                        document.getElementById('customAlertNotFind').classList.add('hidden');
+                        window.location.href = '/professores/pesquisar'
+
+                    });
+                }
             }
-           
-          });
-        });
-    </script>
+
+
+        </script>
 </body>
+
 </html>

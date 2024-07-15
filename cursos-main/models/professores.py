@@ -34,6 +34,8 @@ def resultados_professores_pesquisados(conn):
         cursor.execute(query, params) 
           
         professores = cursor.fetchall()
+        if not professores:  # Verifica se a lista está vazia
+            return 'False'
         return professores
     except mysql.connector.Error as err:
         return f'Erro ao buscar alunos: {err}'
@@ -100,7 +102,7 @@ def enviar_valores_professores(conn):
         cursor.execute('INSERT INTO professores (status, id_pessoa, id_secretaria,criado_em) VALUES ( %s, %s, %s, %s)', 
                        ( status,id_pessoa,id_secretaria, datetime.now()))
         conn.commit()
-        return 
+        return
     except mysql.connector.Error as err:
         return f'Erro ao adicionar aluno: {err}'
     

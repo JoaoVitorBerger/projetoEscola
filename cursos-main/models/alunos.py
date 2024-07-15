@@ -10,7 +10,7 @@ def pesquisar_nomes_proximos(conn,dados):
         print(dados)
         if dados['nome'].strip():  # Verifica se o valor não está vazio após remover espaços em branco
             nome_inserido = dados['nome'].strip().upper()
-            cursor.execute('SELECT id , nome FROM pessoas WHERE nome LIKE %s', ('%' + nome_inserido + '%',))
+            cursor.execute('SELECT DISTINCT id , nome FROM pessoas WHERE nome LIKE %s', ('%' + nome_inserido + '%',))
             nomes_encontrados = cursor.fetchall()
             nomes_semelhantes = [(nome['id'], nome['nome']) for nome in nomes_encontrados]
             return nomes_semelhantes  # Certifique-se de que está retornando JSON
@@ -32,7 +32,6 @@ def enviar_valores_alunos(conn):
         ra = request.form['ra']
         status = request.form['status']
         id_pessoa = request.form['id_pessoa_hidden']
-        print(id_pessoa + '')
         id_secretaria = request.form['id_secretaria']
         cursor.execute('INSERT INTO alunos (ra, status, id_pessoa, id_secretaria,criado_em) VALUES (%s, %s, %s, %s, %s)', 
                        (ra, status,id_pessoa,id_secretaria, datetime.now()))
@@ -76,6 +75,10 @@ def resultados_alunos_pesquisados(conn):
         cursor.execute(query, params) 
    
         alunos = cursor.fetchall()
+        print(alunos)
+
+        if not alunos:  # Verifica se a lista está vazia
+            return 'False'
         return alunos
     except mysql.connector.Error as err:
         return f'Erro ao buscar alunos: {err}'

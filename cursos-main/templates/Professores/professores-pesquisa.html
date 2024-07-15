@@ -1,41 +1,100 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" class="h-full">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesquisar Alunos</title>
+    <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet">
 </head>
-<body>
-    <h1>Pesquisar Professores</h1>
-    <form action="/resultado-pesquisa-professores" method="POST">
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome"><br><br>
-        
-        <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" name="cpf" maxlength="11"><br><br>
-        
-        <input type="submit" value="Pesquisar">
-    </form>
-</body>
 
-<a href="/professores-form">Adicionar Professor</a> <br>
-<a href="/">Menu</a> <br>
-<a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+<body class="h-full bg-pagina">
+    <div class="w-full h-full flex flex-col justify-center items-center">
+        <div class="w-full flex justify-center p-7">
+            <img src="../../static/img/logo_prefeitura.png" class="h-12 w-75" alt="">
+        </div>
+
+        <form action="/professores/pesquisar/resultados"
+            class="bg-card w-full sm:w-1/2 h-auto rounded-3xl flex flex-col justify-between items-center" method="POST">
+            <div class=" w-full sm:w-full border-t-2 ">
+                <div class="border-b-2 border-linhaFora w-full">
+                    <h1
+                        class="text-3xl font-opens font-bold text-adc border-b-2 border-linhaForm  w-full p-7 text-center ">
+                        PESQUISAR PROFESSOR</h1>
+                </div>
+                <div class="w-full grid grid-cols-1 justify-items-center items-center my-3">
+                    <label for="nome" class="w-full sm:w-3/4 font-opens font-bold text-xl">Nome:</label>
+                    <input type="text" id="nome" name="nome"
+                        class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm mb-4"
+                        placeholder="Informe o nome do professor">
+
+                    <label for="cpf" class="w-full sm:w-3/4 font-opens font-bold text-xl">CPF:</label>
+                    <input type="text" id="cpf" name="cpf" maxlength="11"
+                        class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm mb-4"
+                        placeholder="Digite o CPF do professor">
+
+                    <input type="submit" value="Pesquisar"
+                        class="rounded-e-2xl text-lg rounded-s-2xl font-opens text-white bg-adc w-48 h-12 pl-5 pr-5 hover:bg-blue-700 hover:cursor-pointer">
+                </div>
+            </div>
+            <div class="grid grid-cols-3 justify-items-center items-end ">
+                <a href="/professores/form"
+                    class="bg-adc hover:bg-blue-700 text-white font-bold p-2 m-10 rounded text-center">Adicionar
+                    professor</a>
+                <a href="/"
+                    class="bg-adc hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-10 text-center">Menu</a>
+                <a href="javascript:history.back()"
+                    class="bg-adc hover:bg-blue-700 text-white font-bold m-10 py-2 px-4 rounded text-center">Voltar</a>
+            </div>
+
+        </form>
+
+    </div>
+
+    <div id="customAlert"
+        class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+            <h2 class="text-2xl font-bold mb-4 font-opens">Prencha o Campo com um valor válido.</h2>
+            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+        </div>
+    </div>
+
+    <div id="customAlertNotFind"
+    class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+        <h2 class="text-2xl font-bold mb-4 font-opens">Professor não encontrado.</h2>
+        <button id="closeDialog" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+    </div>
+
+</body>
 <script>
-    
-    let input = document.getElementById('ra')
-    input.addEventListener('input', (event)=>{
-        let input = event.target.value   
-        if(isNaN(input)){
-            event.target.value = input.slice(0,0)
-        }
-    })
+    let form = document.querySelector('form');
+
+    let nome = document.getElementById('nome');
+    nome.addEventListener('input', (event) => {
+        let valoresFiltrados = event.target.value.replace(/[^a-zA-Z\s]/g, "");
+        event.target.value = valoresFiltrados;
+    });
     let cpf = document.getElementById('cpf')
-    cpf.addEventListener('input', (event)=>{
-        let input = event.target.value   
-        if(isNaN(input)){
-            event.target.value = input.slice(0,0)
-        }
+    cpf.addEventListener('input', (event) => {
+        let valoresFiltrados = event.target.value.replace(/[^0-9]/g, "");
+        event.target.value = valoresFiltrados
     })
+
+
+
+    form.addEventListener('submit', function (ev) {
+        console.log(cpf.value, nome.value)
+        if (cpf.value === '' && nome.value === '') {
+            document.getElementById('customAlert').classList.remove('hidden');
+            ev.preventDefault();
+        }
+        document.getElementById('closeDialogBtn').addEventListener('click', function () {
+            document.getElementById('customAlert').classList.add('hidden');
+        });
+    });
+
+        
 </script>
+
 </html>

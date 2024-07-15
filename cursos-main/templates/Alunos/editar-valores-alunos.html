@@ -1,68 +1,132 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" class="h-full">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Aluno</title>
+    <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet">
 </head>
-<body>
-    <h1>Editar Aluno</h1>
 
-    <form action="" method="POST">
-        
-        <label for="nome">Nome:</label><br>
-        <input type="text" id="new_nome" name="new_nome" ><br><br>
-        
-        <label for="ra">RA:</label><br>
-        <input type="text" id="new_ra" name="new_ra" maxlength="6" > <br><br>
-        
-        <label for="cpf">CPF:</label><br>
-        <input type="text" id="new_cpf" name="new_cpf" maxlength="11" > <br><br>
-        
-        <label for="data_nasc">Data de Nascimento:</label><br>
-        <input type="date" id="new_data_nasc" name="new_data_nasc"><br><br>
-        
-        <input type="submit" value="Salvar Alterações">
-        
-    </form>
+<body class="h-full bg-pagina">
+    <div class="w-full h-full flex flex-col justify-center items-center">
+        <div class="w-full flex justify-center p-7">
+            <img src="../../static/img/logo_prefeitura.png" class="h-12 w-75 " alt="">
+        </div>
+        <form action="" method="POST"
+            class="bg-card w-full sm:w-1/2 h-auto rounded-3xl flex flex-col justify-between items-center">
+            <div class="border-b-2 border-linhaFora w-full">
+                <h1 class="text-3xl font-opens font-bold text-adc border-b-2 border-linhaForm  w-full p-7 text-center">
+                    Editar Valores Alunos</h1>
+            </div>
+            <div class="w-full grid grid-cols-1 justify-items-center items-center">
+                <label for="nome" class="w-full sm:w-3/4 font-opens font-bold text-xl">Nome:</label>
+                <input type="text" id="new_nome" name="new_nome"
+                    class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm"
+                    placeholder="Informe o novo nome">
+
+                <label for="ra" class="w-full sm:w-3/4 font-opens font-bold text-xl">RA:</label>
+                <input type="text" id="new_ra" name="new_ra" maxlength="6"
+                    class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm"
+                    placeholder="Informe o novo RA">
+
+                <label for="cpf" class="w-full sm:w-3/4 font-opens font-bold text-xl">CPF:</label>
+                <input type="text" id="new_cpf" name="new_cpf" maxlength="11"
+                    class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm"
+                    placeholder="Informe o novo CPF">
+
+                <label for="data_nasc" class="w-full sm:w-3/4 font-opens font-bold text-xl">Data de Nascimento:</label>
+                <input type="date" id="new_data_nasc" name="new_data_nasc"
+                    class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm">
+
+                <div class="grid grid-cols-1 justify-items-center items-center mt-3">
+                    <input type="submit" value="Salvar Alterações"
+                        class="rounded-e-2xl text-lg rounded-s-2xl font-opens text-white bg-adc w-48 h-12 pl-5 pr-5 hover:bg-blue-700 hover:cursor-pointer">
+                </div>
+                <div class="grid grid-cols-3 justify-items-center items-end">
+                    <a href="/alunos/pesquisar"
+                        class="bg-adc hover:bg-blue-700 text-white font-bold p-2 m-10 rounded text-center">Visualizar
+                        alunos</a>
+                    <a href="/"
+                        class="bg-adc hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-10 text-center">Menu</a>
+                    <a href="javascript:history.back()"
+                        class="bg-adc hover:bg-blue-700 text-white font-bold m-10 py-2 px-4 rounded text-center">Voltar</a>
+                </div>
+            </div>
 
 
-    
-    <a href="/">Menu</a> <br>
-    <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
 
+        </form>
+    </div>
+
+
+    <div id="customAlert"
+        class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+            <h2 class="text-2xl font-bold mb-4 font-opens">Prencha o Campo com um valor válido.</h2>
+            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+        </div>
+    </div>
+    <div id="customAlertSuccess"
+        class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+            <h2 class="text-2xl font-bold mb-4 font-opens">Aluno modificado com sucesso.</h2>
+            <button id="closeDialogBtnSuccess" class="px-4 py-2 bg-green-500 text-white rounded">Fechar</button>
+        </div>
+    </div>
 
     <script>
-        document.getElementById('new_ra').addEventListener('input', (event)=>{
-        let input = event.target.value   
-        if(isNaN(input)){
-            event.target.value = input.slice(0,0)
-        }
-    })
-     document.getElementById('new_cpf').addEventListener('input', (event)=>{
-        let input = event.target.value   
-        if(isNaN(input)){
-            event.target.value = input.slice(0,0)
-        }
-    })
 
-    document.querySelector('form').addEventListener('submit', (ev)=>{
-            console.log('click')
-            let nome = document.getElementById('new_nome').value
-            let cpf = document.getElementById('new_cpf').value
-            let ra = document.getElementById('new_ra').value
-            let data = document.getElementById('new_data_nasc').value
-            console.log(typeof data)
-           
-            if(nome && ra && cpf && data  != ''){
-                alert('Valores enviados com sucesso')
-            }
-            else{
-                ev.preventDefault()
-                alert('Os campos precisam ser preenchidos')
-            }
+        let nome = document.getElementById('new_nome')
+        nome.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^aA-zZ]/g, "");
+            event.target.value = valoresFiltrados
         })
+
+        let cpf = document.getElementById('new_cpf')
+        cpf.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^0-9]/g, "")
+            event.target.value = valoresFiltrados
+        })
+        let ra = document.getElementById('new_ra')
+        ra.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^0-9]/, "");
+            event.target.value = valoresFiltrados
+        })
+
+        let data = document.getElementById('new_data_nasc')
+        let form = document.querySelector('form')
+        let customAlertSucces = document.getElementById('customAlertSuccess')
+        let comprimentoRa = ra.length
+
+            form.addEventListener('submit', (ev) => {
+            if (nome.value == '' || ra.value == '' || ra.value.length !== 6  || cpf.value == '' || data.value == ''|| data.value.length !== 10) {
+                document.getElementById('customAlert').classList.remove('hidden');
+                ev.preventDefault();
+            }
+            else {
+            }
+            document.getElementById('closeDialogBtn').addEventListener('click', function () {
+                document.getElementById('customAlert').classList.add('hidden');
+            });
+        })
+
+    
+
+        window.onload = function () {
+            let mensagem = "{{ mensagem }}";
+            console.log(mensagem)
+            if (mensagem == 'True') {
+                document.getElementById('customAlertSuccess').classList.remove('hidden');
+                document.getElementById('closeDialogBtnSuccess').addEventListener('click', function () {
+                    document.getElementById('customAlertSuccess').classList.add('hidden');
+                    window.location.href = `/alunos/pesquisar`
+                });
+            }
+        }
+
     </script>
-  
+
 </body>
+
 </html>

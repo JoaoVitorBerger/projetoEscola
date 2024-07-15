@@ -7,9 +7,10 @@ from unidecode import unidecode
 def resultados_cursos_pesquisados(conn):
     nome_curso = unidecode(request.form['nome_curso'].upper())
     secretaria_curso = request.form['id_secretaria']
+    print(nome_curso)
     print(secretaria_curso)
+    
     try:
-        
         cursor = conn.cursor(dictionary=True)
         query = '''
             SELECT 
@@ -19,13 +20,13 @@ def resultados_cursos_pesquisados(conn):
                    secretarias.nome AS nome_secretaria
             FROM 
                 cursos
-			JOIN 
-				secretarias ON secretarias.id = cursos.id_secretaria
+            JOIN 
+                secretarias ON secretarias.id = cursos.id_secretaria
             WHERE
                 cursos.deletado_em IS NULL
             AND 
                 secretarias.deletado_em IS NULL
-		 '''
+         '''
         params = ()
 
         if nome_curso:
@@ -34,15 +35,18 @@ def resultados_cursos_pesquisados(conn):
         
         if secretaria_curso:
             query += ' AND secretarias.id = %s'
-            params += ({secretaria_curso},)  # Adiciona o parâmetro à tupla
+            params += (secretaria_curso,)  # Adiciona o parâmetro à tupla
         
         cursor.execute(query, params) 
          
         cursos = cursor.fetchall()
+
+        if not cursos:  # Verifica se a lista está vazia
+            return "False"
+        
         return cursos
     except mysql.connector.Error as err:
         return f'Erro ao buscar cursos: {err}'
-
 def pesquisar_secretarias(conn):
     try:   
         cursor = conn.cursor(dictionary=True)

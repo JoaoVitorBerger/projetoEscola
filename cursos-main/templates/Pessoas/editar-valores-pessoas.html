@@ -1,62 +1,138 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet">
+    <title>Document</title>
 
 </head>
-<body>
-  <h1>Editar Valores Pessoa</h1>
-  <form action="" method="post">
-      <label for="nome">Nome:</label><br>
-      <input type="text" id="new_nome" name="new_nome" placeholder="Campo obrigatorio"><br>
-      <label for="cpf">CPF:</label><br>
-      <input type="text" id="new_cpf" name="new_cpf" maxlength="11" minlength="11"  placeholder="Campo obrigatorio"><br>
-      <label for="data_nasc">Data de Nascimento:</label><br>
-      <input type="date" id="new_data_nasc" name="new_data_nasc" placeholder="Campo obrigatorio"><br>
-      <label for="endereco">Endereço:</label><br>
-      <input type="text" id="new_endereco" name="new_endereco" placeholder="Campo obrigatorio"><br>
-      <label for="sexo">Sexo:</label><br>
-      <label for="nome_social">Nome Social:</label><br>
-      <input type="text" id="new_nome_social" name="new_nome_social" placeholder="Campo opcional"><br><br>
-      <input type="submit" value="Adicionar Pessoa" id="new_btn-adicionar">
-  </form>
 
-  <script>
+<body class="h-full bg-pagina">
+    <div class="w-full h-full flex flex-col justify-center items-center">
+        <div class="w-full flex justify-center p-7">
+            <img src="../../static/img/logo_prefeitura.png" class="h-12 w-75 " alt="">
+        </div>
+        <form action="" method="post"
+            class="bg-card w-full sm:w-1/2 h-auto rounded-3xl flex flex-col justify-between items-center">
+            <div class="border-b-2 border-linhaFora w-full">
+                <h1 class="text-3xl font-opens font-bold text-adc border-b-2 border-linhaForm  w-full p-7 text-center">
+                    Editar Valores Pessoa</h1>
+            </div>
+            <div class="w-full grid grid-cols-1 justify-items-center items-center">
+                <label for="nome" class="w-full sm:w-3/4 font-opens font-bold text-xl">Nome:</label>
+                <input type="text" id="new_nome" name="new_nome" placeholder="Campo obrigatorio"
+                    class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm">
+                <label for="cpf" class="w-full sm:w-3/4 font-opens font-bold text-xl">CPF:</label>
+                <input type="text" id="new_cpf" name="new_cpf" maxlength="11" minlength="11"
+                    placeholder="Campo obrigatorio"
+                    class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm">
+                <label for="data_nasc" class="w-full sm:w-3/4 font-opens font-bold text-xl">Data de Nascimento:</label>
+                <input type="date" id="new_data_nasc" name="new_data_nasc" placeholder="Campo obrigatorio"
+                    class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm">
+                <label for="endereco" class="w-full sm:w-3/4 font-opens font-bold text-xl">Endereço:</label>
+                <input type="text" id="new_endereco" name="new_endereco" placeholder="Campo obrigatorio"
+                    class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm">
+                <label for="nome_social" class="w-full sm:w-3/4 font-opens font-bold text-xl">Nome Social:</label>
+                <input type="text" id="new_nome_social" name="new_nome_social" placeholder="Campo opcional"
+                    class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm">
+
+                <div class="grid grid-cols-1 justify-items-center items-center mt-3">
+                    <input type="submit" value="Alterar valores" id="new_btn-adicionar"
+                        class="rounded-e-2xl text-lg rounded-s-2xl font-opens text-white bg-adc w-48 h-12 pl-5 pr-5 hover:bg-blue-700 hover:cursor-pointer">
+                </div>
+
+                <div class="grid grid-cols-3 justify-items-center items-end">
+                    <a href="/pessoas/pesquisar"
+                        class="bg-adc hover:bg-blue-700 text-white font-bold p-2 m-10 rounded text-center">Visualizar
+                        pessoas</a>
+                    <a href="/"
+                        class="bg-adc hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-10 text-center">Menu</a>
+                    <a href="javascript:history.back()"
+                        class="bg-adc hover:bg-blue-700 text-white font-bold m-10 py-2 px-4 rounded text-center">Voltar</a>
+                </div>
+            </div>
+
+        </form>
+
+        <div id="customAlert"
+            class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+            <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+                <h2 class="text-2xl font-bold mb-4 font-opens">Prencha o Campo com um valor válido.</h2>
+                <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+            </div>
+        </div>
+        <div id="customAlertSuccess"
+            class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+            <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+                <h2 class="text-2xl font-bold mb-4 font-opens">Secretaria modificada com sucesso.</h2>
+                <button id="closeDialogBtnSucces" class="px-4 py-2 bg-green-500 text-white rounded">Fechar</button>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <script>
         let input = document.getElementById('new_cpf')
-        input.addEventListener('input', (event)=>{   
-        let valoresFiltrados= event.target.value.replace(/[\sa-zA-Z]/g,"")
-        event.target.value = valoresFiltrados
-    })
+        input.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^0-9]/, "")
+            event.target.value = valoresFiltrados
+        })
 
-    let name = document.getElementById('new_nome')
-        name.addEventListener('input', (event)=>{
-        let valoresFiltrados= event.target.value.replace(/[\s0-9]/g, "")
-        event.target.value = valoresFiltrados
-    })
+        let name = document.getElementById('new_nome')
+        name.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^a-zA-Z\s]/g, "");
+            event.target.value = valoresFiltrados
+        })
 
+        let nomeSocial = document.getElementById('new_nome_social')
+        nomeSocial.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^a-zA-Z]/, "")
+            event.target.value = valoresFiltrados
+        })
 
-    let camposObrigatorios = document.querySelectorAll('input')
-    let botaoEnviar = document.getElementById('new_btn-adicionar')
-    let array = []
-    botaoEnviar.addEventListener('click',(ev)=>{
-        camposObrigatorios.forEach((el=>{
-            console.log(el.value)
-            if(el.value !== '' && el.id !== 'new_btn-adicionar' && el.id !=='new_nome_social'){
-                console.log(el)
-                array.push(el)
+        let endereco = document.getElementById('new_endereco')
+        endereco.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^a-zA-Z0-9]/g, "");
+            event.target.value = valoresFiltrados
+        })
+
+        let form = document.querySelector('form')
+        let novoCpf = document.getElementById('new_cpf')
+        let novoNome = document.getElementById('new_nome')
+        let novaData = document.getElementById('new_data_nasc')
+        let novoEndereco = document.getElementById('new_endereco')
+
+        form.addEventListener('submit', function (ev) {
+            console.log(novoCpf.value, novoNome.value, novoEndereco.value, novaData.value)
+            if (novoCpf.value === '' || novoNome.value === '' || novaData.value === '' || novoEndereco.value === '') {
+                document.getElementById('customAlert').classList.remove('hidden');
+                ev.preventDefault();
+            } 
+            document.getElementById('closeDialogBtn').addEventListener('click', function () {
+                document.getElementById('customAlert').classList.add('hidden');
+            });
+        });
+
+        window.onload = function () {
+
+            let mensagem = "{{ mensagem }}";
+            console.log(mensagem)
+            if (mensagem == 'True') {
+
+                document.getElementById('customAlertSuccess').classList.remove('hidden');
+                document.getElementById('closeDialogBtnSucces').addEventListener('click', function () {
+                    document.getElementById('customAlertSuccess').classList.add('hidden');
+                    window.location.href = `/pessoas/pesquisar`
+
+                });
             }
-        }))
-        if(array.length == 4){
-            alert('Dados enviados com sucesso')
-           
-        }else{
-            alert('Verifique se todos os campos estão preenchidos') 
-            ev.preventDefault()
         }
-        array = []
-    })
-  </script>
+
+    </script>
 </body>
+
 </html>

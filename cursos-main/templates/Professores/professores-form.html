@@ -1,55 +1,125 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" class="h-full">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Adição de Professor</title>
+    <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet">
 </head>
-<body>
-    <h1>Adicionar Novo Professor</h1>
-    <form action="/professores" method="POST">
-        <label for="status">Status:</label>
-        <select id="status" name="status">
-            <option value="1" selected>Ativo</option>
-            <option value="0">Inativo</option>
-        </select><br><br>
-        <label for="id_pessoa">Pessoa:</label>
-        <input list="nomes-datalist" id="nomes" >
-        <input type="hidden" id="valor-id-professor" name="id_professor_hidden" value="">
-        <datalist id="nomes-datalist"></datalist>
-        </select><br><br>
-        <label for="id_secretaria">Secretaria:</label>
-        <select id="id_secretaria" name="id_secretaria">
-            {% for secretaria in secretarias %}
-                <option value="{{ secretaria.id }}">{{ secretaria.nome }}</option>
-            {% endfor %}
-        </select><br><br>
-        <input type="submit" value="Adicionar Professor">
-    </form>
-    <a href="/professores">Pesquisar Professores</a> <br>
-    <a href="/">Menu</a> <br>
-    <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+
+<body class="h-full bg-pagina">
+    <div class="w-full h-full flex flex-col justify-center items-center">
+        <div class="w-full flex justify-center p-7">
+            <img src="../../static/img/logo_prefeitura.png" class="h-12 w-75" alt="">
+        </div>
+        <form action="/professores/form" method="POST"
+            class="bg-card w-full sm:w-1/2 h-auto rounded-3xl flex flex-col justify-between items-center">
+            <div class=" md:w-full border-t-2 ">
+                <div class="border-b-2 border-linhaFora w-full">
+                    <h1
+                        class="text-3xl font-opens font-bold text-adc border-b-2 border-linhaForm  w-full p-7 text-center ">
+                        ADICIONAR NOVO PROFESSOR
+                    </h1>
+                </div>
+                <div class="w-full grid grid-cols-1 justify-items-center items-center">
+                    <label class="w-full sm:w-3/4 font-opens font-bold text-xl" for="status">Status:</label>
+                    <select id="status" name="status"
+                        class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm   focus:outline-none focus:ring focus:ring-linhaForm">
+                        <option value="1" selected>Ativo</option>
+                        <option value="0">Inativo</option>
+                    </select>
+                    <label for="id_pessoa" class="w-full sm:w-3/4 font-opens font-bold text-xl">Pessoa:</label>
+                    <div class="autocomplete-container">
+                        <input id="nomes"
+                        class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm"
+                        placeholder="Pesquise por uma pessoa cadastrada">
+                        <div id="autocompleteContainer" class="autocomplete-suggestions hidden "></div>
+                    </div>
+                    <input type="hidden" id="valor-id-professor" name="id_professor_hidden" value="">
+
+                    <label for="id_secretaria" class="w-full sm:w-3/4 font-opens font-bold text-xl">Secretaria:</label>
+                    <select id="id_secretaria" name="id_secretaria"
+                        class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm">
+                        {% for secretaria in secretarias %}
+                        <option value="{{ secretaria.id }}">{{ secretaria.nome }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="grid grid-cols-1 justify-items-center items-center mt-3">
+                        <input type="submit" value="Adicionar "
+                            class="rounded-e-2xl text-lg rounded-s-2xl font-opens text-white bg-adc w-48 h-12 pl-5 pr-5 hover:bg-blue-700 hover:cursor-pointer">
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 justify-items-center items-end ">
+                <a href="/professores/pesquisar"
+                    class="bg-adc hover:bg-blue-700 text-white font-bold p-2 m-10 rounded text-center">Visualizar
+                    professores</a>
+                <a href="/"
+                    class="bg-adc hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-10 text-center">Menu</a>
+                <a href="javascript:history.back()"
+                    class="bg-adc hover:bg-blue-700 text-white font-bold m-10 py-2 px-4 rounded text-center">Voltar</a>
+            </div>
+
+        </form>
+    </div>
+
+    <div id="customAlert"
+        class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+            <h2 class="text-2xl font-bold mb-4 font-opens">Para cadastrar um professor, todos os campos devem ser
+                preenchidos. Verifique se o no campo pessoa, você selecionou um dos nomes.</h2>
+            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+        </div>
+    </div>
+
+    <div id="customAlertSuccess"
+        class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+            <h2 class="text-2xl font-bold mb-4 font-opens">Professor adicionado com sucesso!</h2>
+            <button id="closeDialogBtnSucces" class="px-4 py-2 bg-green-500 text-white rounded">Fechar</button>
+        </div>
+
+    </div>
+
+
     <script>
-        let id_professor = document.getElementById("valor-id-professor")
+    let id_professor = document.getElementById("valor-id-professor")
 
-        document.querySelector('form').addEventListener('submit', (ev)=>{
-            console.log('click')
-            let nomes = document.getElementById('nomes').value
-            console.log( nomes)
-            if(nomes != ''){
-                alert('Valores enviados com sucesso')
-            }
-            else{
-                ev.preventDefault()
-                alert('Os campos precisam ser preenchidos')
-            }})
+    let form = document.querySelector('form');
+    let customAlertSucces = document.getElementById('customAlertSucces');
+    let closeDialogBtnSucces = document.getElementById('closeDialogBtnSucces');
 
+    form.addEventListener('submit', (ev) => {
+        let nome = document.getElementById('nomes').value
+        let professor_id = document.getElementById('valor-id-professor').value
+        professor_id = Number(professor_id)
+        if (nome == '' || professor_id === 0) {
+            document.getElementById('customAlert').classList.remove('hidden')
+            ev.preventDefault()
+        }
+        document.getElementById('closeDialogBtn').addEventListener('click', function () {
+            document.getElementById('customAlert').classList.add('hidden');
+        });
+    })
 
+    window.onload = function () {
+        let mensagem = "{{ mensagem }}";
+        console.log(mensagem)
+        if (mensagem == 'True') {
+            document.getElementById('customAlertSuccess').classList.remove('hidden');
+            document.getElementById('closeDialogBtnSucces').addEventListener('click', function () {
+                document.getElementById('customAlertSuccess').classList.add('hidden');
+                window.location.href = '/professores/form'
+
+            });
+        }
+    }
+
+        let sugestoesContainer = document.getElementById("autocompleteContainer");
         let id_turma = document.getElementById("valor-id-professor")
         document.getElementById("nomes").addEventListener("input", function () {
             let nome = this.value.trim();
-
-            console.log(nome);
             if (nome.length >= 4) {
                 fetch("/nomes-proximos?nome=\"" + nome + "\"", { // Correção da URL
                     method: "POST", // Correção do método de solicitação
@@ -60,26 +130,26 @@
                 })
                     .then(response => response.json())
                     .then(sugestoes => {
-                        let sugestoesTurmas = document.getElementById("nomes-datalist");
-                        let valoresUnicosTurmas = {};
-
-                        // Limpar sugestões anteriores
-                        sugestoes.forEach(function (sugestao) {
-                            let nomeTurma = sugestao[1];
-                            let idTurma = sugestao[0];
-                            valoresUnicosTurmas[nomeTurma] = idTurma;
-                        });
-
-                        // Limpar sugestões anteriores no datalist
-                        sugestoesTurmas.innerHTML = '';
-
-                        // Adicionar as opções únicas ao datalist
-                        for (let nomeTurma in valoresUnicosTurmas) {
-                            let sugestaoElemento = document.createElement("option");
-                            sugestaoElemento.value = nomeTurma;
-                            sugestoesTurmas.appendChild(sugestaoElemento);
-                            id_turma.value = valoresUnicosTurmas[nomeTurma];
+                        console.log(sugestoes)
+                        if(sugestoes.length ){
+                            sugestoesContainer.classList.remove('hidden')
+                            sugestoes.forEach(name=>{
+                                console.log(name)
+                                const divSugestaoNome = document.createElement('div') 
+                                divSugestaoNome.classList.add('autocomplete-suggestion','w-full', 'sm:w-full', 'bg-bg_input', 'text-start', 'font-opens' ,'text-black', 'border-b-2', 'border-gray-300')
+                                divSugestaoNome.textContent = name[1]
+                                divSugestaoNome.onclick= ()=>{
+                                    document.getElementById('nomes').value = name[1]
+                                    id_professor.value = name[0]
+                                    sugestoesContainer.innerHTML = ''
+                                    sugestoesContainer.classList.add('hidden')
+                                }
+                                sugestoesContainer.appendChild(divSugestaoNome)
+                            })
+                        }else{
+                            sugestoesContainer.classList.add('hidden')
                         }
+
                     })
                     .catch(error => {
                         console.error("Erro ao obter sugestões de pessoas:", error);
@@ -87,11 +157,15 @@
 
 
             } else {
-                console.log('Valor não encontrado')
+            sugestoesContainer.classList.add('hidden');
+            let container = document.getElementById("autocompleteContainer")
+            container.querySelectorAll('div').forEach(div=>div.remove())
+            id_professor.value = ''
             }
         });
     </script>
 
- 
+
 </body>
+
 </html>
