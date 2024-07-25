@@ -79,7 +79,6 @@
             <h2 class="text-2xl font-bold mb-4 font-opens">Professor adicionado com sucesso!</h2>
             <button id="closeDialogBtnSucces" class="px-4 py-2 bg-green-500 text-white rounded">Fechar</button>
         </div>
-
     </div>
 
 
@@ -121,7 +120,7 @@
         document.getElementById("nomes").addEventListener("input", function () {
             let nome = this.value.trim();
             if (nome.length >= 4) {
-                fetch("/nomes-proximos?nome=\"" + nome + "\"", { // Correção da URL
+                fetch("/professor/nome?nome=\"" + nome + "\"", { // Correção da URL
                     method: "POST", // Correção do método de solicitação
                     headers: {
                         "Content-Type": "application/json"
@@ -131,6 +130,7 @@
                     .then(response => response.json())
                     .then(sugestoes => {
                         console.log(sugestoes)
+                   
                         if(sugestoes.length ){
                             sugestoesContainer.classList.remove('hidden')
                             sugestoes.forEach(name=>{
@@ -165,7 +165,7 @@
         });
     </script>
 
-
+ 
 </body>
 
 </html>

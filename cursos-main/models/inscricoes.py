@@ -84,8 +84,9 @@ def pesquisar_incricoes(conn):
         cursor.execute(query, params) 
          
         inscricoes = cursor.fetchall()
-    
-        
+
+        if not inscricoes:  # Verifica se a lista está vazia
+            return 'False'
         return inscricoes
     except mysql.connector.Error as err:
         return f'Erro ao buscar inscricoes: {err}'
@@ -94,9 +95,9 @@ def pesquisar_incricoes(conn):
 def editar_inscricoes(conn,inscrito_id):
       try:
        cursor = conn.cursor()
-       new_nome_inscrito = request.form['id_inscricao_hidden']
-       new_id_secretaria = request.form['id_secretaria']
-       new_status = request.form['status']
+       nome_inscrito = request.form['id_pessoa_hidden']
+       id_secretaria = request.form['id_secretaria']
+       status = request.form['status']
        query='''UPDATE inscricoes
                 SET id_aluno = %s,
                 modificado_em = %s,
@@ -104,7 +105,7 @@ def editar_inscricoes(conn,inscrito_id):
                 ativo_flag = %s
                 WHERE id = %s
        '''
-       cursor.execute(query,(new_nome_inscrito, datetime.now(), new_id_secretaria, new_status, inscrito_id))
+       cursor.execute(query,(nome_inscrito, datetime.now(), id_secretaria, status, inscrito_id))
        conn.commit()
        print('Estou enviando')
       except mysql.connector.Error as err:

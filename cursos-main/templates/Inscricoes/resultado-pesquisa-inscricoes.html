@@ -1,85 +1,217 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br" class="h-full">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet">
   <title>Document</title>
 </head>
-<body>
-  <h1>Resultado da Pesquisa</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                
 
-                <th>Nome Secretaria</th>
-                <th>RA</th>
-                <th>Nome</th>
-                <th>Data da nascimento</th>
-                <th>Status</th>
+<body class="h-full bg-pagina">
+  <div class="flex flex-col justify-center h-full items-center w-full">
+    <div class="flex justify-center p-5">
+      <img src="../../static/img/logo_prefeitura.png" class="h-12 w-75" alt="">
+    </div>
+    <div
+      class="overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200  bg-card w-full h-auto sm:h-auto sm:w-10/12 p-5 rounded-3xl">
+      <h1 class="text-3xl p-7 font-opens font-bold text-adc">Resultado da Pesquisa</h1>
+      <div class="overflow-auto h-1/2 sm:h-auto">
+        <table class="w-full h-3/4  sm:h-auto bg-fundoTabela">
+          <thead class=" hidden md:block">
+            <tr class="sm:grid sm:grid-cols-7 gap-0 ">
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Nome Secretaria</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">RA</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Nome</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Data da nascimento</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Status</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Editar</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Excluir</th>
             </tr>
-        </thead>
-        <tbody>
+          </thead>
+          <tbody class="h-auto">
             {% for inscrito in inscricoes %}
-            
-            <tr>
-        
-                <td>{{ inscrito.secretaria_nome }}</td>
-                <td>{{ inscrito.ra }}</td>
-                <td>{{ inscrito.nome }}</td>
-                <td>{{ inscrito.data_nasc }}</td>
-                <td>{{ inscrito.status_inscricao }}</td>
-                <td><a href="/editar-valores-inscricoes/{{inscrito.id}}">Editar</a></td>
-                <td><a class="deleteButton" data-inscricoes-id="{{ inscrito.id }}" href="#">Excluir</a></td>
-            </tr>
-            
-            {% endfor %}
-        </tbody>
-    </table>
+            <tr class="flex w-full sm:grid sm:grid-cols-7 gap-0">
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ inscrito.secretaria_nome }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ inscrito.ra }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ inscrito.nome }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ inscrito.data_nasc }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ inscrito.status_inscricao }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  <a href="/inscricao/editar/valores/{{inscrito.id}}">
+                    <img src="../../static/img/IconeEditar.png" alt="">
+                  </a>
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center justify-center">
+                <a class="deleteButton" data-inscricoes-id="{{ inscrito.id }}" href="#">
+                  <img src="../../static/img/IconeLixeira.png" class="" alt="">
+                </a>
+              </td>
 
-    <a href="/pesquisar-inscricoes">Pesquisar Inscrições</a> <br>
-    <a href="/">Menu</a> <br>
-    <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
+            </tr>
+
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-10 flex w-full items-end justify-center sm:static sm:grid-cols-1  sm:justify-end">
+        <div class="flex justify-between  w-auto sm:flex sm:flex-row sm:w-auto  sm:justify-end sm:p-4">
+          <a href="/"
+            class="bg-adc hover:bg-blue-700 text-white font-bold py-2  px-5 mx-3 rounded  text-center">Menu</a>
+          <br>
+          <a href="/pessoas/form"
+            class="bg-adc  hover:bg-blue-700 text-white font-bold py-2 px-5 mx-3  rounded  text-center">Adicionar
+          </a> <br>
+          <a href="javascript:history.back()"
+            class="bg-adc hover:bg-blue-700 text-white font-bold py-2  px-5 mx-3 rounded  text-center ">Voltar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="customAlert"
+    class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center card-principal">
+      <h2 class="text-2xl font-bold mb-4 font-opens">Deseja excluir essa pessoa?</h2>
+      <button id="closeDialogBtn" class="px-4 py-2 bg-green-500 text-white rounded sim">Sim</button>
+      <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded nao">Não</button>
+    </div>
+  </div>
+
+  <div id="customAlertNotFind"
+    class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+      <h2 class="text-2xl font-bold mb-4 font-opens">Inscrito não cadastrado.</h2>
+      <button id="closeDialog" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+    </div>
+
+
 
     <script>
-         let deleteButtons = document.querySelectorAll('.deleteButton');
-        
-        
-        // Itera sobre todos os botões
-        deleteButtons.forEach(function(button) {
-          // Adiciona um evento de clique a cada botão
-          button.addEventListener('click', function(event) {
-            // Impede o comportamento padrão do link
-            event.preventDefault();
+      let deleteButtons = document.querySelectorAll('.deleteButton');
+      let customAlert = document.getElementById('customAlert');
 
-            let confirmarExclusao = confirm('Deseja relamente excluir essa inscrição')
-            if(confirmarExclusao){
-               // Pega o ID da secretaria do atributo 'data-secretaria-id' do botão clicado
-            
-            let inscricaoId  = this.getAttribute('data-inscricoes-id');
-            
-            // Envia o ID da secretaria para o servidor Flask
-            fetch('/excluir-inscricoes', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({inscricao_id: inscricaoId})
+      // Itera sobre todos os botões
+      deleteButtons.forEach(function (button) {
+        // Adiciona um evento de clique a cada botão
+        button.addEventListener('click', function (event) {
+          // Retira a calsse hidden do alerta
+          document.getElementById('customAlert').classList.remove('hidden');
+
+          //Adiciona um evento de clique no documento
+          document.addEventListener('click', (ev) => {
+            //Pega a resposta do clique
+            let valorResposta = ev.target
+            //Verifica se a classe contém a classe sim
+            if (valorResposta.classList.contains('sim')) {
+              let inscricaoId = this.getAttribute('data-inscricoes-id');
+              fetch('/inscricao/excluir', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ inscricao_id: inscricaoId })
             }).then(response => {
-                // Lida com a resposta do servidor, se necessário
-                console.log(response)
-                alert('Inscrição excluida com sucesso')
-                // Voltando para o início
-                window.location.href = '/';
+              //Caso a requisição retorne um valor com sucesso
+                //Selecionamos o h2 do alert e alteramos seu innerText
+                customAlert.querySelector('h2').innerText = 'Inscrição excluida com sucesso!'
+                //Removemos as opções de sim e não do card original
+                let teste = document.querySelectorAll('#closeDialogBtn')
+                teste.forEach((el) => {
+                  el.remove()
+                })
+                //Criamos um novo botão com o nome de fechar
+                let btn = document.createElement('button')
+                btn.innerHTML = `
+                            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+                            `
+                //Adicionamos ele ao alert
+                customAlert.querySelector('.card-principal').append(btn)
+                //Adicionamos um evento de clique no botão que ao clicar nele a página recarrega
+                btn.addEventListener('click', () => {
+                  window.location.reload()
+                })
             }).catch(error => {
-                console.error('Erro ao excluir inscrição:', error);
+              
+              console.error('Erro ao excluir turma!:', error);
+                customAlert.querySelector('h2').innerText = 'Erro:' + error
+
+                let teste = document.querySelectorAll('#closeDialogBtn')
+                teste.forEach((el) => {
+                  el.remove()
+                })
+                let btn = document.createElement('button')
+                btn.innerHTML = `
+                            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+                            `
+                customAlert.querySelector('.card-principal').append(btn)
+
+                btn.addEventListener('click', () => {
+                  window.location.reload()
+                })
+              
+
             });
             }else{
-              console.log('exclusão cancelada')
+              if (valorResposta.classList.contains('nao')) {
+                customAlert.classList.add('hidden')
+              }
             }
-           
-          });
+
+          })
+
         });
+      });
+
+      //Ao recarregar a página executa uma função
+      window.onload = function () {
+        //recebe uma mensagem que contém true ou false, como valor padrão temos false
+        let mensagem = "{{ mensagem }}";
+        console.log(mensagem)
+        //Caso a mensagem for falsa
+        if (mensagem == 'False') {
+          //Removemos a classe hidden do alertNotFind
+          document.getElementById('customAlertNotFind').classList.remove('hidden');
+          //Adicionamos um evento de clique no botão de fechar
+          document.getElementById('closeDialog').addEventListener('click', function () {
+            //Quando clicado ele omite e div
+            document.getElementById('customAlertNotFind').classList.add('hidden');
+            //Direciona a página para ela mesma para recarregar os valores true/false
+            window.location.href = '/inscricoes/pesquisar'
+
+          });
+        }
+      }
     </script>
 </body>
+
 </html>

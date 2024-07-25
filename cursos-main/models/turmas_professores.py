@@ -46,7 +46,11 @@ def resultados_turmas_professores_pesquisados(conn):
         cursor.execute(query, params) 
 
         turmas_professor = cursor.fetchall()
+
+        if not turmas_professor:
+            return "False"
         print(turmas_professor)
+        
         return turmas_professor
     except mysql.connector.Error as err:
         return f'Erro ao buscar alunos: {err}'
@@ -150,10 +154,10 @@ def enviar_valores_turmas_professores(conn):
 def editar_valores_turmas_professores(conn, id_turma_professor):
     cursor = conn.cursor(dictionary=True)
     try:
-            new_data_inicio = request.form['nova_data_inicio']
-            new_data_fim = request.form['nova_data_fim']
-            new_id_professor = request.form['novo_id_professor_hidden']
-            new_id_turma = request.form['novo_id_turma_hidden']
+            new_data_inicio = request.form['data_inicio']
+            new_data_fim = request.form['data_fim']
+            new_id_professor = request.form['id_professor_hidden']
+            new_id_turma = request.form['id_turma_hidden']
             
            #checar esse select e mudar os nomes dos campos em valores-professores
             query = '''UPDATE turmas_professores 

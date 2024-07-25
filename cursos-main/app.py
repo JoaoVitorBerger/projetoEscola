@@ -147,7 +147,7 @@ def excluir_pessoa():
         return jsonify({"error": f'Erro ao excluir secretaria: {err}'})
 
 #Opção para sugestão de nomes de pessoas
-@app.route('/nomes-proximos', methods=['GET','POST'])
+@app.route('/professor/nome', methods=['GET','POST'])
 def pesquisar_nomes():
     conn = conectar()
     dados = request.json  # Acesse os dados enviados no corpo da solicitação
@@ -264,31 +264,13 @@ def professor_form():
     return render_template('Professores/professores-form.html', secretarias=secretarias, mensagem = mensagem)
 
 
-    
-#Rota para pesquisar um nome  
-@app.route('/nomes-proximos-professor', methods=['GET','POST'])
-def pesquisar_nomes_professor():
-    conn = conectar()
-    dados = request.json  # Acesse os dados enviados no corpo da solicitação
-    print(dados)
-    result = pesquisar_nomes_proximos_professor(conn,dados)
-    return jsonify(result)
+
 
 
 ################################################    INSCRICOES  ###################################################################################
-# Rota para visualizar todas as inscrições
-@app.route('/inscricoes')
-def inscricoes():
-    try:
-        conn = conectar()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM inscricoes')
-        inscricoes = cursor.fetchall()
-        return render_template('Inscricoes/inscricoes.html', inscricoes=inscricoes)
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao buscar inscrições: {err}')
-    
-@app.route('/nomes-proximos-pessoas', methods=['GET','POST'])
+
+
+@app.route('/inscricoes/nomes/pesquisa', methods=['GET','POST'])
 def pesquisar_nomes_pessoas():
     conn = conectar()
     dados = request.json  # Acesse os dados enviados no corpo da solicitação
@@ -296,26 +278,21 @@ def pesquisar_nomes_pessoas():
     result = pesquisar_nomes_proximos_pessoa(conn,dados)
     return jsonify(result)
 
-# Rota para exibir o formulário de adicionar inscrição
-@app.route('/inscricoes-form')
+# Rota para exibir o formulário de adicionar inscrição e inserir uma nova inscrição
+@app.route('/inscricoes/form', methods=['GET','POST'])
 def inscricao_form():
     conn = conectar()
-    result = inscricoes_form(conn)
-    if isinstance(result, str):  # Verifica se houve erro
+    mensagem =False
+    secretarias = inscricoes_form(conn)
+    if request.method == 'POST':
+        result = add_inscricao(conn)      
+        if isinstance(result, str):  # Verifica se houve erro
             return render_template('erro.html', mensagem=result)
-    return render_template('Inscricoes/inscricoes-form.html',secretarias = result)
-
-# Rota para adicionar uma nova inscrição
-@app.route('/inscricoes', methods=['POST'])
-def add_inscricao_pessoa():
-    conn = conectar()
-    result = add_inscricao(conn)
-    if isinstance(result, str):  # Verifica se houve erro
-            return render_template('erro.html', mensagem=result)
-    return redirect('/')
+        mensagem = True
+    return render_template('Inscricoes/inscricoes-form.html',secretarias = secretarias, mensagem = mensagem)
 
 #Rota para pesquisar inscrições pelo nome ou secretaria
-@app.route('/pesquisar-inscricoes') 
+@app.route('/inscricoes/pesquisar') 
 def pesquisar_inscricoes():
     conn = conectar ()
     result = secretarias(conn)
@@ -323,37 +300,28 @@ def pesquisar_inscricoes():
             return render_template('erro.html', mensagem=result)
     return render_template('Inscricoes/pesquisar-inscricoes.html', secretarias=result)
 
-@app.route('/resultado-pesquisa-inscricoes', methods=['POST'])
+@app.route('/inscricoes/pesquisa/resultados', methods=['POST'])
 def resultado_pesquisa_inscricoes(): 
     conn = conectar ()
     result = pesquisar_incricoes(conn)
-    print(result)
     if isinstance(result, str):  # Verifica se houve erro
-            return render_template('erro.html', mensagem=result)
+            return render_template('Inscricoes/resultado-pesquisa-inscricoes.html', mensagem=result)
     return render_template('Inscricoes/resultado-pesquisa-inscricoes.html', inscricoes=result)
 # Rota para visualizar todos os cursos
 
-@app.route('/pesquisar-nomes-inscritos', methods=['POST'])
-def pesquisar_nomes_incritos():
-    conn = conectar()
-    dados = request.json  # Acesse os dados enviados no corpo da solicitação
-    print(dados)
-    result = pesquisar_nomes_proximos_inscritos(conn,dados)
-    return jsonify(result)
-
-@app.route('/editar-valores-inscricoes/<int:inscrito_id>',  methods=['GET', 'POST'])
+@app.route('/inscricao/editar/valores/<int:inscrito_id>',  methods=['GET', 'POST'])
 def editar_valores_incricoes(inscrito_id):
     conn = conectar()
+    mensagem = False
+    secretarias = selecionar_secretaria(conn)    
     if request.method == 'POST':
         result = editar_inscricoes(conn,inscrito_id)
         if isinstance(result, str):  # Verifica se houve erro
             return render_template('erro.html', mensagem=result)
-        # Redireciona para a rota '/resultados
-        return redirect('/')
-    result = selecionar_secretaria(conn)    
-    return render_template('Inscricoes/editar-valores-inscricoes.html',secretarias = result)
+        mensagem = True 
+    return render_template('Inscricoes/editar-valores-inscricoes.html',secretarias = secretarias, mensagem = mensagem)
      
-@app.route('/excluir-inscricoes', methods=['POST'])
+@app.route('/inscricao/excluir', methods=['POST'])
 def excluir_inscrito():
         data = request.json
         print('dados recebidos', data)
@@ -439,15 +407,6 @@ def turma_form():
         mensagem = True
     return render_template('Turmas/turmas-form.html', cursos=cursos, mensagem = mensagem)
     
-# Rota para adicionar uma nova turma
-# @app.route('/turmas', methods=['POST'])
-# def add_turma():
-#     conn = conectar()
-#     result = adicionar_turma(conn)
-#     if isinstance(result, str):  # Verifica se houve erro
-#         return render_template('erro.html', mensagem=result)
-#     return redirect('/')
-
 #Rota para pesquisar e exibir os resultados de pesquisa de turmas
 @app.route('/turmas/pesquisar', methods=['GET','POST'])
 def pesquisar_turma():
@@ -486,24 +445,29 @@ def excl_turma():
 
 ################################################    TURMAS-PROFESSORES   ###################################################################################
 # Rota para visualizar todas as turmas dos professores
-@app.route('/turmas-professores-pesquisa')
+@app.route('/turmas/professores/pesquisa', methods = ['POST', 'GET'])
 def turmas_professores():
+    if request.method == 'POST':
+        conn = conectar()
+        result = resultados_turmas_professores_pesquisados(conn)
+        if isinstance(result, str):  
+            return render_template('Turmas_professores/resultado-pesquisa-turmas-professores.html', mensagem = result)
+        return render_template('Turmas_professores/resultado-pesquisa-turmas-professores.html', turmas_professores = result)
     return render_template('Turmas_professores/turmas-professores-pesquisa.html')
 
-# Rota para exibir o formulário de adicionar turma dos professores
-@app.route('/turmas-professores-form')
-def turmas_professores_form():
-   return  render_template('Turmas_professores/turmas-professores-form.html', )
 # Rota para adicionar uma nova turma para professor
-@app.route('/turmas-professores', methods=['POST'])
+@app.route('/turmas/professores/form', methods=['POST','GET'])
 def add_turma_professor():
     conn = conectar()
-    result = enviar_valores_turmas_professores(conn)
-    if isinstance(result, str):  # Verifica se houve erro
-        return render_template('erro.html', mensagem=result)
-    return redirect('/')
+    mensagem = False
+    if request.method == 'POST':
+        result = enviar_valores_turmas_professores(conn)
+        if isinstance(result, str):  # Verifica se houve erro
+            return render_template('erro.html', mensagem=result)
+        mensagem = True
+    return render_template('Turmas_professores/turmas-professores-form.html',mensagem = mensagem)
 
-@app.route('/nomes-proximos-professores-turma', methods=['GET','POST'])
+@app.route('/turmas/professores/proximos', methods=['GET','POST'])
 def pesquisar_nomes_professor_turma():
     conn = conectar()
     dados = request.json  # Acesse os dados enviados no corpo da solicitação
@@ -512,16 +476,9 @@ def pesquisar_nomes_professor_turma():
     print(result)
     return jsonify(result)
 
-@app.route('/resultado-pesquisa-turmas-professores', methods = ['POST'])
-def pesquisar_valores_professor_turma():
-     conn = conectar()
-     result = resultados_turmas_professores_pesquisados(conn)
-     print(result)
-     if isinstance(result, str):  
-        return render_template('erro.html', mensagem=result)
-     return render_template('Turmas_professores/resultado-pesquisa-turmas-professores.html', turmas_professores = result)
 
-@app.route('/pesquisando-nomes-professores-para-inserir-em-turmas', methods=['GET','POST'])
+
+@app.route('/turmas/professores/nomes/proximos', methods=['GET','POST'])
 def pesquisar_nomes_professores_turmas():
     conn = conectar()
     dados = request.json  # Acesse os dados enviados no corpo da solicitação
@@ -530,7 +487,7 @@ def pesquisar_nomes_professores_turmas():
     print(result)
     return jsonify(result)
 
-@app.route('/pesquisando-nomes-de-turmas-para-inserir-turmas', methods=['GET','POST'])
+@app.route('/turmas/professores/nomes/turmas', methods=['GET','POST'])
 def pesquisar_nomes_turmas():
     conn = conectar()
     dados = request.json  # Acesse os dados enviados no corpo da solicitação
@@ -539,17 +496,18 @@ def pesquisar_nomes_turmas():
     print(result)
     return jsonify(result)
 
-@app.route('/editar_valores_turma_professores/<int:id_turma_professor>', methods=['GET','POST'])
+@app.route('/turmas/professores/editar/<int:id_turma_professor>', methods=['GET','POST'])
 def editar_turmas_professores(id_turma_professor):
             conn = conectar()
+            mensagem = False
             if request.method == 'POST':
                 result =editar_valores_turmas_professores(conn, id_turma_professor)
                 if isinstance(result, str):  # Verifica se houve erro
                     return render_template('erro.html', mensagem= result)
-                return redirect('/')     
-            return render_template('Turmas_professores/editar-valores-professores-turma.html') 
+                mensagem = True   
+            return render_template('Turmas_professores/editar-valores-professores-turma.html',mensagem = mensagem) 
 
-@app.route('/excluir-turmas-professores',methods=['POST'])
+@app.route('/turmas/professores/excluir',methods=['POST'])
 def excl_turma_professor():
     data = request.json
     print('dados recebidos', data)
@@ -559,7 +517,6 @@ def excl_turma_professor():
     result = excluir_turmas_professores(conn,turmas_professores_id)
     if isinstance(result, str):  # Verifica se houve erro
             return render_template('erro.html', mensagem=result)
-    return redirect('/')
 
 
 
