@@ -41,7 +41,7 @@
 
       console.log(nome);
       if (nome.length >= 4) {
-        fetch("/pesquisando-nomes-inscrito?nome=\"" + nome + "\"", { // Correção da URL
+        fetch("/matriculas/nome/inscrito?nome=\"" + nome + "\"", { // Correção da URL
           method: "POST", // Correção do método de solicitação
           headers: {
             "Content-Type": "application/json"

@@ -28,14 +28,13 @@ def pesquisar_nomes_proximos_inscrito(conn,dados):
         if dados['nome'].strip():  # Verifica se o valor não está vazio após remover espaços em branco
             nome_inserido = dados['nome'].strip().upper()
             cursor.execute('''SELECT
-						  id_inscricao AS numero_inscricao,
                           id_aluno,
-                          pessoas.nome AS nome_inscrito
-                          FROM matriculas
-                          JOIN inscricoes on inscricoes.id = matriculas.id_inscricao
+                          pessoas.nome AS nome_inscrito,
+                          inscricoes.id AS numero_inscricao
+                          FROM inscricoes
                           JOIN alunos on alunos.id = inscricoes.id_aluno
                           JOIN pessoas on pessoas.id = alunos.id_pessoa 
-						  WHERE pessoas.nome LIKE %s
+                          WHERE pessoas.nome LIKE %s
                           GROUP BY pessoas.nome ''', ('%' + nome_inserido + '%',))
             nomes_encontrados = cursor.fetchall()
             nomes_semelhantes = [(nome['numero_inscricao'], nome['nome_inscrito']) for nome in nomes_encontrados]
@@ -86,7 +85,7 @@ def pesquisar_valores_matriculas(conn):
         
         ra_aluno = request.form['ra_aluno']
         cpf_aluno = request.form['cpf_aluno']
-        nome_turma = request.form['nome_turma']
+        id_turma = request.form['id_turma_hidden']
 
         
         params = ()
@@ -96,18 +95,16 @@ def pesquisar_valores_matriculas(conn):
         if cpf_aluno:
             query += '  AND pessoas.cpf = %s'
             params += (cpf_aluno,)
-        if nome_turma:
+        if id_turma:
             query += '  AND turmas.id = %s'
-            params += (nome_turma,)
+            params += (id_turma,)
 
         query+= 'GROUP BY pessoas.nome'
         cursor.execute(query, params) 
          
         matriculas = cursor.fetchall()
         if not matriculas:
-             return f'Valor não encontrado ao buscar matrículas, certifique-se de que os valores estão sendo inseridos de maneira correta.'
-    
-        
+             return 'False'
         return matriculas
     except mysql.connector.Error as err:
         return f'Erro ao buscar matriculas: {err}'
@@ -115,10 +112,10 @@ def pesquisar_valores_matriculas(conn):
 def editar_matriculas(conn,matriculas_id):
     try:
             cursor = conn.cursor(dictionary=True)
-            new_data_inicio = request.form['data_inicio']
-            new_data_fim = request.form['data_fim']
-            new_id_inscrito = request.form['id_inscrito_hidden']
-            new_id_turma = request.form['id_turma_hidden']
+            data_inicio = request.form['data_inicio']
+            data_fim = request.form['data_fim']
+            id_inscrito = request.form['id_inscrito_hidden']
+            id_turma = request.form['id_turma_hidden']
             
            #checar esse select e mudar os nomes dos campos em valores-professores
             query = '''UPDATE matriculas
@@ -132,10 +129,11 @@ def editar_matriculas(conn,matriculas_id):
                                 '''
             
             # Executa a consulta SQL
-            cursor.execute(query, ( new_data_inicio, new_data_fim, new_id_turma, new_id_inscrito,datetime.now(),matriculas_id))
+            cursor.execute(query, (data_inicio, data_fim, id_turma, id_inscrito,datetime.now(),matriculas_id))
              
             # Comita as alterações no banco de dados
             conn.commit()
+            return
     except mysql.connector.Error as err:
             print("Erro ao atualizar dados:", err)
 
@@ -149,3 +147,5 @@ def excluir_matriculas(conn, matriculas_id):
         return
     except mysql.connector.Error as err:
         return ({"error": f'Erro ao excluir secretaria: {err}'})
+    
+

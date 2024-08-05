@@ -1,64 +1,140 @@
 <!DOCTYPE html>
 <html lang="pt-br" class="h-full">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Adição de Matrícula</title>
     <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet">
 </head>
+
 <body class="h-full bg-pagina">
     <div class="w-full h-full flex flex-col justify-center items-center">
-        
+        <div class="w-full flex justify-center p-7">
+            <img src="../../static/img/logo_prefeitura.png" class="h-12 w-75" alt="">
+        </div>
+        <form action="/matriculas/form" method="POST"
+            class="bg-card w-full sm:w-1/2 h-auto rounded-3xl flex flex-col justify-between items-center">
+            <div class="md:w-full border-t-2">
+                <div class="border-b-2 border-linhaFora w-full">
+                    <h1
+                        class="text-3xl font-opens font-bold text-adc border-b-2 border-linhaForm  w-full p-7 text-center ">
+                        Adicionar Nova Matricula
+                    </h1>
+                </div>
+                <div class="w-full grid grid-cols-1 justify-items-center items-center">
+                    <label for="data_inicio" class="w-full sm:w-3/4 font-opens font-bold text-xl">Data de
+                        Início:</label>
+                    <input type="date" id="data_inicio" name="data_inicio"
+                        class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm   focus:outline-none focus:ring focus:ring-linhaForm">
+
+                    <label for="data_fim" class="w-full sm:w-3/4 font-opens font-bold text-xl">Data de Fim:</label>
+                    <input type="date" id="data_fim" name="data_fim"
+                        class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm   focus:outline-none focus:ring focus:ring-linhaForm">
+
+                    <label for="id_turma" class="w-full sm:w-3/4 font-opens font-bold text-xl">Nome da Turma:</label>
+                    <div class="autocomplete-container">
+                        <input list="nomes-datalist-turma" id="nome_turma" name="nome_turma"
+                            class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm   focus:outline-none focus:ring focus:ring-linhaForm"
+                            placeholder="Digite o nome da turma">
+                        <div id="autocompleteContainer" class="autocomplete-suggestions hidden" name="matricula"></div>
+                    </div>
+                    <input list="nomes-datalist-turma" type="hidden" id="valor-id-turma" name="id_turma_hidden"
+                        value="">
+
+
+                    <label for="id_turma" class="w-full sm:w-3/4 font-opens font-bold text-xl">Nome do Inscrito:</label>
+                    <div class="autocomplete-container">
+                        <input list="nomes-datalist-inscrito" id="nome_inscrito" name="nome_inscrito"
+                            class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm   focus:outline-none focus:ring focus:ring-linhaForm"
+                            placeholder="Digite o nome do inscrito">
+                        <div id="autocompleteContainer" class="autocomplete-suggestions hidden" name="inscrito"></div>
+                    </div>
+                    <input list="nomes-datalist-inscrito" type="hidden" id="valor-id-inscrito" name="id_inscrito_hidden"
+                        value="">
+
+                    <div class="grid grid-cols-1 justify-items-center items-center mt-3">
+                        <input type="submit" value="Adicionar "
+                            class="rounded-e-2xl text-lg rounded-s-2xl font-opens text-white bg-adc w-48 h-12 pl-5 pr-5 hover:bg-blue-700 hover:cursor-pointer">
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 justify-items-center items-end ">
+                <a href="/professores/pesquisar"
+                    class="bg-adc hover:bg-blue-700 text-white font-bold p-2 m-10 rounded text-center">Visualizar
+                    professores</a>
+                <a href="/"
+                    class="bg-adc hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-10 text-center">Menu</a>
+                <a href="javascript:history.back()"
+                    class="bg-adc hover:bg-blue-700 text-white font-bold m-10 py-2 px-4 rounded text-center">Voltar</a>
+            </div>
+        </form>
     </div>
-    <h1>Adicionar Nova Matricula</h1>
-    <form action="/matriculas" method="POST">
-        <label for="data_inicio">Data de Início:</label>
-        <input type="date" id="data_inicio" name="data_inicio"><br><br>
+    <div id="customAlert"
+    class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center rounded-e ">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+        <h2 class="text-2xl font-bold mb-4 font-opens">Para matricular um aluno, selecione um aluno que está inscrito a turma em que ele vai assistir suas aula, além das datas.</h2>
+        <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+    </div>
+    </div>
 
-        <label for="data_fim">Data de Fim:</label>
-        <input type="date" id="data_fim" name="data_fim"><br><br>
+    <div id="customAlertSuccess"
+        class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+            <h2 class="text-2xl font-bold mb-4 font-opens">Inscrição adicionada com sucesso!</h2>
+            <button id="closeDialogBtnSucces" class="px-4 py-2 bg-green-500 text-white rounded">Fechar</button>
+        </div>
+    </div>
 
-        <label for="id_turma">Nome da Turma:</label>
-        <input list="nomes-datalist-turma" id="nome_turma" name="nome_turma">
-        <input list="nomes-datalist-turma" type="hidden" id="valor-id-turma" name="id_turma_hidden" value="">
-        <datalist id="nomes-datalist-turma"></datalist><br><br>
-
-        <label for="id_turma">Nome do Inscrito:</label>
-        <input list="nomes-datalist-inscrito" id="nome_inscrito" name="nome_inscrito">
-        <input list="nomes-datalist-inscrito" type="hidden" id="valor-id-inscrito" name="id_inscrito_hidden" value="">
-        <datalist id="nomes-datalist-inscrito"></datalist><br><br>
-        <input type="submit" value="Adicionar nova matricula">
-    </form>
-
-    <a href="/matriculas">Pesquisar matriculas</a> <br>
-    <a href="/">Menu</a> <br>
-    <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
 
 
     <script>
-           document.querySelector('form').addEventListener('submit', (ev) => {
+
+
+        let nomeTurma = document.getElementById('nome_turma');
+        nomeTurma.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^a-zA-Z\s]/g, "");
+            event.target.value = valoresFiltrados;
+        });
+        let nomeInscrito = document.getElementById('nome_inscrito');
+        nomeInscrito.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^a-zA-Z\s]/g, "");
+            event.target.value = valoresFiltrados;
+        });
+
+        let id_inscrito = document.getElementById("valor-id-inscrito")
+        let id_turma = document.getElementById("valor-id-turma")
+        let sugestoesContainer = document.querySelectorAll("#autocompleteContainer");
+        let sugestoesContainerInscrito = sugestoesContainer[1]
+        let sugestoesContainerTurma = sugestoesContainer[0]
+
+
+
+        document.querySelector('form').addEventListener('submit', (ev) => {
             let data_inicio = document.getElementById('data_inicio').value;
             let data_fim = document.getElementById('data_fim').value;
-            let nome_turma = document.getElementById('valor-id-turma').value;
-            let nome_inscrito = document.getElementById('valor-id-inscrito').value;
-            if (data_fim && data_inicio && nome_inscrito && nome_turma !== "") {
-                alert('Valores adicionados com sucesso!')
-            } else {
-                alert('Todos os campos necessitam estarem preenchidos!');
-                ev.preventDefault();
+            let idInscito = Number(id_inscrito.value)
+            let idTurma = Number(id_turma.value)
+
+            if (Number(data_inicio.length) !== 10 || Number(data_inicio.length) !== 10 || idInscito == 0 || a == idTurma) {
+                document.getElementById('customAlert').classList.remove('hidden')
+                ev.preventDefault()
             }
+            document.getElementById('closeDialogBtn').addEventListener('click', function () {
+                document.getElementById('customAlert').classList.add('hidden');
+            });
         })
 
 
 
-
-        let id_turma = document.getElementById("valor-id-turma")
         document.getElementById("nome_turma").addEventListener("input", function () {
             let nome = this.value.trim();
 
             console.log(nome);
             if (nome.length >= 4) {
-                fetch("/pesquisando-nome-turma-matricula?nome=\"" + nome + "\"", { // Correção da URL
+                sugestoesContainerTurma.querySelectorAll('div').forEach(div => div.remove())
+                id_turma.value = ''
+                fetch("/matricula/pesquisar/nome/turma?nome=\"" + nome + "\"", { // Correção da URL
                     method: "POST", // Correção do método de solicitação
                     headers: {
                         "Content-Type": "application/json"
@@ -67,24 +143,24 @@
                 })
                     .then(response => response.json())
                     .then(sugestoes => {
-                        let sugestoesProfessores = document.getElementById("nomes-datalist-turma");
-                        sugestoesProfessores.innerHTML = ""; // Limpar sugestões anteriores
-                        let valoresUnicos = new Set();
                         console.log(sugestoes)
-
-
-                        sugestoes.forEach(function (sugestao) {
-                            valoresUnicos.add(sugestao[0]); // Adicionar apenas o primeiro elemento da tupla (nome)
-                            valoresUnicos.add(sugestao[1]); // Adicionar apenas o primeiro elemento da tupla (nome)
-                        });
-                        console.log(valoresUnicos)
-
-                        valoresUnicos.forEach(function (valor) {
-                            let sugestaoElemento = document.createElement("option");
-                            sugestaoElemento.value = valor;
-                            sugestoesProfessores.appendChild(sugestaoElemento);
-                            id_turma.value = valor
-                        });;
+                        if (sugestoes.length) {
+                            sugestoesContainerTurma.classList.remove('hidden')
+                            sugestoes.forEach(name => {
+                                const divSugestaoNome = document.createElement('div')
+                                divSugestaoNome.classList.add('autocomplete-suggestion', 'w-full', 'sm:w-full', 'bg-bg_input', 'text-start', 'font-opens', 'text-black', 'border-b-2', 'border-gray-300')
+                                divSugestaoNome.textContent = name[0]
+                                divSugestaoNome.onclick = () => {
+                                    document.getElementById('nome_turma').value = name[0]
+                                    id_turma.value = name[1]
+                                    sugestoesContainerTurma.innerHTML = ''
+                                    sugestoesContainerTurma.classList.add('hidden')
+                                }
+                                sugestoesContainerTurma.appendChild(divSugestaoNome)
+                            })
+                        } else {
+                            sugestoesContainerTurma.classList.add('hidden')
+                        }
 
 
                     })
@@ -94,17 +170,23 @@
 
 
             } else {
-                console.log('Valor não encontrado')
+                sugestoesContainerTurma.querySelectorAll('div').forEach(div => div.remove())
+                id_turma.value = ''
             }
         });
 
-        let id_inscrito = document.getElementById("valor-id-inscrito")
+
+
+
+
         document.getElementById("nome_inscrito").addEventListener("input", function () {
             let nome = this.value.trim();
 
             console.log(nome);
             if (nome.length >= 4) {
-                fetch("/pesquisando-nomes-inscrito?nome=\"" + nome + "\"", { // Correção da URL
+                sugestoesContainerInscrito.querySelectorAll('div').forEach(div => div.remove())
+                id_inscrito.value = ''
+                fetch("/matriculas/nome/inscrito?nome=\"" + nome + "\"", { // Correção da URL
                     method: "POST", // Correção do método de solicitação
                     headers: {
                         "Content-Type": "application/json"
@@ -113,24 +195,24 @@
                 })
                     .then(response => response.json())
                     .then(sugestoes => {
-                        let sugestoesProfessores = document.getElementById("nomes-datalist-inscrito");
-                        sugestoesProfessores.innerHTML = ""; // Limpar sugestões anteriores
-                        let valoresUnicos = new Set();
                         console.log(sugestoes)
-
-
-                        sugestoes.forEach(function (sugestao) {
-                            valoresUnicos.add([sugestao[0],sugestao[1]]); // Adicionar apenas o primeiro elemento da tupla (nome)
-                             // Adicionar apenas o primeiro elemento da tupla (nome)
-                        });
-                     
-
-                        valoresUnicos.forEach(function (valor) {
-                            let sugestaoElemento = document.createElement("option");
-                            sugestaoElemento.value = valor[1];
-                            sugestoesProfessores.appendChild(sugestaoElemento);
-                            id_inscrito.value = valor[0]
-                        });;
+                        if (sugestoes.length) {
+                            sugestoesContainerInscrito.classList.remove('hidden')
+                            sugestoes.forEach(name => {
+                                const divSugestaoNome = document.createElement('div')
+                                divSugestaoNome.classList.add('autocomplete-suggestion', 'w-full', 'sm:w-full', 'bg-bg_input', 'text-start', 'font-opens', 'text-black', 'border-b-2', 'border-gray-300')
+                                divSugestaoNome.textContent = name[1]
+                                divSugestaoNome.onclick = () => {
+                                    document.getElementById('nome_inscrito').value = name[1]
+                                    id_inscrito.value = name[0]
+                                    sugestoesContainerInscrito.innerHTML = ''
+                                    sugestoesContainerInscrito.classList.add('hidden')
+                                }
+                                sugestoesContainerInscrito.appendChild(divSugestaoNome)
+                            })
+                        } else {
+                            sugestoesContainerInscrito.classList.add('hidden')
+                        }
 
 
                     })
@@ -140,14 +222,23 @@
 
 
             } else {
-                console.log('Valor não encontrado')
+                sugestoesContainerInscrito.querySelectorAll('div').forEach(div => div.remove())
+                id_inscrito.value = ''
             }
         });
 
-     
+        window.onload = function () {
+            let mensagem = "{{ mensagem }}";
+            console.log(mensagem)
+            if (mensagem == 'True') {
+                document.getElementById('customAlertSuccess').classList.remove('hidden');
+                document.getElementById('closeDialogBtnSucces').addEventListener('click', function () {
+                    document.getElementById('customAlertSuccess').classList.add('hidden');
+                    window.location.href = '/matriculas/form'
+                });
+            }
+        }
     </script>
 </body>
+
 </html>
-
-
-

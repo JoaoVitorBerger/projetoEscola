@@ -52,7 +52,7 @@ def pesquisar_plano_aula(conn):
          
         matriculas = cursor.fetchall()
         if not matriculas:
-             return f'Valor não encontrado ao buscar planos de aula, certifique-se de que os valores estão sendo inseridos de maneira correta ou certifique-se de que os dados não foram excluídos.'
+             return 'False'
     
         
         return matriculas

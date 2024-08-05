@@ -1,100 +1,243 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet">
   <title>Document</title>
+
 </head>
-<body>
-  
-    <h1>Resultado pesquisas matriculas</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Nome aluno</th>
-                <th>CPF</th>
-                <th>RA</th>
-                <th>Curso</th>
-                <th>Descrição do Curso</th>
-                <th>Nome da Turma</th>
-                <th>Descrição da Turma</th>
-                <th>Início</th>
-                <th>Fim</th>
-                <th>Status</th>
-               
+
+<body class="h-full bg-pagina">
+  <div class="flex flex-col justify-center h-full items-center w-full">
+    <div class="flex justify-center p-5">
+      <img src="../../static/img/logo_prefeitura.png" class="h-12 w-75" alt="">
+    </div>
+    <div
+      class="overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200  bg-card w-full h-auto sm:h-auto sm:w-10/12 p-5 rounded-3xl">
+      <h1 class="text-3xl p-7 font-opens font-bold text-adc">Resultado da Pesquisa</h1>
+      <div class="overflow-auto h-1/2 sm:h-auto">
+        <table class="w-full h-3/4  sm:h-auto bg-fundoTabela">
+          <thead class="hidden md:block">
+            <tr class="sm:grid sm:grid-cols-12 gap-0 ">
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Nome aluno</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">CPF</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">RA</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Curso</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Descrição do Curso</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Nome da Turma</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Descrição da Turma</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Início</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Fim</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Status</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Editar</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Excluir</th>
             </tr>
-        </thead>
-        <tbody>
+          </thead>
+          <tbody class="h-auto">
             {% for matricula in matriculas %}
-            
-            <tr>
-        
-                
-                <td>{{ matricula.nome_pessoa }}</td>
-                <td>{{ matricula.cpf }}</td>
-                <td>{{ matricula.ra }}</td>
-                <td>{{ matricula.nome_curso }}</td> 
-                <td>{{ matricula.descricao_curso }}</td>  
-                <td>{{ matricula.nome_turma }}</td>  
-                <td>{{ matricula.descricao_turma }}</td>
-                <td>{{ matricula.data_inicio }}</td>
-                <td>{{ matricula.data_fim }}</td>
-                <td>{{ matricula.status_matricula }}</td>  
-                <td><a href="/editar-valores-matriculas/{{ matricula.id_matricula}}">Editar</a></td>
-                <td><a class="deleteButton" data-matricula-id="{{ matricula.id_matricula }}" href="#">Excluir</a></td>
-                
+
+            <tr class="flex w-full sm:grid sm:grid-cols-12 gap-0">
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ matricula.nome_pessoa }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ matricula.cpf }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ matricula.ra }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ matricula.nome_curso }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ matricula.descricao_curso }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ matricula.nome_turma }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ matricula.descricao_turma }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ matricula.data_inicio }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ matricula.data_fim }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ matricula.status_matricula }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center justify-center">
+                <a href="/matriculas/editar/{{ matricula.id_matricula}}">
+                  <img src="../../static/img/IconeEditar.png" alt="">
+                </a>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center justify-center">
+                <a class="deleteButton" data-matricula-id="{{ matricula.id_matricula }}" href="#">
+                  <img src="../../static/img/IconeLixeira.png" class="" alt="">
+                </a>
+              </td>
             </tr>
-            
+
             {% endfor %}
-        </tbody>
-    </table>
-    
-</table>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-10 flex w-full items-end justify-center sm:static sm:grid-cols-1  sm:justify-end">
+        <div class="flex justify-between  w-auto sm:flex sm:flex-row sm:w-auto  sm:justify-end sm:p-4">
+          <a href="/"
+            class="bg-adc hover:bg-blue-700 text-white font-bold py-2  px-5 mx-3 rounded  text-center">Menu</a>
+          <br>
+          <a href="/pessoas/form"
+            class="bg-adc  hover:bg-blue-700 text-white font-bold py-2 px-5 mx-3  rounded  text-center">Adicionar
+          </a> <br>
+          <a href="javascript:history.back()"
+            class="bg-adc hover:bg-blue-700 text-white font-bold py-2  px-5 mx-3 rounded  text-center ">Voltar</a>
+        </div>
+      </div>
+    </div>
 
-  <a href="/matriculas-form">Adicionar matriculas</a> <br>
-  <a href="/">Menu</a> <br>
-  <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
-  
-<script>
-    let deleteButtons = document.querySelectorAll('.deleteButton');
-        
-        
-        // Itera sobre todos os botões
-        deleteButtons.forEach(function(button) {
-          // Adiciona um evento de clique a cada botão
-          button.addEventListener('click', function(event) {
-            // Impede o comportamento padrão do link
-            event.preventDefault();
+  </div>
 
-            let confirmarExclusao = confirm('Deseja relamente excluir essa matricula')
-            if(confirmarExclusao){
-               // Pega o ID da secretaria do atributo 'data-secretaria-id' do botão clicado
-            
-            let matriculaId  = this.getAttribute('data-matricula-id');
-            
-            // Envia o ID da secretaria para o servidor Flask
-            fetch('/excluir-inscricoes', {
+  <div id="customAlert"
+    class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center card-principal">
+      <h2 class="text-2xl font-bold mb-4 font-opens">Deseja excluir essa pessoa?</h2>
+      <button id="closeDialogBtn" class="px-4 py-2 bg-green-500 text-white rounded sim">Sim</button>
+      <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded nao">Não</button>
+    </div>
+  </div>
+
+  <div id="customAlertNotFind"
+    class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+      <h2 class="text-2xl font-bold mb-4 font-opens">Matricula não cadastrada.</h2>
+      <button id="closeDialog" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+    </div>
+
+
+    <script>
+      let deleteButtons = document.querySelectorAll('.deleteButton');
+
+
+      // Itera sobre todos os botões
+      deleteButtons.forEach(function (button) {
+        // Adiciona um evento de clique a cada botão
+        button.addEventListener('click', function (event) {
+
+          document.getElementById('customAlert').classList.remove('hidden');
+          document.addEventListener('click', (ev) => {
+
+            let valorResposta = ev.target
+            if (valorResposta.classList.contains('sim')) {
+              let matriculaId = this.getAttribute('data-matricula-id');
+              fetch('/matriculas/excluir', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                  'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({matricula_id: matriculaId})
-            }).then(response => {
-                // Lida com a resposta do servidor, se necessário
-                console.log(response)
-                alert('Matrícula excluida com sucesso')
-                // Voltando para o início
-                window.location.href = '/';
-            }).catch(error => {
-                console.error('Erro ao excluir matrícula:', error);
-            });
-            }else{
-              console.log('exclusão cancelada')
+                body: JSON.stringify({ matricula_id: matriculaId })
+              }).then(response => {
+                //Caso a requisição retorne um valor com sucesso
+                //Selecionamos o h2 do alert e alteramos seu innerText
+                customAlert.querySelector('h2').innerText = 'Inscrição excluida com sucesso!'
+                //Removemos as opções de sim e não do card original
+                let teste = document.querySelectorAll('#closeDialogBtn')
+                teste.forEach((el) => {
+                  el.remove()
+                })
+                //Criamos um novo botão com o nome de fechar
+                let btn = document.createElement('button')
+                btn.innerHTML = `
+                            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+                            `
+                //Adicionamos ele ao alert
+                customAlert.querySelector('.card-principal').append(btn)
+                //Adicionamos um evento de clique no botão que ao clicar nele a página recarrega
+                btn.addEventListener('click', () => {
+                  window.location.reload()
+                })
+
+
+              }).catch(error => {
+                console.error('Erro ao excluir turma!:', error);
+                customAlert.querySelector('h2').innerText = 'Erro:' + error
+
+                let teste = document.querySelectorAll('#closeDialogBtn')
+                teste.forEach((el) => {
+                  el.remove()
+                })
+                let btn = document.createElement('button')
+                btn.innerHTML = `
+                            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+                            `
+                customAlert.querySelector('.card-principal').append(btn)
+
+                btn.addEventListener('click', () => {
+                  window.location.reload()
+                })
+              });
+            } else {
+              if (valorResposta.classList.contains('nao')) {
+                customAlert.classList.add('hidden')
+              }
             }
-           
-          });
+          })
         });
-</script>
+      });
+      window.onload = function () {
+        //recebe uma mensagem que contém true ou false, como valor padrão temos false
+        let mensagem = "{{ mensagem }}";
+        console.log(mensagem)
+        //Caso a mensagem for falsa
+        if (mensagem == 'False') {
+          //Removemos a classe hidden do alertNotFind
+          document.getElementById('customAlertNotFind').classList.remove('hidden');
+          //Adicionamos um evento de clique no botão de fechar
+          document.getElementById('closeDialog').addEventListener('click', function () {
+            //Quando clicado ele omite e div
+            document.getElementById('customAlertNotFind').classList.add('hidden');
+            //Direciona a página para ela mesma para recarregar os valores true/false
+            window.location.href = '/matriculas/pesquisar'
+
+          });
+        }
+      }
+    </script>
 </body>
 
 

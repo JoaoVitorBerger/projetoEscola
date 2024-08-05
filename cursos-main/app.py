@@ -522,7 +522,7 @@ def excl_turma_professor():
 
 
 ################################################    MATRICULAS   ###################################################################################
-@app.route('/pesquisando-nome-turma-matricula', methods=['GET','POST'])
+@app.route('/matricula/pesquisar/nome/turma', methods=['GET','POST'])
 def pesquisando_turmas_matricula():
     conn = conectar()
     dados = request.json  # Acesse os dados enviados no corpo da solicitação
@@ -531,7 +531,7 @@ def pesquisando_turmas_matricula():
     print(result)
     return jsonify(result)
 
-@app.route('/pesquisando-nomes-inscrito', methods=['GET','POST'])
+@app.route('/matriculas/nome/inscrito', methods=['GET','POST'])
 def pesquisando_inscrito_matricula():
     conn = conectar()
     dados = request.json  # Acesse os dados enviados no corpo da solicitação
@@ -541,57 +541,43 @@ def pesquisando_inscrito_matricula():
     return jsonify(result)
 
 # Rota para visualizar todas as matrículas
-@app.route('/matriculas')
+@app.route('/matriculas/pesquisar', methods = ['GET','POST'])
 def matriculas():
-        return render_template('Matriculas/pesquisar-matriculas.html', matriculas=matriculas)
-@app.route('/resultado-pesquisa-matricula',methods = ['POST'])
-def pesquisar_matriculas():
-     conn = conectar()
-     result = pesquisar_valores_matriculas(conn)
-     if isinstance(result, str):  # Verifica se houve erro
-            return render_template('erro.html', mensagem=result)
-     return render_template('Matriculas/resultado-pesquisa-matriculas.html', matriculas=result)
-# Rota para exibir o formulário de adicionar matrícula
-@app.route('/matriculas-form')
-def matricula_form():
-    try:
         conn = conectar()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT id, nome FROM turmas')
-        turmas = cursor.fetchall()
-        cursor.execute('''
-                        SELECT inscricoes.id, pessoas.nome
-                        FROM inscricoes
-                        JOIN alunos ON inscricoes.id_aluno = alunos.id
-                        JOIN pessoas ON alunos.id_pessoa = pessoas.id
-                        LEFT JOIN matriculas ON inscricoes.id = matriculas.id_inscricao
-                        WHERE matriculas.id IS NULL
-                        ''')
-        inscricoes = cursor.fetchall()
-        return render_template('Matriculas/matriculas-form.html', turmas=turmas, inscricoes=inscricoes)
-    except mysql.connector.Error as err:
-        return render_template('erro.html', mensagem=f'Erro ao buscar dados: {err}')
-# Rota para adicionar uma nova matrícula
-@app.route('/matriculas', methods=['POST'])
-def add_matricula():
-        conn = conectar()
-        result = enviar_valores_matricula(conn)
-        if isinstance(result, str):  # Verifica se houve erro
-            return render_template('erro.html', mensagem=result)
-        return redirect('/')
+        if request.method == 'POST':
+            result = pesquisar_valores_matriculas(conn)
+            if isinstance(result, str):  # Verifica se houve erro
+                return render_template('Matriculas/resultado-pesquisa-matriculas.html', mensagem=result)
+            return render_template('Matriculas/resultado-pesquisa-matriculas.html',matriculas = result)
+        return render_template('Matriculas/pesquisar-matriculas.html')
 
-@app.route('/editar-valores-matriculas/<int:matriculas_id>',methods = ['GET', 'POST'])
+# Rota para exibir o formulário de adicionar matrícula
+@app.route('/matriculas/form', methods =['GET', 'POST'])
+def matricula_form():
+        conn = conectar()
+        mensagem = False
+        if request.method == 'POST': 
+            result = enviar_valores_matricula(conn)
+            if isinstance(result, str):  # Verifica se houve erro
+                return render_template('erro.html', mensagem=result)
+            mensagem = True
+        return render_template('Matriculas/matriculas-form.html', mensagem = mensagem)
+    
+# Rota para adicionar uma nova matrícula
+
+@app.route('/matriculas/editar/<int:matriculas_id>',methods = ['GET', 'POST'])
 def edit_matriculas(matriculas_id):
     conn = conectar()
+    mensagem = False
     if request.method == 'POST':
-                result =editar_matriculas(conn, matriculas_id)
-                if isinstance(result, str):  # Verifica se houve erro
-                    return render_template('erro.html', mensagem= result)
-                return redirect('/')     
-    return render_template('Matriculas/editar-valores-matriculas.html') 
+        result =editar_matriculas(conn, matriculas_id)
+        if isinstance(result, str):  # Verifica se houve erro
+            return render_template('erro.html', mensagem= result)
+        mensagem = True     
+    return render_template('Matriculas/editar-valores-matriculas.html', mensagem = mensagem) 
     
 
-@app.route('/excluir-matriculas',methods = ['POST'])
+@app.route('/matriculas/excluir',methods = ['POST'])
 def excl_matric():
      conn=conectar()
      data = request.json
@@ -601,28 +587,21 @@ def excl_matric():
      result= excluir_matriculas(conn,matriculas_id)
      if isinstance(result, str):  # Verifica se houve erro
                     return render_template('erro.html', mensagem= result)
-     return redirect('/')   
 
 
      
 
 ###########################################################   PLANOS DE AULA   ########################################################################
 # Rota para exibir todos os planos de aula
-@app.route('/planos-aula-pesquisa')
+@app.route('/planos/aula/pesquisa', methods = ['POST', 'GET'])
 def pesquisar_planos():
+     conn = conectar()
+     if request.method == 'POST':
+        result = pesquisar_plano_aula(conn)
+        if isinstance(result, str):  # Verifica se houve erro
+            return render_template('PlanosAula/resultados-pesquisa-planos-aula.html', mensagem=result)
+        return render_template('PlanosAula/resultados-pesquisa-planos-aula.html',planos=result)
      return render_template('PlanosAula/pesquisar-planos-aula.html')
-
-
-@app.route('/resultados-pesquisa-plano-aula',methods=['POST'])
-def planos():
-    conn = conectar()
-    result = pesquisar_plano_aula(conn)
-    print(result)
-    if isinstance(result, str):  # Verifica se houve erro
-            return render_template('erro.html', mensagem= result)
-    return render_template('PlanosAula/resultados-pesquisa-planos-aula.html',planos=result)
-  
-
 
 @app.route('/planos-form')
 def planos_form():

@@ -1,70 +1,103 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" class="h-full">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet">
   <title>Document</title>
 </head>
-<body>
+<body class="h-full bg-pagina">
+    <div class="w-full h-full flex flex-col justify-center items-center">
+        <div class="w-full flex justify-center p-7">
+            <img src="../../static/img/logo_prefeitura.png" class="h-12 w-75 " alt="">
+          </div>
+          <form action="/matriculas/pesquisar" method="POST" class="bg-card w-full sm:w-1/2 h-auto rounded-3xl flex flex-col justify-between items-center">
+            <div class="border-b-2 border-linhaFora w-full">
+                <h1 class="text-3xl font-opens font-bold text-adc border-b-2 border-linhaForm  w-full p-7 text-center">
+                    Pesquisar Matricula
+                </h1>
+            </div>
+            <div class="w-full grid grid-cols-1 justify-items-center items-center">
+                <label for="ra_aluno" class="w-full sm:w-3/4 font-opens font-bold text-xl">RA do Aluno</label>
+                <input type="text" id="ra_aluno" name="ra_aluno" maxlength="6" class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm   focus:outline-none focus:ring focus:ring-linhaForm" placeholder="Informe o RA do aluno">
+          
+                <label for="ra_aluno" class="w-full sm:w-3/4 font-opens font-bold text-xl">CPF do Aluno</label>
+                <input type="text" id="cpf_aluno" name="cpf_aluno" maxlength="11" class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm   focus:outline-none focus:ring focus:ring-linhaForm" placeholder="Informe o CPF do aluno">
+          
+                <label for="id_turma" class="w-full sm:w-3/4 font-opens font-bold text-xl">Nome da Turma:</label>
+                <div class="autocomplete-container">
+                  <input list="nomes-datalist-turma" id="nome_turma" name="nome_turma"
+                   class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm   focus:outline-none focus:ring focus:ring-linhaForm" placeholder="Digite o nome da turma" >
+                   <div id="autocompleteContainer" class="autocomplete-suggestions hidden" name="matricula"></div>
+                </div>
+                <input list="nomes-datalist-turma" type="hidden" id="valor-id-turma" name="id_turma_hidden" value="">
+          
+                <div class="grid grid-cols-1 justify-items-center items-center mt-3">
+                  <input type="submit" value="Adicionar "
+                      class="rounded-e-2xl text-lg rounded-s-2xl font-opens text-white bg-adc w-48 h-12 pl-5 pr-5 hover:bg-blue-700 hover:cursor-pointer">
+              </div>
+            </div>
+            <div class="grid grid-cols-3 justify-items-center items-end ">
+                <a href="/professores/pesquisar"
+                    class="bg-adc hover:bg-blue-700 text-white font-bold p-2 m-10 rounded text-center">Visualizar
+                    professores</a>
+                <a href="/"
+                    class="bg-adc hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-10 text-center">Menu</a>
+                <a href="javascript:history.back()"
+                    class="bg-adc hover:bg-blue-700 text-white font-bold m-10 py-2 px-4 rounded text-center">Voltar</a>
+            </div>
+            
+          </form>
+
+    </div>
+
+    <div id="customAlert"
+        class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+            <h2 class="text-2xl font-bold mb-4 font-opens">Prencha o Campo com um valor válido.</h2>
+            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+        </div>
+    </div>
   
-
-  <h1>Pesquisar Matricula</h1>
-  <form action="/resultado-pesquisa-matricula" method="POST">
-      <label for="ra_aluno">RA do Aluno</label>
-      <input type="text" id="ra_aluno" name="ra_aluno" maxlength="6"><br><br>
-
-      <label for="ra_aluno">CPF do Aluno</label>
-      <input type="text" id="cpf_aluno" name="cpf_aluno" maxlength="11"><br><br>
-
-      <label for="id_turma">Nome da Turma:</label>
-      <input list="nomes-datalist-turma" id="nome_turma" name="nome_turma">
-      <input list="nomes-datalist-turma" type="hidden" id="valor-id-turma" name="id_turma_hidden" value="">
-      <datalist id="nomes-datalist-turma"></datalist><br><br>
-
-      <input type="submit" value="Pesquisar matriculas">
-  </form>
-
-  <a href="/matriculas-form">Adicionar matriculas</a> <br>
-  <a href="/">Menu</a> <br>
-  <a href="javascript:history.back()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">Voltar</a>
-
   <script>
-    let input = document.getElementById('ra_aluno')
-    input.addEventListener('input', (event)=>{
-        let input = event.target.value   
-        if(isNaN(input)){
-            event.target.value = input.slice(0,0)
-        }
-    })
-    let cpf = document.getElementById('cpf_aluno')
-    cpf.addEventListener('input', (event)=>{
-        let input = event.target.value   
-        if(isNaN(input)){
-            event.target.value = input.slice(0,0)
-        }
-    })
-
-    document.querySelector('form').addEventListener('submit',(ev)=>{
-        console.log('Olaaaa')
-        let ra_aluno = document.getElementById('ra_aluno').value
-        let cpf_pessoa = document.getElementById('cpf_aluno').value
-        let nome_turma = document.getElementById('nome_turma').value
-
-        if(ra_aluno || cpf_pessoa || nome_turma != ""){
-        }else{
-            alert('É preciso que ao menos um campo seja preenchido para prosseguir com a pesquisa.')
-            ev.preventDefault()
-        }
-    })
-
-
     let id_turma = document.getElementById("valor-id-turma")
+    let nome_turma = document.getElementById('nome_turma');
+        nome_turma.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^a-zA-Z\s]/g, "");
+            event.target.value = valoresFiltrados;
+        });
+
+        let cpf_aluno = document.getElementById('cpf_aluno')
+        cpf_aluno.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^0-9]/g, "");
+            event.target.value = valoresFiltrados
+        })
+        let ra_aluno = document.getElementById('ra_aluno')
+        ra_aluno.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^0-9]/g, "");
+            event.target.value = valoresFiltrados
+        })
+
+        document.querySelector('form').addEventListener('submit', (ev)=>{
+            if(ra_aluno.value.length !== 6 && cpf_aluno.value.length !== 11 && Number(id_turma.value) == 0 ){
+                document.getElementById('customAlert').classList.remove('hidden')
+                ev.preventDefault()
+            }
+            document.getElementById('closeDialogBtn').addEventListener('click', function () {
+                document.getElementById('customAlert').classList.add('hidden');
+            });
+            
+        })
+    let sugestoesContainer = document.getElementById("autocompleteContainer");
+
         document.getElementById("nome_turma").addEventListener("input", function () {
             let nome = this.value.trim();
 
             console.log(nome);
             if (nome.length >= 4) {
-                fetch("/pesquisando-nome-turma-matricula?nome=\"" + nome + "\"", { // Correção da URL
+                sugestoesContainer.querySelectorAll('div').forEach(div => div.remove())
+                id_turma.value = ''
+                fetch("/matricula/pesquisar/nome/turma?nome=\"" + nome + "\"", { // Correção da URL
                     method: "POST", // Correção do método de solicitação
                     headers: {
                         "Content-Type": "application/json"
@@ -73,24 +106,24 @@
                 })
                     .then(response => response.json())
                     .then(sugestoes => {
-                        let sugestoesProfessores = document.getElementById("nomes-datalist-turma");
-                        sugestoesProfessores.innerHTML = ""; // Limpar sugestões anteriores
-                        let valoresUnicos = new Set();
                         console.log(sugestoes)
-
-
-                        sugestoes.forEach(function (sugestao) {
-                            valoresUnicos.add(sugestao[0]); // Adicionar apenas o primeiro elemento da tupla (nome)
-                            valoresUnicos.add(sugestao[1]); // Adicionar apenas o primeiro elemento da tupla (nome)
-                        });
-                        console.log(valoresUnicos)
-
-                        valoresUnicos.forEach(function (valor) {
-                            let sugestaoElemento = document.createElement("option");
-                            sugestaoElemento.value = valor;
-                            sugestoesProfessores.appendChild(sugestaoElemento);
-                            id_turma.value = valor
-                        });;
+                        if (sugestoes.length) {
+                            sugestoesContainer.classList.remove('hidden')
+                            sugestoes.forEach(name => {
+                                const divSugestaoNome = document.createElement('div')
+                                divSugestaoNome.classList.add('autocomplete-suggestion', 'w-full', 'sm:w-full', 'bg-bg_input', 'text-start', 'font-opens', 'text-black', 'border-b-2', 'border-gray-300')
+                                divSugestaoNome.textContent = name[0]
+                                divSugestaoNome.onclick = () => {
+                                    document.getElementById('nome_turma').value = name[0]
+                                    id_turma.value = name[1]
+                                    sugestoesContainer.innerHTML = ''
+                                    sugestoesContainer.classList.add('hidden')
+                                }
+                                sugestoesContainer.appendChild(divSugestaoNome)
+                            })
+                        } else {
+                            sugestoesContainer.classList.add('hidden')
+                        }
 
 
                     })
@@ -100,7 +133,8 @@
 
 
             } else {
-                console.log('Valor não encontrado')
+                sugestoesContainer.querySelectorAll('div').forEach(div => div.remove())
+                id_turma.value = ''
             }
         });
   </script>
