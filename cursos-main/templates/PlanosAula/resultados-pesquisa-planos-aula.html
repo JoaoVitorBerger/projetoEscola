@@ -1,106 +1,119 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet">
 </head>
+
 <body class="h-full bg-pagina">
   <div class="flex flex-col justify-center h-full items-center w-full">
     <div class="flex justify-center p-5">
       <img src="../../static/img/logo_prefeitura.png" class="h-12 w-75" alt="">
     </div>
-    <div class="overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200  bg-card w-full h-auto sm:h-auto sm:w-10/12 p-5 rounded-3xl">
+    <div
+      class="overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200  bg-card w-full h-auto sm:h-auto sm:w-10/12 p-5 rounded-3xl">
       <h1 class="text-3xl p-7 font-opens font-bold text-adc">Resultado pesquisas matriculas</h1>
       <div class="overflow-auto h-1/2 sm:h-auto">
-        <table  class="w-full h-3/4  sm:h-auto bg-fundoTabela">
+        <table class="w-full h-3/4  sm:h-auto bg-fundoTabela">
           <thead class="hidden md:block">
-              <tr class="sm:grid sm:grid-cols-10 gap-0 ">
-                  <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Data do plano de aula</th >
-                  <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Conteúdo do plano de aula</th>
-                  <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Nome da turma</th>
-                  <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Descrição da turma</th>
-                  <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Capacidade da turma</th>
-                  <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Data de inicio da turma</th>
-                  <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Data de termino da turma</th>
-                  <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Nome do curso</th>
-                  <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Editar</th>
-                  <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Excluir</th>
-             
-                 
-              </tr>
+            <tr class="sm:grid sm:grid-cols-10 gap-0 ">
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Data do plano de aula</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Conteúdo do plano de aula</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Nome da turma</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Descrição da turma</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Capacidade da turma</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Data de inicio da turma</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Data de termino da turma</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Nome do curso</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Editar</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Excluir</th>
+
+
+            </tr>
           </thead>
           <tbody class="h-auto">
-              {% for plano in planos %}
-              
-              <tr class="flex w-full sm:grid sm:grid-cols-10 gap-0">
-                  <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
-                    <div class="h-full w-full flex items-center justify-center">
-                      {{ plano.data_plano_de_aula }}
-                    </div>
-                  </td>
-                  <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
-                    <div class="h-full w-full flex items-center justify-center">
-                      {{ plano.conteudo_plano_de_aula }}
-                    </div>
-                  </td>
-                  <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
-                    <div class="h-full w-full flex items-center justify-center">
-                      {{ plano.nome_turma }}
-                    </div>
-                  </td>
-                  <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
-                    <div class="h-full w-full flex items-center justify-center">
-                      {{ plano.descricao_turma }}
-                    </div>
-                  </td>
-                  <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
-                    <div class="h-full w-full flex items-center justify-center">
-                      {{ plano.capacidade_turma  }}
-                    </div>
-                  </td>
-                  <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
-                    <div class="h-full w-full flex items-center justify-center">
-                      {{ plano.data_inicio_turma }}
-                    </div>
-                  </td>
-                  <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
-                    <div class="h-full w-full flex items-center justify-center">
-                      {{ plano.data_termino_turma }}
-                    </div>
-                  </td>
-                  <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
-                    <div class="h-full w-full flex items-center justify-center">
-                      {{ plano.nome_curso }}
-                    </div>
-                  </td>
-                  <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
-                    <div class="h-full w-full flex items-center justify-center">
-                      <a href="/editar-valores-planos/{{ plano.id}}">
-                        <img src="../../static/img/IconeEditar.png" alt="">
-                      </a>
-                    </div>
-                  </td>
-                  <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
-                    <div class="h-full w-full flex items-center justify-center">
-                      <a class="deleteButton" data-plano-id="{{ plano.id}}" href="#">
-                        <img src="../../static/img/IconeLixeira.png" class="" alt="">
-                      </a>
-                    </div>
-                  </td>
-              </tr>
-              
-              {% endfor %}
+            {% for plano in planos %}
+
+            <tr class="flex w-full sm:grid sm:grid-cols-10 gap-0">
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="">
+                  {{ plano.data_plano_de_aula }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ plano.conteudo_plano_de_aula }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ plano.nome_turma }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ plano.descricao_turma }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ plano.capacidade_turma }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ plano.data_inicio_turma }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ plano.data_termino_turma }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ plano.nome_curso }}
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  <a href="/planos/aula/editar/{{ plano.id}}">
+                    <img src="../../static/img/IconeEditar.png" alt="">
+                  </a>
+                </div>
+              </td>
+              <td
+                class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  <a class="deleteButton" data-plano-id="{{ plano.id}}" href="#">
+                    <img src="../../static/img/IconeLixeira.png" class="" alt="">
+                  </a>
+                </div>
+              </td>
+            </tr>
+
+            {% endfor %}
           </tbody>
-      </table>
+        </table>
       </div>
       <div class="mt-10 flex w-full items-end justify-center sm:static sm:grid-cols-1  sm:justify-end">
         <div class="flex justify-between  w-auto sm:flex sm:flex-row sm:w-auto  sm:justify-end sm:p-4">
           <a href="/"
             class="bg-adc hover:bg-blue-700 text-white font-bold py-2  px-5 mx-3 rounded  text-center">Menu</a>
           <br>
-          <a href="/pessoas/form"
+          <a href="/planos/form"
             class="bg-adc  hover:bg-blue-700 text-white font-bold py-2 px-5 mx-3  rounded  text-center">Adicionar
           </a> <br>
           <a href="javascript:history.back()"
@@ -109,52 +122,94 @@
       </div>
     </div>
   </div>
-  
-<div id="customAlertNotFind"
-class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
-<div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
-  <h2 class="text-2xl font-bold mb-4 font-opens">Inscrito não cadastrado.</h2>
-  <button id="closeDialog" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
-</div>
 
 
-<script>
-  let deleteButtons = document.querySelectorAll('.deleteButton');
-      
-      
+  <div id="customAlert"
+    class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center card-principal">
+      <h2 class="text-2xl font-bold mb-4 font-opens">Deseja excluir essa pessoa?</h2>
+      <button id="closeDialogBtn" class="px-4 py-2 bg-green-500 text-white rounded sim">Sim</button>
+      <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded nao">Não</button>
+    </div>
+  </div>
+
+  <div id="customAlertNotFind"
+    class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+      <h2 class="text-2xl font-bold mb-4 font-opens">Inscrito não cadastrado.</h2>
+      <button id="closeDialog" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+    </div>
+
+
+    <script>
+      let deleteButtons = document.querySelectorAll('.deleteButton');
+      let customAlert = document.getElementById('customAlert');
+
+
       // Itera sobre todos os botões
-      deleteButtons.forEach(function(button) {
+      deleteButtons.forEach(function (button) {
         // Adiciona um evento de clique a cada botão
-        button.addEventListener('click', function(event) {
-          // Impede o comportamento padrão do link
-          event.preventDefault();
+        button.addEventListener('click', function (event) {
+          // Retira a calsse hidden do alerta
+          document.getElementById('customAlert').classList.remove('hidden');
 
-          let confirmarExclusao = confirm('Deseja relamente excluir essa matricula')
-          if(confirmarExclusao){
-             // Pega o ID da secretaria do atributo 'data-secretaria-id' do botão clicado
-          
-          let planosId  = this.getAttribute('data-plano-id');
-          
-          // Envia o ID da secretaria para o servidor Flask
-          fetch('/excluir-planos-aula', {
+          //Adiciona um evento de clique no documento
+          document.addEventListener('click', (ev) => {
+             //Pega a resposta do clique
+             let valorResposta = ev.target
+             //Verifica se a classe contém a classe sim
+            if (valorResposta.classList.contains('sim')) {
+              let planosId = this.getAttribute('data-plano-id');
+              fetch('/planos/aula/excluir', {
               method: 'POST',
               headers: {
-                  'Content-Type': 'application/json'
+                'Content-Type': 'application/json'
               },
-              body: JSON.stringify({planos_id: planosId})
-          }).then(response => {
-              // Lida com a resposta do servidor, se necessário
-              console.log(response)
-              alert('Plano de aula excluido com sucesso')
-              // Voltando para o início
-              window.location.href = '/';
-          }).catch(error => {
-              console.error('Erro ao excluir plano de aula', error);
-          });
-          }else{
-            console.log('exclusão cancelada')
-          }
-         
+              body: JSON.stringify({ planos_id: planosId })
+            }).then(response => {
+               //Caso a requisição retorne um valor com sucesso
+                //Selecionamos o h2 do alert e alteramos seu innerText
+                customAlert.querySelector('h2').innerText = 'Plando de Aula excluido com sucesso!'
+                //Removemos as opções de sim e não do card original
+                let teste = document.querySelectorAll('#closeDialogBtn')
+                teste.forEach((el) => {
+                  el.remove()
+                })
+                //Criamos um novo botão com o nome de fechar
+                let btn = document.createElement('button')
+                btn.innerHTML = `
+                            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+                            `
+                //Adicionamos ele ao alert
+                customAlert.querySelector('.card-principal').append(btn)
+                //Adicionamos um evento de clique no botão que ao clicar nele a página recarrega
+                btn.addEventListener('click', () => {
+                  window.location.reload()
+                })
+            }).catch(error => {
+              console.error('Erro ao excluir turma!:', error);
+                customAlert.querySelector('h2').innerText = 'Erro:' + error
+
+                let teste = document.querySelectorAll('#closeDialogBtn')
+                teste.forEach((el) => {
+                  el.remove()
+                })
+                let btn = document.createElement('button')
+                btn.innerHTML = `
+                            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+                            `
+                customAlert.querySelector('.card-principal').append(btn)
+
+                btn.addEventListener('click', () => {
+                  window.location.reload()
+                })
+            });
+            }else{
+              if (valorResposta.classList.contains('nao')) {
+                customAlert.classList.add('hidden')
+              }
+            }
+          })
         });
       });
 
@@ -176,6 +231,7 @@ class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-
           });
         }
       }
-</script>
+    </script>
 </body>
+
 </html>

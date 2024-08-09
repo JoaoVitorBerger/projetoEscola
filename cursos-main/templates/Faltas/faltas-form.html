@@ -1,47 +1,122 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Faltas</title>
+    <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet">
 </head>
-<body>
-    <h1>Registrar Falta</h1>
-    <form action="/faltas" method="POST">
-        <label for="falta">Falta:</label>
-        <select id="falta" name="falta">
-            <option value="1" selected>Sim</option>
-            <option value="0">Não</option>
-        </select><br><br>
-        <label for="justificativa">Justificativa:</label>
-        <input type="text" id="justificativa" name="justificativa"><br><br>
 
-        <label for="id_turma">Conteudo do plano de aula:</label>
-        <input list="nomes-datalist-conteudo" id="nome_conteudo" name="nome_conteudo">
-        <input list="nomes-datalist-conteudo" type="hidden" id="valor-id-conteudo" name="id_conteudo_hidden" value="">
-        <datalist id="nomes-datalist-conteudo"></datalist><br><br>
-       
-        <label for="id_turma">Nome do Inscrito:</label>
-        <input list="nomes-datalist-inscrito" id="nome_inscrito" name="nome_inscrito">
-        <input list="nomes-datalist-inscrito" type="hidden" id="valor-id-inscrito" name="id_inscrito_hidden" value="">
-        <datalist id="nomes-datalist-inscrito"></datalist><br><br>
-        
-        <input type="submit" value="Registrar Falta">
-    </form>
+<body class="h-full bg-pagina">
+    <div class="w-full h-full flex flex-col justify-center items-center">
+        <div class="w-full flex justify-center p-7">
+            <img src="../../static/img/logo_prefeitura.png" class="h-12 w-75" alt="">
+        </div>
+        <form action="/faltas/form" method="POST"
+            class="bg-card w-full sm:w-1/2 h-auto rounded-3xl flex flex-col justify-between items-center">
+            <div class="md:w-full border-t-2">
+                <div class="border-b-2 border-linhaFora w-full">
+                    <h1
+                        class="text-3xl font-opens font-bold text-adc border-b-2 border-linhaForm  w-full p-7 text-center ">
+                        Adicionar Falta
+                    </h1>
+                </div>
+                <div class="w-full grid grid-cols-1 justify-items-center items-center">
+                    <label for="falta" class="w-full sm:w-3/4 font-opens font-bold text-xl">Falta:</label>
+                    <select id="falta" name="falta"
+                        class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm   focus:outline-none focus:ring focus:ring-linhaForm">
+                        <option value="0" selected>Sim</option>
+                        <option value="1">Não</option>
+                    </select placeholder="Informe o motivo da falta">
+                    <label for="justificativa" class="w-full sm:w-3/4 font-opens font-bold text-xl">Justificativa:</label>
+                    <input type="text" id="justificativa" name="justificativa"
+                        class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm   focus:outline-none focus:ring focus:ring-linhaForm" placeholder="Informe o motivo da falta">
+
+                    <label for="id_turma" class="w-full sm:w-3/4 font-opens font-bold text-xl">Conteudo do plano de aula:</label>
+                    <div class="autocomplete-container">
+                        <input list="nomes-datalist-conteudo" id="nome_conteudo" name="nome_conteudo"
+                            class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm   focus:outline-none focus:ring focus:ring-linhaForm" placeholder="Pesquise pelo conteúdo do plano de aula">
+                        <div id="autocompleteContainer" class="autocomplete-suggestions hidden" name="plano-aula"></div>
+                    </div>
+                    <input list="nomes-datalist-conteudo" type="hidden" id="valor-id-conteudo" name="id_conteudo_hidden"
+                        value="">
+
+                    <label for="id_turma" class="w-full sm:w-3/4 font-opens font-bold text-xl">Nome do Matriuculado:</label>
+                    <div class="autocomplete-container">
+                        <input list="nomes-datalist-inscrito" id="nome_inscrito" name="nome_inscrito"
+                            class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm   focus:outline-none focus:ring focus:ring-linhaForm" placeholder="Pesquise pelo nome do inscrito">
+                        <div id="autocompleteContainer" class="autocomplete-suggestions hidden" name="inscrito"></div>
+                    </div>
+                    <input list="nomes-datalist-inscrito" type="hidden" id="valor-id-inscrito" name="id_inscrito_hidden"
+                        value="">
+
+                    <div class="grid grid-cols-1 justify-items-center items-center mt-3">
+                        <input type="submit" value="Enviar"
+                            class="rounded-e-2xl text-lg rounded-s-2xl font-opens text-white bg-adc w-48 h-12 pl-5 pr-5 hover:bg-blue-700 hover:cursor-pointer">
+                    </div>
+
+                    <div class="grid grid-cols-3 justify-items-center items-end ">
+                        <a href="/professores/pesquisar"
+                            class="bg-adc hover:bg-blue-700 text-white font-bold p-2 m-10 rounded text-center">Visualizar
+                            professores</a>
+                        <a href="/"
+                            class="bg-adc hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-10 text-center">Menu</a>
+                        <a href="javascript:history.back()"
+                            class="bg-adc hover:bg-blue-700 text-white font-bold m-10 py-2 px-4 rounded text-center">Voltar</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="customAlert"
+        class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+            <h2 class="text-2xl font-bold mb-4 font-opens">Prencha os campos com valores válidos.</h2>
+            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+        </div>
+    </div>
+    <div id="customAlertSuccess"
+    class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+        <h2 class="text-2xl font-bold mb-4 font-opens">Cadastro realizado com sucesso!</h2>
+        <button id="closeDialogBtnSucces" class="px-4 py-2 bg-green-500 text-white rounded">Fechar</button>
+    </div>
+
+</div>
 
     <script>
-          document.querySelector('form').addEventListener('submit', (ev) => {
-            let justificativa = document.getElementById('justificativa').value;
-            let conteudo = document.getElementById('valor-id-conteudo').value;
-            let nome_turma = document.getElementById('valor-id-inscrito').value;
-            if (justificativa && conteudo && nome_turma !== "") {
-                alert('Valores adicionados com sucesso!')
-            } else {
-                alert('Todos os campos necessitam estarem preenchidos!');
+        let nome_conteudo = document.getElementById('nome_conteudo');
+        nome_conteudo.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^a-zA-Z\s]/g, "");
+            event.target.value = valoresFiltrados;
+        });
+        let nome_inscrito = document.getElementById('nome_inscrito');
+        nome_inscrito.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^a-zA-Z\s]/g, "");
+            event.target.value = valoresFiltrados;
+        });
+        let justificativa = document.getElementById('justificativa');
+        justificativa.addEventListener('input', (event) => {
+            let valoresFiltrados = event.target.value.replace(/[^a-zA-Z\s]/g, "");
+            event.target.value = valoresFiltrados;
+        });
+
+
+        document.querySelector('form').addEventListener('submit', (ev) => {
+            if (Number(id_inscrito.value) == 0 || Number(id_conteudo.value) == 0 || justificativa.value == '') {
+                document.getElementById('customAlert').classList.remove('hidden');
                 ev.preventDefault();
             }
+            document.getElementById('closeDialogBtn').addEventListener('click', function () {
+                document.getElementById('customAlert').classList.add('hidden');
+            });
         })
 
+        let sugestoesContainer = document.querySelectorAll("#autocompleteContainer");
+        let sugestoesContainerInscrito = sugestoesContainer[1]
+        let sugestoesContainerConteudo = sugestoesContainer[0]
 
         let id_inscrito = document.getElementById("valor-id-inscrito")
         document.getElementById("nome_inscrito").addEventListener("input", function () {
@@ -49,7 +124,9 @@
 
             console.log(nome);
             if (nome.length >= 4) {
-                fetch("/matriculas/nome/inscrito?nome=\"" + nome + "\"", { // Correção da URL
+                sugestoesContainerInscrito.querySelectorAll('div').forEach(div => div.remove())
+                id_inscrito.value = ''
+                fetch("/faltas/nome/matriculado?nome=\"" + nome + "\"", { // Correção da URL
                     method: "POST", // Correção do método de solicitação
                     headers: {
                         "Content-Type": "application/json"
@@ -58,24 +135,25 @@
                 })
                     .then(response => response.json())
                     .then(sugestoes => {
-                        let sugestoesProfessores = document.getElementById("nomes-datalist-inscrito");
-                        sugestoesProfessores.innerHTML = ""; // Limpar sugestões anteriores
-                        let valoresUnicos = new Set();
                         console.log(sugestoes)
+                        if (sugestoes.length) {
+                            sugestoesContainerInscrito.classList.remove('hidden')
+                            sugestoes.forEach(name => {
+                                const divSugestaoNome = document.createElement('div')
+                                divSugestaoNome.classList.add('autocomplete-suggestion', 'w-full', 'sm:w-full', 'bg-bg_input', 'text-start', 'font-opens', 'text-black', 'border-b-2', 'border-gray-300')
+                                divSugestaoNome.textContent = name[1]
+                                divSugestaoNome.onclick = () => {
+                                    document.getElementById('nome_inscrito').value = name[1]
+                                    id_inscrito.value = name[0]
+                                    sugestoesContainerInscrito.innerHTML = ''
+                                    sugestoesContainerInscrito.classList.add('hidden')
+                                }
+                                sugestoesContainerInscrito.appendChild(divSugestaoNome)
+                            })
+                        } else {
+                            sugestoesContainerInscrito.classList.add('hidden')
+                        }
 
-
-                        sugestoes.forEach(function (sugestao) {
-                            valoresUnicos.add([sugestao[0],sugestao[1]]); // Adicionar apenas o primeiro elemento da tupla (nome)
-                             // Adicionar apenas o primeiro elemento da tupla (nome)
-                        });
-                     
-
-                        valoresUnicos.forEach(function (valor) {
-                            let sugestaoElemento = document.createElement("option");
-                            sugestaoElemento.value = valor[1];
-                            sugestoesProfessores.appendChild(sugestaoElemento);
-                            id_inscrito.value = valor[0]
-                        });;
 
 
                     })
@@ -85,7 +163,8 @@
 
 
             } else {
-                console.log('Valor não encontrado')
+                sugestoesContainerInscrito.querySelectorAll('div').forEach(div => div.remove())
+                id_inscrito.value = ''
             }
         });
 
@@ -96,6 +175,8 @@
 
             console.log(nome);
             if (nome.length >= 4) {
+                sugestoesContainerConteudo.querySelectorAll('div').forEach(div => div.remove())
+                id_conteudo.value = ''
                 fetch("/pesquisar-nome-conteudo?nome=\"" + nome + "\"", { // Correção da URL
                     method: "POST", // Correção do método de solicitação
                     headers: {
@@ -105,24 +186,24 @@
                 })
                     .then(response => response.json())
                     .then(sugestoes => {
-                        let sugestoesConteudo = document.getElementById("nomes-datalist-conteudo");
-                        sugestoesConteudo.innerHTML = ""; // Limpar sugestões anteriores
-                        let valoresUnicos = new Set();
                         console.log(sugestoes)
-
-
-                        sugestoes.forEach(function (sugestao) {
-                            valoresUnicos.add([sugestao[0],sugestao[1]]); // Adicionar apenas o primeiro elemento da tupla (nome)
-                             // Adicionar apenas o primeiro elemento da tupla (nome)
-                        });
-                     
-
-                        valoresUnicos.forEach(function (valor) {
-                            let sugestaoElemento = document.createElement("option");
-                            sugestaoElemento.value = valor[0];
-                            sugestoesConteudo.appendChild(sugestaoElemento);
-                            id_conteudo.value = valor[1]
-                        });;
+                        if (sugestoes.length) {
+                            sugestoesContainerConteudo.classList.remove('hidden')
+                            sugestoes.forEach(name => {
+                                const divSugestaoNome = document.createElement('div')
+                                divSugestaoNome.classList.add('autocomplete-suggestion', 'w-full', 'sm:w-full', 'bg-bg_input', 'text-start', 'font-opens', 'text-black', 'border-b-2', 'border-gray-300')
+                                divSugestaoNome.textContent = name[0]
+                                divSugestaoNome.onclick = () => {
+                                    document.getElementById('nome_conteudo').value = name[0]
+                                    id_conteudo.value = name[1]
+                                    sugestoesContainerConteudo.innerHTML = ''
+                                    sugestoesContainerConteudo.classList.add('hidden')
+                                }
+                                sugestoesContainerConteudo.appendChild(divSugestaoNome)
+                            })
+                        } else {
+                            sugestoesContainerConteudo.classList.add('hidden')
+                        }
 
 
                     })
@@ -132,9 +213,24 @@
 
 
             } else {
-                console.log('Valor não encontrado')
+                sugestoesContainerConteudo.querySelectorAll('div').forEach(div => div.remove())
+                id_conteudo.value = ''
             }
         });
+
+        window.onload = function () {
+            let mensagem = "{{ mensagem }}";
+            console.log(mensagem)
+            if (mensagem == 'True') {
+                document.getElementById('customAlertSuccess').classList.remove('hidden');
+                document.getElementById('closeDialogBtnSucces').addEventListener('click', function () {
+                    document.getElementById('customAlertSuccess').classList.add('hidden');
+                    window.location.href = '/faltas/form'
+
+                });
+            }
+        }
     </script>
 </body>
+
 </html>

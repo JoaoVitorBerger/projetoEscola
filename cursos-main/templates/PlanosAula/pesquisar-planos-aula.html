@@ -17,7 +17,7 @@
             class="bg-card w-full sm:w-1/2 h-auto rounded-3xl flex flex-col justify-between items-center" method="POST">
             <div class="border-b-2 border-linhaFora w-full">
                 <h1 class="text-3xl font-opens font-bold text-adc border-b-2 border-linhaForm  w-full p-7 text-center">
-                    Pesquisar Matricula
+                    Pesquisar Plano de Aula
                 </h1>
             </div>
             <div class="w-full grid grid-cols-1 justify-items-center items-center">
@@ -37,8 +37,8 @@
                         class="rounded-e-2xl text-lg rounded-s-2xl font-opens text-white bg-adc w-48 h-12 pl-5 pr-5 hover:bg-blue-700 hover:cursor-pointer">
                 </div>
                 <div class="grid grid-cols-3 justify-items-center items-end ">
-                    <a href="/professores/pesquisar"
-                        class="bg-adc hover:bg-blue-700 text-white font-bold p-2 m-10 rounded text-center">Visualizar
+                    <a href="/planos/form"
+                        class="bg-adc hover:bg-blue-700 text-white font-bold p-2 m-10 rounded text-center">Adicionar
                         professores</a>
                     <a href="/"
                         class="bg-adc hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-10 text-center">Menu</a>
@@ -47,7 +47,6 @@
                 </div>
             </div>
         </form>
-
     </div>
 
     <div id="customAlert"
@@ -82,9 +81,7 @@
                    document.getElementById('customAlert').classList.remove('hidden');
                 ev.preventDefault();
             }
-            document.getElementById('closeDialogBtn').addEventListener('click', function () {
-                document.getElementById('customAlert').classList.add('hidden');
-            });
+           
         })
 
 

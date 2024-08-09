@@ -603,31 +603,29 @@ def pesquisar_planos():
         return render_template('PlanosAula/resultados-pesquisa-planos-aula.html',planos=result)
      return render_template('PlanosAula/pesquisar-planos-aula.html')
 
-@app.route('/planos-form')
+@app.route('/planos/form', methods = ['GET', 'POST'])
 def planos_form():
-    return render_template('PlanosAula/planos-form.html')
-
-
-# Rota para adicionar um novo plano de aula
-@app.route('/planos', methods=['POST'])
-def add_plano():
-        conn = conectar()
+    conn = conectar()
+    mensagem = False
+    if request.method == 'POST':
         result = adicionar_plano_aula(conn)
         if isinstance(result, str):  # Verifica se houve erro
-                    return render_template('erro.html', mensagem= result)
-        return redirect('/')
+            return render_template('erro.html', mensagem= result)
+        mensagem = True
+    return render_template('PlanosAula/planos-form.html', mensagem = mensagem )
 
-@app.route('/editar-valores-planos/<int:planos_id>', methods=['POST','GET'])
+@app.route('/planos/aula/editar/<int:planos_id>', methods=['POST','GET'])
 def edit_planos_aula(planos_id):
     conn = conectar()
+    mensagem = False
     if request.method == 'POST':
-                result =editar_planos(conn, planos_id)
-                if isinstance(result, str):  # Verifica se houve erro
-                    return render_template('erro.html', mensagem= result)
-                return redirect('/')     
-    return render_template('PlanosAula/editar-valores-planos.html') 
+        result =editar_planos(conn, planos_id)
+        if isinstance(result, str):  # Verifica se houve erro
+            return render_template('erro.html', mensagem= result)
+        mensagem = True
+    return render_template('PlanosAula/editar-valores-planos.html', mensagem = mensagem) 
 
-@app.route('/excluir-planos-aula', methods=['POST'])
+@app.route('/planos/aula/excluir', methods=['POST'])
 def excl_planos_aula():
      conn=conectar()
      data = request.json
@@ -647,21 +645,27 @@ def excl_planos_aula():
 
 ###########################################################   FALTAS      ########################################################################
 
-@app.route('/pesquisar-faltas')
+@app.route('/faltas/pesquisar', methods = ['GET', 'POST'])
 def faltas():
+   conn = conectar()
+   if request.method == 'POST':
+        result = pesquisar_faltas(conn)
+        if isinstance(result, str):  # Verifica se houve erro
+            return render_template('Faltas/resultados-pesquisa-faltas.html',mensagem=result)
+        return render_template('Faltas/resultados-pesquisa-faltas.html',faltas=result)
    return render_template('Faltas/pesquisar-faltas.html')
 
-@app.route('/faltas-form')
+@app.route('/faltas/form', methods = ['POST', 'GET'])
 def faltas_form():
-        return render_template('Faltas/faltas-form.html')
+        conn = conectar()
+        mensagem = False
+        if request.method == 'POST':
+             result = adicionar_falta(conn)
+             if isinstance(result, str):  # Verifica se houve erro
+                return render_template('erro.html', mensagem= result)
+             mensagem = True
+        return render_template('Faltas/faltas-form.html', mensagem = mensagem)
 
-@app.route('/faltas', methods=['POST'])
-def add_falta():
-    conn = conectar()
-    result = adicionar_falta(conn)
-    if isinstance(result, str):  # Verifica se houve erro
-            return render_template('erro.html', mensagem= result)
-    return redirect('/')   
  
 @app.route('/pesquisar-nome-conteudo', methods=['GET','POST'])
 def pesquisar_conteudo():
@@ -671,14 +675,16 @@ def pesquisar_conteudo():
     result = pesquisar_nome_conteudo(conn,dados)
     print(result)
     return jsonify(result)
+
+@app.route('/faltas/nome/matriculado', methods=['GET','POST'])
+def pesquisar_faltas_valores():
+    conn = conectar()
+    dados = request.json  # Acesse os dados enviados no corpo da solicitação
+    print(dados)
+    result = pesquisar_nome_matriculado(conn,dados)
+    print(result)
+    return jsonify(result)
      
-@app.route("/resultado-pesquisa-faltas",methods=['POST'])
-def pesquisar_faltas_alunos():
-     conn = conectar()
-     result = pesquisar_faltas(conn)
-     if isinstance(result, str):  # Verifica se houve erro
-            return render_template('erro.html', mensagem= result)
-     return render_template('Faltas/resultados-pesquisa-faltas.html',faltas=result)
 
 
 @app.route('/editar-valores-faltas/<int:faltas_id>', methods=['POST','GET'])
@@ -691,7 +697,7 @@ def edit_faltas(faltas_id):
                 return redirect('/')     
     return render_template('Faltas/editar-valores-faltas.html') 
 
-@app.route('/excluir-faltas', methods=['POST'])
+@app.route('/faltas/excluir', methods=['POST'])
 def excl_faltas():
      conn=conectar()
      data = request.json
@@ -700,8 +706,7 @@ def excl_faltas():
      print(faltas_id)
      result= excluir_falta(conn,faltas_id)
      if isinstance(result, str):  # Verifica se houve erro
-                    return render_template('erro.html', mensagem= result)
-     return redirect('/')   
+                    return render_template('erro.html', mensagem= result) 
       
 
 if __name__ == '__main__':

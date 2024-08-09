@@ -14,7 +14,7 @@
         <div class="w-full flex justify-center p-7">
             <img src="../../static/img/logo_prefeitura.png" class="h-12 w-75" alt="">
         </div>
-        <form action="/planos" method="POST" class="bg-card w-full sm:w-1/2 h-auto rounded-3xl flex flex-col justify-between items-center">
+        <form action="/planos/form" method="POST" class="bg-card w-full sm:w-1/2 h-auto rounded-3xl flex flex-col justify-between items-center">
             <div class="md:w-full border-t-2">
                 <div class="border-b-2 border-linhaFora w-full">
                     <h1
@@ -23,35 +23,34 @@
                     </h1>
                 </div>
                 <div class="w-full grid grid-cols-1 justify-items-center items-center">
-    
+                    <label for="data" class="w-full sm:w-3/4 font-opens font-bold text-xl">Data:</label>
+                    <input type="date" id="data" name="data" class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm   focus:outline-none focus:ring focus:ring-linhaForm">
+            
+                    <label for="conteudo" class="w-full sm:w-3/4 font-opens font-bold text-xl">Conteúdo:</label><br>
+                    <textarea id="conteudo" name="conteudo" rows="4" cols="50" class="w-full sm:w-3/4 h-56 resize-none p-5   bg-bg_input font-opens rounded-md border-b-2 text-start border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm" placeholder="Informe o plano de aula do dia"></textarea>
+            
+                    <label for="id_turma" class="w-full sm:w-3/4 font-opens font-bold text-xl">Nome da Turma:</label>
+                    <div class="autocomplete-container">
+                        <input list="nomes-datalist-turma" id="nome_turma" name="nome_turma" class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm   focus:outline-none focus:ring focus:ring-linhaForm" placeholder="Informe o nome da Turma">
+                        <div id="autocompleteContainer" class="autocomplete-suggestions hidden" name="plano_aula" ></div>
+                    </div>
+                   
+                    <input list="nomes-datalist-turma" type="hidden" id="valor-id-turma" name="id_turma_hidden" value="">
+            
+            
+                    <div class="grid grid-cols-1 justify-items-center items-center mt-3">
+                        <input type="submit" value="Adicionar" id="btn-adicionar"
+                            class="rounded-e-2xl text-lg rounded-s-2xl font-opens text-white bg-adc w-48 h-12 pl-5 pr-5 hover:bg-blue-700 hover:cursor-pointer">
+                    </div>
+                    <div class="grid grid-cols-3 justify-items-center items-end ">
+                        <a href="/planos/aula/pesquisa"
+                            class="bg-adc hover:bg-blue-700 text-white font-bold p-2 m-10 rounded text-center">Pesquisar</a>
+                        <a href="/"
+                            class="bg-adc hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-10 text-center">Menu</a>
+                        <a href="javascript:history.back()"
+                            class="bg-adc hover:bg-blue-700 text-white font-bold m-10 py-2 px-4 rounded text-center">Voltar</a>
+                    </div>
                 </div>
-            </div>
-            <label for="data" class="w-full sm:w-3/4 font-opens font-bold text-xl">Data:</label>
-            <input type="date" id="data" name="data" class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm   focus:outline-none focus:ring focus:ring-linhaForm">
-    
-            <label for="conteudo" class="w-full sm:w-3/4 font-opens font-bold text-xl">Conteúdo:</label><br>
-            <textarea id="conteudo" name="conteudo" rows="4" cols="50" class="w-full sm:w-3/4 h-56 resize-none p-5   bg-bg_input font-opens rounded-md border-b-2 text-start border-linhaForm focus:outline-none focus:ring focus:ring-linhaForm" placeholder="Informe o plano de aula do dia"></textarea>
-    
-            <label for="id_turma" class="w-full sm:w-3/4 font-opens font-bold text-xl">Nome da Turma:</label>
-            <div class="autocomplete-container">
-                <input list="nomes-datalist-turma" id="nome_turma" name="nome_turma" class="w-full sm:w-3/4 bg-bg_input font-opens h-12 rounded-md border-b-2 text-center border-linhaForm   focus:outline-none focus:ring focus:ring-linhaForm" placeholder="Informe o nome da Turma">
-                <div id="autocompleteContainer" class="autocomplete-suggestions hidden" name="plano_aula" ></div>
-            </div>
-           
-            <input list="nomes-datalist-turma" type="hidden" id="valor-id-turma" name="id_turma_hidden" value="">
-    
-    
-            <div class="grid grid-cols-1 justify-items-center items-center mt-3">
-                <input type="submit" value="Adicionar" id="btn-adicionar"
-                    class="rounded-e-2xl text-lg rounded-s-2xl font-opens text-white bg-adc w-48 h-12 pl-5 pr-5 hover:bg-blue-700 hover:cursor-pointer">
-            </div>
-            <div class="grid grid-cols-3 justify-items-center items-end ">
-                <a href="/cursos/pesquisar"
-                    class="bg-adc hover:bg-blue-700 text-white font-bold p-2 m-10 rounded text-center">Pesquisar</a>
-                <a href="/"
-                    class="bg-adc hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-10 text-center">Menu</a>
-                <a href="javascript:history.back()"
-                    class="bg-adc hover:bg-blue-700 text-white font-bold m-10 py-2 px-4 rounded text-center">Voltar</a>
             </div>
         </form>
     </div>
@@ -150,7 +149,7 @@
                 document.getElementById('customAlertSuccess').classList.remove('hidden');
                 document.getElementById('closeDialogBtnSucces').addEventListener('click', function () {
                     document.getElementById('customAlertSuccess').classList.add('hidden');
-                    window.location.href = '/turmas/pesquisar'
+                    window.location.href = '/planos/form'
 
                 });
             }

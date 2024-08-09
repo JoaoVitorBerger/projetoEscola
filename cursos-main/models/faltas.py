@@ -3,6 +3,9 @@ from flask import request
 from datetime import datetime
 from unidecode import unidecode
 
+
+# def pesquisar_aluno_matriculado(conn):
+     
 def pesquisar_nome_conteudo(conn, dados):
     try:
         cursor = conn.cursor(dictionary=True)
@@ -80,6 +83,9 @@ def pesquisar_faltas(conn):
         cursor.execute(query, params) 
           
         faltas = cursor.fetchall()
+
+        if not faltas:
+             return 'False'
         return faltas
     except mysql.connector.Error as err:
         return f'Erro ao buscar faltas: {err}'
@@ -121,4 +127,31 @@ def excluir_falta(conn,faltas_id):
         return
     except mysql.connector.Error as err:
         return ({"error": f'Erro ao excluir secretaria: {err}'})
+          
+
+
+
+def pesquisar_nome_matriculado(conn, dados):
+    try:
+        cursor = conn.cursor(dictionary=True)
+        dados = request.json  # Acesse os dados enviados no corpo da solicitação
+        print(dados)
+        if dados['nome'].strip():  # Verifica se o valor não está vazio após remover espaços em branco
+            nome_inserido = dados['nome'].strip().upper()
+            cursor.execute(''' SELECT
+                    matriculas.id AS matricula_id,
+                    pessoas.nome AS nome_pessoa
+                    FROM matriculas
+                    JOIN inscricoes on inscricoes.id = matriculas.id_inscricao
+                    JOIN alunos on alunos.id = inscricoes.id_aluno
+                    JOIN pessoas on pessoas.id = alunos.id_pessoa
+                    WHERE matriculas.deletado_em IS NULL
+                    AND pessoas.nome LIKE %s
+                    GROUP BY pessoas.nome
+                    ''', ('%' + nome_inserido + '%',))
+            nomes_encontrados = cursor.fetchall()
+            nomes_semelhantes = [(nome['matricula_id'], nome['nome_pessoa']) for nome in nomes_encontrados]
+            return nomes_semelhantes  # Certifique-se de que está retornando JSON
+    except mysql.connector.Error as err:
+          return f'Erro ao buscar dados: {err}'
           

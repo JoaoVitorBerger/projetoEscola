@@ -1,86 +1,202 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet">
 </head>
-<body>
-  <table border="1">
-    <thead>
-        <tr>
-            <th>Presença</th>
-            <th>Data do plano de aula</th>
-            <th>Conteúdo do plano de aula</th>
-            <th>Nome da turma</th>
-            <th>Descrição sobre o turma</th>
-            <th>Nome do curso</th>
-            <th>Nome da secretaria</th>
-            <th>Nome do aluno</th>     
-        </tr>
-    </thead>
-    <tbody>
-        {% for falta in faltas %}
-        
-        <tr>
-    
-            
-            <td>{{ falta.status_presenca }}</td>
-            <td>{{ falta.data_do_plano_de_aula }}</td>
-            <td>{{ falta.conteudo_plano_de_aula }}</td>
-            <td>{{ falta.nome_turma }}</td>
-            <td>{{ falta.descricao_turma }}</td> 
-            <td>{{ falta.nome_curso }}</td>  
-            <td>{{ falta.nome_secretaria }}</td>  
-            <td>{{ falta.nome_aluno }}</td> 
-            <td><a href="/editar-valores-faltas/{{ falta.id}}">Editar</a></td>
-            <td><a class="deleteButton" data-falta-id="{{ falta.id }}" href="#">Excluir</a></td>
-            
-        </tr>
-        
-        {% endfor %}
-    </tbody>
-</table>
 
-</table>
+<body class="h-full bg-pagina">
+  <div class="flex flex-col justify-center h-full items-center w-full">
+    <div class="flex justify-center p-5">
+      <img src="../../static/img/logo_prefeitura.png" class="h-12 w-75" alt="">
+    </div>
+    <div  class="overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200  bg-card w-full h-auto sm:h-auto sm:w-10/12 p-5 rounded-3xl">
+      <h1 class="text-3xl p-7 font-opens font-bold text-adc">Resultado pesquisas faltas</h1>
+      <div class="overflow-auto h-1/2 sm:h-auto">
+        <table class="w-full h-3/4  sm:h-auto bg-fundoTabela">
+          <thead class="hidden md:block">
+            <tr class="sm:grid sm:grid-cols-10 gap-0 " class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Presença</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Data do plano de aula</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Conteúdo do plano de aula</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Nome da turma</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Descrição sobre o turma</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Nome do curso</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Nome da secretaria</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Nome do aluno</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Editar</th>
+              <th class="text-adc text-start border-l-2 border-linhaForm mb-2  pl-1">Excluir</th>
+            </tr>
+          </thead>
+          <tbody  class="h-auto">
+            {% for falta in faltas %}
+      
+            <tr class="flex w-full sm:grid sm:grid-cols-10 gap-0">
+              <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ falta.status_presenca }}
+                </div></td>
+              <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ falta.data_do_plano_de_aula }}
+                </div></td>
+              <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ falta.conteudo_plano_de_aula }}
+                </div></td>
+              <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ falta.nome_turma }}
+                </div></td>
+              <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ falta.descricao_turma }}
+                </div></td>
+              <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ falta.nome_curso }}
+                </div></td>
+              <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ falta.nome_secretaria }}
+                </div></td>
+              <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  {{ falta.nome_aluno }}
+                </div></td>
+              <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  <a href="/editar-valores-faltas/{{ falta.id}}">
+                    <img src="../../static/img/IconeEditar.png" alt="">
+                  </a>
+                </div></td>
+              <td class="h-auto w-52 sm:w-full  break-words  border-2 font-opens text-sm p-4  border-coresLinhas  text-center flex items-center">
+                <div class="h-full w-full flex items-center justify-center">
+                  <a class="deleteButton" data-falta-id="{{ falta.id }}" href="#">
+                    <img src="../../static/img/IconeLixeira.png" class="" alt="">
+                  </a>
+                </div></td>
+      
+            </tr>
+      
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
   
-<script>
-    let deleteButtons = document.querySelectorAll('.deleteButton');
-    
-    
-    // Itera sobre todos os botões
-    deleteButtons.forEach(function(button) {
-      // Adiciona um evento de clique a cada botão
-      button.addEventListener('click', function(event) {
-        // Impede o comportamento padrão do link
-        event.preventDefault();
 
-        let confirmarExclusao = confirm('Deseja relamente excluir essa falta')
-        if(confirmarExclusao){
-           // Pega o ID da secretaria do atributo 'data-secretaria-id' do botão clicado
-        let faltasId = this.getAttribute('data-falta-id');
-        // Envia o ID da secretaria para o servidor Flask
-        fetch('/excluir-faltas', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({faltas_id: faltasId})
-        }).then(response => {
-            // Lida com a resposta do servidor, se necessário
-            console.log(response)
-            alert('Falta excluida com sucesso')
-            // Voltando para o início
-            window.location.href = '/';
-        }).catch(error => {
-            console.error('Erro ao excluir falta:', error);
+
+  <div id="customAlert"
+    class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center card-principal">
+      <h2 class="text-2xl font-bold mb-4 font-opens">Deseja excluir essa pessoa?</h2>
+      <button id="closeDialogBtn" class="px-4 py-2 bg-green-500 text-white rounded sim">Sim</button>
+      <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded nao">Não</button>
+    </div>
+  </div>
+
+  <div id="customAlertNotFind"
+    class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center  rounded-e ">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+      <h2 class="text-2xl font-bold mb-4 font-opens">Inscrito não cadastrado.</h2>
+      <button id="closeDialog" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+    </div>
+
+
+    <script>
+      let deleteButtons = document.querySelectorAll('.deleteButton');
+      let customAlert = document.getElementById('customAlert');
+
+      // Itera sobre todos os botões
+      deleteButtons.forEach(function (button) {
+        // Adiciona um evento de clique a cada botão
+        button.addEventListener('click', function (event) {
+          // Retira a calsse hidden do alerta
+          document.getElementById('customAlert').classList.remove('hidden');
+
+          //Adiciona um evento de clique no documento
+          document.addEventListener('click', (ev) => {
+            //Pega a resposta do clique
+            let valorResposta = ev.target
+            if (valorResposta.classList.contains('sim')) {
+              let faltasId = this.getAttribute('data-falta-id');
+              fetch('/faltas/excluir', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ faltas_id: faltasId })
+              }).then(response => {
+                  //Caso a requisição retorne um valor com sucesso
+                //Selecionamos o h2 do alert e alteramos seu innerText
+                customAlert.querySelector('h2').innerText = 'Falta com sucesso!'
+                //Removemos as opções de sim e não do card original
+                let teste = document.querySelectorAll('#closeDialogBtn')
+                teste.forEach((el) => {
+                  el.remove()
+                })
+                //Criamos um novo botão com o nome de fechar
+                let btn = document.createElement('button')
+                btn.innerHTML = `
+                            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+                            `
+                //Adicionamos ele ao alert
+                customAlert.querySelector('.card-principal').append(btn)
+                //Adicionamos um evento de clique no botão que ao clicar nele a página recarrega
+                btn.addEventListener('click', () => {
+                  window.location.reload()
+                })
+              }).catch(error => {
+                console.error('Erro ao excluir turma!:', error);
+                customAlert.querySelector('h2').innerText = 'Erro:' + error
+
+                let teste = document.querySelectorAll('#closeDialogBtn')
+                teste.forEach((el) => {
+                  el.remove()
+                })
+                let btn = document.createElement('button')
+                btn.innerHTML = `
+                            <button id="closeDialogBtn" class="px-4 py-2 bg-red-500 text-white rounded">Fechar</button>
+                            `
+                customAlert.querySelector('.card-principal').append(btn)
+
+                btn.addEventListener('click', () => {
+                  window.location.reload()
+                })
+              });
+            }else{
+              if (valorResposta.classList.contains('nao')) {
+                customAlert.classList.add('hidden')
+              }
+            }
+          })
         });
-        }else{
-          console.log('exclusão cancelada')
-        }
-       
       });
-    });
-</script>
+
+      window.onload = function () {
+        //recebe uma mensagem que contém true ou false, como valor padrão temos false
+        let mensagem = "{{ mensagem }}";
+        console.log(mensagem)
+        //Caso a mensagem for falsa
+        if (mensagem == 'False') {
+          //Removemos a classe hidden do alertNotFind
+          document.getElementById('customAlertNotFind').classList.remove('hidden');
+          //Adicionamos um evento de clique no botão de fechar
+          document.getElementById('closeDialog').addEventListener('click', function () {
+            //Quando clicado ele omite e div
+            document.getElementById('customAlertNotFind').classList.add('hidden');
+            //Direciona a página para ela mesma para recarregar os valores true/false
+            window.location.href = '/faltas/pesquisar'
+
+          });
+        }
+      }
+    </script>
 </body>
+
 </html>
